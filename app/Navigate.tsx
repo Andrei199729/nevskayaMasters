@@ -5,6 +5,7 @@ import RegisterScreen from '../ui/screens/RegisterScreen';
 import RestorePasswordScreen from '../ui/screens/RestorePasswordScreen';
 import SuccessScreen from '../ui/screens/SuccessScreen';
 import NewPasswordScreen from '../ui/screens/NewPasswordScreen';
+import MainScreen from '../ui/screens/MainScreen';
 
 const Stack = createStackNavigator();
 
@@ -36,6 +37,11 @@ function Navigate() {
           options={{headerShown: false}}
           name="NewPassword"
           component={NewPasswordScreen}
+        />
+        <Stack.Screen
+          options={{headerShown: false}}
+          name="Main"
+          component={MainScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>

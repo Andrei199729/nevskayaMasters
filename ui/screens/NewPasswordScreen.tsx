@@ -4,12 +4,6 @@ import ButtonAuth from '../../shared/ButtonAuth/ButtonAuth';
 import {Input} from '../../shared/Input/Input';
 import {Gaps} from '../../shared/tokens';
 import {useEffect, useState} from 'react';
-import {validateEmail} from '../../customFunc/customFunc';
-import {
-  errorNumberCodeRestore,
-  errorTextEmailRestore,
-} from '../../shared/texts';
-import ErrorText from '../../shared/ErrorText/ErrorText';
 
 function NewPasswordScreen({navigation}: any) {
   const [restoreNewPasswordLogin, setRestoreNewPasswordLogin] =

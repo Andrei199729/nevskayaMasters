@@ -2,6 +2,7 @@ import {StyleSheet, Text, View} from 'react-native';
 import {Colors, Fonts, Gaps} from '../../shared/tokens';
 import {useState} from 'react';
 import ButtonLinkAuth from '../../shared/ButtonLinkAuth/ButtonLinkAuth';
+import Title from '../../shared/Title/Title';
 
 interface AuthSectionProps {
   children: React.ReactNode;
@@ -16,7 +17,7 @@ function AuthSection({children, ...props}: AuthSectionProps) {
   return (
     <View style={styles.content}>
       <View style={styles.form}>
-        <Text style={styles.title}>{props.title}</Text>
+        <Title title={props.title} />
         {children}
         <View style={styles.blockQuestion}>
           <Text style={styles.question}>{props.textWithBtn}</Text>
@@ -41,11 +42,6 @@ const styles = StyleSheet.create({
   },
   form: {
     gap: Gaps.g18,
-  },
-  title: {
-    fontFamily: Fonts.medium,
-    fontSize: Fonts.f24,
-    color: Colors.black,
   },
   blockQuestion: {
     gap: 4,

@@ -1,11 +1,9 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import AuthSection from '../section/AuthSection';
 import ButtonAuth from '../../shared/ButtonAuth/ButtonAuth';
 import {Input} from '../../shared/Input/Input';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
-import {Gaps, Fonts} from '../../shared/tokens';
+import {Gaps} from '../../shared/tokens';
 import {useEffect, useState} from 'react';
-import {validateEmail, validatePassword} from '../../customFunc/customFunc';
 import {errorTextEmail} from '../../shared/texts';
 import ErrorText from '../../shared/ErrorText/ErrorText';
 
@@ -13,7 +11,7 @@ function LoginScreen({navigation}: any) {
   const [emailLogin, setEmailLogin] = useState<string>('');
   const [passwordLogin, setPasswordLogin] = useState<string>('');
   const [disabledLoginState, setDisabledLoginState] = useState<boolean>(true);
-  const [emailError, setEmailError] = useState<boolean>(false);
+  const [emailError, setEmailError] = useState<boolean>(true);
   const [localError, setLocalError] = useState<string | undefined>(
     errorTextEmail,
   );
@@ -23,6 +21,10 @@ function LoginScreen({navigation}: any) {
     setEmailError(!emailLogin); // Устанавливаем ошибку, если email некорректен
     setDisabledLoginState(!isFormValid); // Отключаем кнопку, если форма не валидна
   }, [emailLogin, passwordLogin]);
+
+  const onSubmitMainScreen = () => {
+    navigation.navigate('Main');
+  };
 
   return (
     <AuthSection
@@ -46,6 +48,7 @@ function LoginScreen({navigation}: any) {
         <ButtonAuth
           textBtn="Авторизоваться"
           disabledState={disabledLoginState}
+          onPress={onSubmitMainScreen}
         />
       </View>
       {emailError && emailLogin.length > 0 && (
