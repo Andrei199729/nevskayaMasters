@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import {Colors, Fonts, Radius} from '../tokens';
 
-function ButtonAuth({
+function ButtonCustom({
   textBtn,
   disabledState,
   ...props
@@ -53,4 +53,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ButtonAuth;
+export default ButtonCustom;

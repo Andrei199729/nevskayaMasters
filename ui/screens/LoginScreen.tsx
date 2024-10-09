@@ -1,11 +1,12 @@
 import {StyleSheet, View} from 'react-native';
 import AuthSection from '../section/AuthSection';
-import ButtonAuth from '../../shared/ButtonAuth/ButtonAuth';
+import ButtonCustom from '../../shared/ButtonCustom/ButtonCustom';
 import {Input} from '../../shared/Input/Input';
 import {Gaps} from '../../shared/tokens';
 import {useEffect, useState} from 'react';
 import {errorTextEmail} from '../../shared/texts';
 import ErrorText from '../../shared/ErrorText/ErrorText';
+import HeaderScreen from './HeaderScreen';
 
 function LoginScreen({navigation}: any) {
   const [emailLogin, setEmailLogin] = useState<string>('');
@@ -27,34 +28,36 @@ function LoginScreen({navigation}: any) {
   };
 
   return (
-    <AuthSection
-      title="Авторизация"
-      navigation={navigation}
-      textBtn={'Восстановить пароль'}
-      pathLink={'RestorePassword'}
-      textWithBtn="Забыли пароль?">
-      <View style={styles.inputs}>
-        <Input
-          textPlaceholder="Введите Email"
-          inputModeText="email"
-          onChangeText={setEmailLogin}
-          errorState={emailError}
-        />
-        <Input
-          textPlaceholder="Введите Пароль"
-          isPassword
-          onChangeText={setPasswordLogin}
-        />
-        <ButtonAuth
-          textBtn="Авторизоваться"
-          disabledState={disabledLoginState}
-          onPress={onSubmitMainScreen}
-        />
-      </View>
-      {emailError && emailLogin.length > 0 && (
-        <ErrorText errorText={localError} />
-      )}
-    </AuthSection>
+    <HeaderScreen>
+      <AuthSection
+        title="Авторизация"
+        navigation={navigation}
+        textBtn={'Восстановить пароль'}
+        pathLink={'RestorePassword'}
+        textWithBtn="Забыли пароль?">
+        <View style={styles.inputs}>
+          <Input
+            textPlaceholder="Введите Email"
+            inputModeText="email"
+            onChangeText={setEmailLogin}
+            errorState={emailError}
+          />
+          <Input
+            textPlaceholder="Введите Пароль"
+            isPassword
+            onChangeText={setPasswordLogin}
+          />
+          <ButtonCustom
+            textBtn="Авторизоваться"
+            disabledState={disabledLoginState}
+            onPress={onSubmitMainScreen}
+          />
+        </View>
+        {emailError && emailLogin.length > 0 && (
+          <ErrorText errorText={localError} />
+        )}
+      </AuthSection>
+    </HeaderScreen>
   );
 }
 

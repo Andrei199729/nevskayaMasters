@@ -1,15 +1,13 @@
 import React from 'react';
-import {SafeAreaView, StyleSheet, View} from 'react-native';
-import {createStackNavigator} from '@react-navigation/stack';
+import {SafeAreaView, StyleSheet} from 'react-native';
 import Navigate from './Navigate';
-import Header from '../ui/components/Header/Header';
-
+import {createStackNavigator} from '@react-navigation/stack';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 const Stack = createStackNavigator();
-
+const Tab = createBottomTabNavigator();
 function App(): React.JSX.Element {
   return (
     <SafeAreaView style={styles.container}>
-      <Header />
       <Navigate />
     </SafeAreaView>
   );

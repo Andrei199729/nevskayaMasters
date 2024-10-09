@@ -1,15 +1,13 @@
 import {StyleSheet, View} from 'react-native';
 import AuthSection from '../section/AuthSection';
-import ButtonAuth from '../../shared/ButtonAuth/ButtonAuth';
+import ButtonCustom from '../../shared/ButtonCustom/ButtonCustom';
 import {Input} from '../../shared/Input/Input';
 import {Gaps} from '../../shared/tokens';
 import {useEffect, useState} from 'react';
 import {validateEmail} from '../../customFunc/customFunc';
-import {
-  errorNumberCodeRestore,
-  errorTextEmailRestore,
-} from '../../shared/texts';
+import {errorNumberCodeRestore} from '../../shared/texts';
 import ErrorText from '../../shared/ErrorText/ErrorText';
+import HeaderScreen from './HeaderScreen';
 
 function SuccessScreen({navigation}: any) {
   const [restoreCodeLogin, setRestoreCodeLogin] = useState<string>('');
@@ -36,24 +34,26 @@ function SuccessScreen({navigation}: any) {
   };
 
   return (
-    <AuthSection title="Восстановление пароля" navigation={navigation}>
-      <View style={styles.inputs}>
-        <Input
-          textPlaceholder="Введите код, который пришел на почту"
-          inputModeText="numeric"
-          keyboardType="numeric"
-          onChangeText={handleTextChange}
-        />
-        <ButtonAuth
-          textBtn="Отправить"
-          disabledState={disabledRestoreCodeState}
-          onPress={onSubmitCode}
-        />
-      </View>
-      {restoreCodeCodeError && restoreCodeLogin.length > 0 && (
-        <ErrorText errorText={localError} />
-      )}
-    </AuthSection>
+    <HeaderScreen>
+      <AuthSection title="Восстановление пароля" navigation={navigation}>
+        <View style={styles.inputs}>
+          <Input
+            textPlaceholder="Введите код, который пришел на почту"
+            inputModeText="numeric"
+            keyboardType="numeric"
+            onChangeText={handleTextChange}
+          />
+          <ButtonCustom
+            textBtn="Отправить"
+            disabledState={disabledRestoreCodeState}
+            onPress={onSubmitCode}
+          />
+        </View>
+        {restoreCodeCodeError && restoreCodeLogin.length > 0 && (
+          <ErrorText errorText={localError} />
+        )}
+      </AuthSection>
+    </HeaderScreen>
   );
 }
 

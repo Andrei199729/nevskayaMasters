@@ -1,16 +1,15 @@
 import {ReactNode, useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import Title from '../../shared/Title/Title';
 import {Colors, Gaps} from '../../shared/tokens';
 import Tomorrow from '../../assets/images/icon/iconFunc/tomorrow';
 import NotProcessed from '../../assets/images/icon/iconFunc/not-processed';
 import CreateTask from '../../assets/images/icon/iconFunc/createTask';
 import ButtonMenuBottom from '../../shared/ButtonMenuBottom/ButtonMenuBottom';
-
-interface IMainScreen {
-  children: ReactNode;
-  mainTitle: string;
-}
+import {IMainScreen} from '../../shared/types';
+import MainContent from '../components/MainContent/MainContent';
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
 
 interface IMenuBottomState {
   icon: JSX.Element;
@@ -19,7 +18,14 @@ interface IMenuBottomState {
   btn: string | null;
 }
 
+type RootStackParamList = {
+  CreateProject: undefined;
+};
+
+type MenuBottomNavigationProp = StackNavigationProp<RootStackParamList>;
+
 function MainScreen({children, ...props}: IMainScreen) {
+  const navigation = useNavigation<MenuBottomNavigationProp>();
   const [buttonActive, setButtonActive] = useState<Array<IMenuBottomState>>([
     {
       icon: <NotProcessed />,
@@ -28,7 +34,7 @@ function MainScreen({children, ...props}: IMainScreen) {
       btn: null,
     },
     {icon: <Tomorrow />, state: false, text: 'На завтра', btn: null},
-    {icon: <CreateTask />, state: false, text: null, btn: 'plus'},
+    {icon: <CreateTask />, state: false, text: null, btn: 'CreateProject'},
     {
       icon: <NotProcessed />,
       state: false,
@@ -43,13 +49,20 @@ function MainScreen({children, ...props}: IMainScreen) {
       state: i === index ? !active.state : false,
     }));
     setButtonActive(newActiveButtons);
+    const screenNameMenuBtn = newActiveButtons[index].btn;
+    if (screenNameMenuBtn === 'CreateProject') {
+      navigation.navigate('CreateProject');
+    }
   };
   return (
-    <View style={{position: 'relative'}}>
-      <View style={styles.mainContainer}>
-        <Title title={props.mainTitle} />
-        {children}
-      </View>
+    <View style={styles.mainContainer}>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <MainContent
+          children={children}
+          mainTitle={props.mainTitle}
+          path={props.path}
+        />
+      </ScrollView>
       <View style={styles.menuBottom}>
         {buttonActive.map((active, index) => (
           <ButtonMenuBottom
@@ -68,6 +81,15 @@ function MainScreen({children, ...props}: IMainScreen) {
 
 const styles = StyleSheet.create({
   mainContainer: {
+    position: 'relative',
+    paddingBottom: 48,
+    flex: 1,
+    zIndex: -1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+  },
+  mainContent: {
     maxWidth: '100%',
     width: '100%',
     height: '100%',

@@ -2,7 +2,7 @@ import {StyleSheet, Text} from 'react-native';
 import {Fonts, Colors} from '../tokens';
 
 interface ITitle {
-  title: string;
+  title?: string;
 }
 
 export default function Title({title}: ITitle) {

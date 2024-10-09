@@ -1,6 +1,5 @@
 import {StyleSheet, Text, View} from 'react-native';
 import {Colors, Fonts, Gaps} from '../../shared/tokens';
-import {useState} from 'react';
 import ButtonLinkAuth from '../../shared/ButtonLinkAuth/ButtonLinkAuth';
 import Title from '../../shared/Title/Title';
 
@@ -39,6 +38,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     backgroundColor: '#ffffff',
     paddingTop: 24,
+    zIndex: -1,
   },
   form: {
     gap: Gaps.g18,

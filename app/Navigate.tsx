@@ -5,7 +5,12 @@ import RegisterScreen from '../ui/screens/RegisterScreen';
 import RestorePasswordScreen from '../ui/screens/RestorePasswordScreen';
 import SuccessScreen from '../ui/screens/SuccessScreen';
 import NewPasswordScreen from '../ui/screens/NewPasswordScreen';
-import MainScreen from '../ui/screens/MainScreen';
+import Main from '../ui/components/Main/Main';
+import React from 'react';
+import PopupScreen from '../ui/screens/PopupScreen';
+import FilterPopup from '../ui/components/FilterPopup/FilterPopup';
+import SearchPopup from '../ui/components/SearchPopup/SearchPopup';
+import CreateProjectScreen from '../ui/screens/CreateProjectScreen';
 
 const Stack = createStackNavigator();
 
@@ -41,7 +46,23 @@ function Navigate() {
         <Stack.Screen
           options={{headerShown: false}}
           name="Main"
-          component={MainScreen}
+          component={Main}
+        />
+
+        <Stack.Screen
+          options={{headerShown: false}}
+          name="Filter"
+          component={FilterPopup}
+        />
+        <Stack.Screen
+          options={{headerShown: false}}
+          name="Search"
+          component={SearchPopup}
+        />
+        <Stack.Screen
+          options={{headerShown: false}}
+          name="CreateProject"
+          component={CreateProjectScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>

@@ -1,13 +1,13 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {Input} from '../../shared/Input/Input';
-import {Colors, Fonts, Gaps} from '../../shared/tokens';
-import ButtonAuth from '../../shared/ButtonAuth/ButtonAuth';
-import ButtonLinkAuth from '../../shared/ButtonLinkAuth/ButtonLinkAuth';
+import {Gaps} from '../../shared/tokens';
+import ButtonCustom from '../../shared/ButtonCustom/ButtonCustom';
 import AuthSection from '../section/AuthSection';
 import {useEffect, useState} from 'react';
 import {errorTextPassword} from '../../shared/texts';
 import ErrorText from '../../shared/ErrorText/ErrorText';
 import {validatePassword} from '../../customFunc/customFunc';
+import HeaderScreen from './HeaderScreen';
 
 function RegisterScreen({navigation}: any) {
   const [email, setEmail] = useState<string>('');
@@ -22,9 +22,8 @@ function RegisterScreen({navigation}: any) {
     if (
       email &&
       password &&
-      repeatPassword &&
-      password === repeatPassword &&
-      validatePassword(password)
+      repeatPassword
+      // validatePassword(password)
     ) {
       setDisabledState(false);
     } else {
@@ -33,39 +32,41 @@ function RegisterScreen({navigation}: any) {
   }, [email, password, repeatPassword]);
 
   return (
-    <AuthSection
-      title="Регистрация"
-      navigation={navigation}
-      textBtn={'Войти'}
-      pathLink={'Login'}
-      textWithBtn="Уже есть профиль?">
-      <View style={styles.inputs}>
-        <Input
-          textPlaceholder="Введите Email"
-          inputModeText="email"
-          onChangeText={setEmail}
-        />
+    <HeaderScreen>
+      <AuthSection
+        title="Регистрация"
+        navigation={navigation}
+        textBtn={'Войти'}
+        pathLink={'Login'}
+        textWithBtn="Уже есть профиль?">
+        <View style={styles.inputs}>
+          <Input
+            textPlaceholder="Введите Email"
+            inputModeText="email"
+            onChangeText={setEmail}
+          />
 
-        <Input
-          textPlaceholder="Введите Пароль"
-          isPassword
-          onChangeText={setPassword}
-          errorState={disabledState}
-        />
-        <Input
-          textPlaceholder="Повторите пароль"
-          isPassword
-          onChangeText={setRepeatPassword}
-        />
-        <ButtonAuth
-          textBtn="Зарегистрироваться"
-          disabledState={disabledState}
-        />
-      </View>
-      {!validatePassword(password) && password.length > 0 && (
-        <ErrorText errorText={localError} />
-      )}
-    </AuthSection>
+          <Input
+            textPlaceholder="Введите Пароль"
+            isPassword
+            onChangeText={setPassword}
+            errorState={disabledState}
+          />
+          <Input
+            textPlaceholder="Повторите пароль"
+            isPassword
+            onChangeText={setRepeatPassword}
+          />
+          <ButtonCustom
+            textBtn="Зарегистрироваться"
+            disabledState={disabledState}
+          />
+        </View>
+        {!password && password.length > 0 && (
+          <ErrorText errorText={localError} />
+        )}
+      </AuthSection>
+    </HeaderScreen>
   );
 }
 

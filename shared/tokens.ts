@@ -3,9 +3,13 @@ export const Colors = {
   white: '#ffffff',
   red: '#FF0000',
   almostWhite: '#F4F4F4',
+  darkGray: '#2E2E2E',
   lightGray: '#E1E1E1',
   lightGrayTwo: '#DDDDDD',
   lightGrayThree: '#2F2F2F',
+  lightGrayFour: '#E2E2E2',
+  lightGrayFive: '#E7E7E7',
+  lightGraySix: '#D9D9D9',
   statusBar: '#373737',
   menuBottom: '#383838',
 };
@@ -13,6 +17,8 @@ export const Colors = {
 export const Gaps = {
   g6: 6,
   g8: 8,
+  g10: 10,
+  g12: 12,
   g14: 14,
   g18: 18,
 };

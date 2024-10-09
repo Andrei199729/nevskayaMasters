@@ -19,15 +19,17 @@ export default function ButtonMenuBottom({
       style={{
         ...styles.buttonHeader,
         opacity: isActive ? 0.5 : 1,
-        backgroundColor: btn === 'plus' ? Colors.lightGrayThree : '',
-        borderRadius: btn === 'plus' ? Radius.rC : '',
-        width: btn === 'plus' ? 36 : 'auto',
-        height: btn === 'plus' ? 36 : 'auto',
-        justifyContent: btn === 'plus' ? 'center' : 'center',
+        backgroundColor: btn === 'CreateProject' ? Colors.lightGrayThree : '',
+        borderRadius: btn === 'CreateProject' ? Radius.rC : '',
+        width: btn === 'CreateProject' ? 36 : 'auto',
+        height: btn === 'CreateProject' ? 36 : 'auto',
+        justifyContent: btn === 'CreateProject' ? 'center' : 'center',
       }}
       onPress={onPressClick}>
       {icon}
-      {btn !== 'plus' && <Text style={styles.textMenuBottom}>{text}</Text>}
+      {btn !== 'CreateProject' && (
+        <Text style={styles.textMenuBottom}>{text}</Text>
+      )}
     </Pressable>
   );
 }
