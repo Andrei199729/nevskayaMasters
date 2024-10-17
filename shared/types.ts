@@ -24,4 +24,12 @@ export interface IMainScreen {
   children: ReactNode;
   mainTitle?: string;
   path?: string;
+  navigation?: string;
+  textBtn?: string;
+  pathLink?: string;
+}
+
+export interface ISelectOption {
+  text: string;
+  id: number;
 }

@@ -6,26 +6,38 @@ import {
   StyleSheet,
   InputModeOptions,
   TextInputProps,
+  Text,
 } from 'react-native';
 import {Colors, Fonts, Radius} from '../tokens';
 import EyeOpen from '../../assets/images/icon/iconFunc/eye-open';
 import EyeClosed from '../../assets/images/icon/iconFunc/eye-closed';
+import ArrowIcon from '../../assets/images/icon/iconFunc/ArrowIcon';
+import CloseInputIcon from '../../assets/images/icon/iconFunc/CloseInputIcon';
 
 interface IInputProps {
   inputModeText?: InputModeOptions;
   textPlaceholder?: string;
   isPassword?: boolean;
+  isSearch?: boolean;
   errorState?: boolean;
+  isOpenSearch?: boolean | undefined;
+  isSelectActive?: boolean;
 }
 
 export function Input({
   inputModeText,
   textPlaceholder,
   isPassword,
+  isSearch,
   errorState,
+  isOpenSearch,
+  isSelectActive,
   ...props
 }: IInputProps & TextInputProps) {
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
+  const [isSearchVisible, setIsSearchVisible] = useState<boolean | undefined>(
+    isOpenSearch,
+  );
 
   return (
     <View style={styles.inputContainer}>
@@ -33,18 +45,25 @@ export function Input({
         style={{
           ...styles.input,
           color: !errorState ? Colors.black : Colors.red,
+          ...(!isSelectActive && styles.selectActive),
         }}
         {...props}
         inputMode={inputModeText}
         placeholderTextColor={'rgba(0, 0, 0, 0.5)'}
         secureTextEntry={isPassword && !isPasswordVisible}
         placeholder={textPlaceholder}
+        autoCapitalize="none"
       />
       {isPassword && (
         <Pressable
           style={styles.eyeIcon}
           onPress={() => setIsPasswordVisible(state => !state)}>
           {isPasswordVisible ? <EyeOpen /> : <EyeClosed />}
+        </Pressable>
+      )}
+      {isSearch && (
+        <Pressable style={styles.arrowIcon}>
+          {isOpenSearch ? <CloseInputIcon /> : <ArrowIcon />}
         </Pressable>
       )}
     </View>
@@ -72,5 +91,15 @@ const styles = StyleSheet.create({
     right: 0,
     paddingHorizontal: 12,
     paddingVertical: 12,
+  },
+  arrowIcon: {
+    position: 'absolute',
+    right: 0,
+    paddingHorizontal: 21,
+    paddingVertical: 20,
+  },
+  selectActive: {
+    borderWidth: 1,
+    borderColor: Colors.lightGrayEight,
   },
 });

@@ -10,6 +10,8 @@ export const Colors = {
   lightGrayFour: '#E2E2E2',
   lightGrayFive: '#E7E7E7',
   lightGraySix: '#D9D9D9',
+  lightGraySeven: '#D7D7D7',
+  lightGrayEight: '#CDCDCD',
   statusBar: '#373737',
   menuBottom: '#383838',
 };
@@ -34,6 +36,8 @@ export const Fonts = {
   f9: 9,
   f12: 12,
   f14: 14,
+  f16: 16,
+  f18: 18,
   f24: 24,
   regular: 'Roboto-Regular',
   medium: 'Roboto-Medium',

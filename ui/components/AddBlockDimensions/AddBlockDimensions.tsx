@@ -1,84 +1,76 @@
-import {Text, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import MainScreen from '../../screens/MainScreen';
 import HeaderScreen from '../../screens/HeaderScreen';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import PopupScreen from '../../screens/PopupScreen';
 import {Input} from '../../../shared/Input/Input';
 import ButtonCustom from '../../../shared/ButtonCustom/ButtonCustom';
+import {Colors} from '../../../shared/tokens';
 
 interface IAddBlockDimensions {
   numberWall: number;
+  saveSizeWall?: any;
 }
 
-export default function AddBlockDimensions({numberWall}: IAddBlockDimensions) {
-  const [height, setHeight] = useState<string>('');
-  const [width, setWidth] = useState<string>('');
-  const [thickness, setThickness] = useState<string>('');
-  const [viewInput, setViewInput] = useState<boolean>(true);
-  const [dataWalls, setDataWalls] = useState({
-    height: '',
-    width: '',
-    thickness: '',
-  });
-  const validateNumber = (value: string) => {
-    const number = parseInt(value);
-    return !isNaN(number) && number > 0;
-  };
-
-  const handleSubmit = () => {
-    if (
-      validateNumber(height) &&
-      validateNumber(width) &&
-      validateNumber(thickness)
-    ) {
-      const wallData = {height, width, thickness};
-      setDataWalls(wallData);
-    }
-    setViewInput(false);
-  };
+export default function AddBlockDimensions({
+  numberWall,
+  saveSizeWall,
+  ...props
+}: IAddBlockDimensions) {
   return (
     <View>
       <Text>Стена №{numberWall}</Text>
-      <View>
-        <Text>Высота стены</Text>
-        <Text>{dataWalls.height}</Text>
-        {viewInput && (
-          <Input
-            value={height}
-            onChangeText={setHeight}
-            inputModeText={'numeric'}
-          />
-        )}
+      <View style={[styles.wallBlock, styles.addedWall]}>
+        <View style={[styles.sizeWall, styles.wallTop]}>
+          <Text>{saveSizeWall.widthTop}</Text>
+        </View>
+        <View style={[styles.sizeWall, styles.wallRight]}>
+          <Text>{saveSizeWall.heightRight}</Text>
+        </View>
+        <View style={[styles.sizeWall, styles.wallBottom]}>
+          <Text>{saveSizeWall.widthBottom}</Text>
+        </View>
+        <View style={[styles.sizeWall, styles.wallLeft]}>
+          <Text>{saveSizeWall.heightLeft}</Text>
+        </View>
       </View>
-      <View>
-        <Text>Ширина стены</Text>
-        <Text>{dataWalls.width}</Text>
-        {viewInput && (
-          <Input
-            value={width}
-            onChangeText={setWidth}
-            inputModeText={'numeric'}
-          />
-        )}
-      </View>
-      <View>
-        <Text>Толщина стены</Text>
-        <Text>{dataWalls.thickness}</Text>
-        {viewInput && (
-          <Input
-            value={thickness}
-            onChangeText={setThickness}
-            inputModeText={'numeric'}
-          />
-        )}
-      </View>
-      {viewInput && (
-        <ButtonCustom
-          textBtn="Сохранить данные"
-          disabledState={!height || !width || !thickness}
-          onPress={handleSubmit}
-        />
-      )}
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  wallBlock: {
+    maxWidth: '100%',
+    width: '100%',
+  },
+  addedWall: {
+    position: 'relative',
+    maxWidth: '100%',
+    width: '100%',
+    borderWidth: 2,
+    borderColor: Colors.black,
+    borderStyle: 'solid',
+    height: 100,
+  },
+  sizeWall: {
+    position: 'absolute',
+  },
+  wallTop: {
+    left: '50%',
+    top: 0,
+  },
+  wallRight: {
+    right: 0,
+    top: '50%',
+    transform: [{translateY: -10}],
+  },
+  wallBottom: {
+    bottom: 0,
+    left: '50%',
+  },
+  wallLeft: {
+    top: '50%',
+    left: 0,
+    transform: [{translateY: -10}],
+  },
+});

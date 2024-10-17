@@ -11,6 +11,7 @@ import PopupScreen from '../ui/screens/PopupScreen';
 import FilterPopup from '../ui/components/FilterPopup/FilterPopup';
 import SearchPopup from '../ui/components/SearchPopup/SearchPopup';
 import CreateProjectScreen from '../ui/screens/CreateProjectScreen';
+import PrivacyPolicy from '../ui/components/PrivacyPolicy/PrivacyPolicy';
 
 const Stack = createStackNavigator();
 
@@ -63,6 +64,11 @@ function Navigate() {
           options={{headerShown: false}}
           name="CreateProject"
           component={CreateProjectScreen}
+        />
+        <Stack.Screen
+          options={{headerShown: false}}
+          name="Policy"
+          component={PrivacyPolicy}
         />
       </Stack.Navigator>
     </NavigationContainer>
