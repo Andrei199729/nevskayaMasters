@@ -6,10 +6,11 @@ import PopupScreen from '../../screens/PopupScreen';
 import {Input} from '../../../shared/Input/Input';
 import ButtonCustom from '../../../shared/ButtonCustom/ButtonCustom';
 import {Colors} from '../../../shared/tokens';
+import {IWallData} from '../../../shared/types';
 
 interface IAddBlockDimensions {
   numberWall: number;
-  saveSizeWall?: any;
+  saveSizeWall?: IWallData;
 }
 
 export default function AddBlockDimensions({
@@ -22,16 +23,16 @@ export default function AddBlockDimensions({
       <Text>Стена №{numberWall}</Text>
       <View style={[styles.wallBlock, styles.addedWall]}>
         <View style={[styles.sizeWall, styles.wallTop]}>
-          <Text>{saveSizeWall.widthTop}</Text>
+          <Text>{saveSizeWall?.widthTop}</Text>
         </View>
         <View style={[styles.sizeWall, styles.wallRight]}>
-          <Text>{saveSizeWall.heightRight}</Text>
+          <Text>{saveSizeWall?.heightRight}</Text>
         </View>
         <View style={[styles.sizeWall, styles.wallBottom]}>
-          <Text>{saveSizeWall.widthBottom}</Text>
+          <Text>{saveSizeWall?.widthBottom}</Text>
         </View>
         <View style={[styles.sizeWall, styles.wallLeft]}>
-          <Text>{saveSizeWall.heightLeft}</Text>
+          <Text>{saveSizeWall?.heightLeft}</Text>
         </View>
       </View>
     </View>

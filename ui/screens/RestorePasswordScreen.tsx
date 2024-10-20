@@ -8,9 +8,12 @@ import {validateEmail} from '../../customFunc/customFunc';
 import {errorTextEmailRestore} from '../../shared/texts';
 import ErrorText from '../../shared/ErrorText/ErrorText';
 import HeaderScreen from './HeaderScreen';
+import {INavigationScreenProps} from '../../shared/types';
+import useInput from '../../hooks/useInput';
 
-function RestorePasswordScreen({navigation}: any) {
-  const [restoreEmailLogin, setRestoreEmailLogin] = useState<string>('');
+function RestorePasswordScreen({navigation}: INavigationScreenProps) {
+  const restoreEmailLogin = useInput('');
+
   const [disabledRestoreState, setDisabledRestoreState] =
     useState<boolean>(true);
   const [restoreEmailError, setRestoreEmailError] = useState<boolean>(false);
@@ -19,9 +22,9 @@ function RestorePasswordScreen({navigation}: any) {
   );
 
   useEffect(() => {
-    setRestoreEmailError(!restoreEmailLogin); // Устанавливаем ошибку, если email некорректен
-    setDisabledRestoreState(!restoreEmailLogin); // Отключаем кнопку, если форма не валидна
-  }, [restoreEmailLogin]);
+    setRestoreEmailError(!restoreEmailLogin.value); // Устанавливаем ошибку, если email некорректен
+    setDisabledRestoreState(!restoreEmailLogin.value); // Отключаем кнопку, если форма не валидна
+  }, [restoreEmailLogin.value]);
 
   const onSubmitRestorePassword = () => {
     navigation.navigate('Success');
@@ -34,7 +37,8 @@ function RestorePasswordScreen({navigation}: any) {
           <Input
             textPlaceholder="Введите Email"
             inputModeText="email"
-            onChangeText={setRestoreEmailLogin}
+            onChangeText={restoreEmailLogin.onChangeText}
+            isSelectActive={restoreEmailLogin.isActive}
           />
           <ButtonCustom
             textBtn="Отправить"
@@ -42,7 +46,7 @@ function RestorePasswordScreen({navigation}: any) {
             onPress={onSubmitRestorePassword}
           />
         </View>
-        {restoreEmailError && restoreEmailLogin.length > 0 && (
+        {restoreEmailError && restoreEmailLogin.value.length > 0 && (
           <ErrorText errorText={localError} />
         )}
       </AuthSection>

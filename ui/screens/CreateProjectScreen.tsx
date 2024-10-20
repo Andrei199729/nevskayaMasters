@@ -2,7 +2,7 @@ import {Dimensions, ScrollView, StyleSheet, Text, View} from 'react-native';
 import HeaderScreen from './HeaderScreen';
 import MainScreen from './MainScreen';
 import ObjectApplication from '../../shared/ObjectApplication/ObjectApplication';
-import {ObjectStatus} from '../../shared/types';
+import {IWallData, ObjectStatus} from '../../shared/types';
 import {Colors, Gaps, Radius} from '../../shared/tokens';
 import Square from '../components/Square/Square';
 import ButtonCustom from '../../shared/ButtonCustom/ButtonCustom';
@@ -16,33 +16,27 @@ export default function CreateProjectScreen() {
   const squareSize = (width - 50) / 3;
   const [addDimensions, setAddDimensions] = useState<JSX.Element[]>([]);
   const [addSizeWall, setAddSizeWall] = useState<JSX.Element[]>([]);
-  const [sizeWall, setSizeWall] = useState([]);
 
-  const onSaveSizeWall = (currentSizeWall: any) => {
-    if (currentSizeWall) {
-      setAddDimensions(prev => [
-        ...prev,
-        <AddBlockDimensions
-          key={Date.now()}
-          numberWall={prev.length + 1}
-          saveSizeWall={currentSizeWall}
-        />,
-      ]);
-    }
+  const onSaveSizeWall = (currentSizeWall: IWallData) => {
+    setAddDimensions(prev => [
+      ...prev,
+      <AddBlockDimensions
+        key={Date.now()}
+        numberWall={prev.length + 1}
+        saveSizeWall={currentSizeWall}
+      />,
+    ]);
   };
 
   const onAddWall = () => {
-    if (sizeWall) {
-      setAddSizeWall(prev => [
-        ...prev,
-        <AddSizeWall
-          key={Date.now()}
-          numberWall={prev.length + 1}
-          setSizeWall={setSizeWall}
-          onSaveSizeWall={onSaveSizeWall}
-        />,
-      ]);
-    }
+    setAddSizeWall(prev => [
+      ...prev,
+      <AddSizeWall
+        key={Date.now()}
+        numberWall={prev.length + 1}
+        onSaveSizeWall={onSaveSizeWall}
+      />,
+    ]);
   };
 
   return (

@@ -1,4 +1,4 @@
-import {ISelectOption} from './types';
+import {IDataItem, ISelectOption} from './types';
 
 export const errorTextPassword =
   '*Пароль может состоять только из английских букв и цифр и иметь длину от 6 до 24 символов';
@@ -35,4 +35,18 @@ export const arrSelectCity: ISelectOption[] = [
   {text: 'Санкт-Петербург и ЛО', id: 2},
   {text: 'Санкт-Петербург и ЛО', id: 3},
   {text: 'Санкт-Петербург и ЛО', id: 4},
+];
+
+export const arrWs: ISelectOption[] = [
+  {text: 'Санузел', id: 1},
+  {text: 'Санузел', id: 2},
+];
+
+export const data: IDataItem[] = [
+  {id: '1', name: 'zamer'},
+  {id: '2', name: 'zamer 20x15'},
+  {id: '3', name: 'zamer 20x15'},
+  {id: '4', name: 'Согласовано. Выполняется'},
+  {id: '5', name: 'zamer 20x15'},
+  {id: '6', name: 'Согласовано отправлен'},
 ];

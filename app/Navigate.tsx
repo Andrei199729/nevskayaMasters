@@ -12,6 +12,7 @@ import FilterPopup from '../ui/components/FilterPopup/FilterPopup';
 import SearchPopup from '../ui/components/SearchPopup/SearchPopup';
 import CreateProjectScreen from '../ui/screens/CreateProjectScreen';
 import PrivacyPolicy from '../ui/components/PrivacyPolicy/PrivacyPolicy';
+import UnwrappedProductScreen from '../ui/screens/UnwrappedProductScreen';
 
 const Stack = createStackNavigator();
 
@@ -69,6 +70,11 @@ function Navigate() {
           options={{headerShown: false}}
           name="Policy"
           component={PrivacyPolicy}
+        />
+        <Stack.Screen
+          options={{headerShown: false}}
+          name="UnwrappedProduct"
+          component={UnwrappedProductScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>

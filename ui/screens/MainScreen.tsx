@@ -10,7 +10,6 @@ import {IMainScreen} from '../../shared/types';
 import MainContent from '../components/MainContent/MainContent';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
-import ButtonLinkAuth from '../../shared/ButtonLinkAuth/ButtonLinkAuth';
 
 interface IMenuBottomState {
   icon: JSX.Element;

@@ -5,23 +5,24 @@ import {Input} from '../../shared/Input/Input';
 import {Gaps} from '../../shared/tokens';
 import {useEffect, useState} from 'react';
 import HeaderScreen from './HeaderScreen';
+import {INavigationScreenProps} from '../../shared/types';
+import useInput from '../../hooks/useInput';
 
-function NewPasswordScreen({navigation}: any) {
-  const [restoreNewPasswordLogin, setRestoreNewPasswordLogin] =
-    useState<string>('');
-  const [restoreRepeatNewPasswordLogin, setRestoreRepeatNewPasswordLogin] =
-    useState<string>('');
+function NewPasswordScreen({navigation}: INavigationScreenProps) {
+  const restoreNewPasswordLogin = useInput('');
+  const restoreRepeatNewPasswordLogin = useInput('');
+
   const [disabledRestoreNewPasswordState, setDisabledRestoreNewPasswordState] =
     useState<boolean>(true);
 
   useEffect(() => {
     const isFormValid =
-      restoreNewPasswordLogin === restoreRepeatNewPasswordLogin &&
-      restoreNewPasswordLogin.length > 0;
+      restoreNewPasswordLogin.value === restoreRepeatNewPasswordLogin.value &&
+      restoreNewPasswordLogin.value.length > 0;
     return isFormValid
       ? setDisabledRestoreNewPasswordState(true)
       : setDisabledRestoreNewPasswordState(false);
-  }, [restoreNewPasswordLogin, restoreRepeatNewPasswordLogin]);
+  }, [restoreNewPasswordLogin.value, restoreRepeatNewPasswordLogin.value]);
 
   const onSubmitCode = () => {
     navigation.navigate('SuccessScreen');
@@ -34,12 +35,14 @@ function NewPasswordScreen({navigation}: any) {
           <Input
             textPlaceholder="Введите новый пароль"
             inputModeText="text"
-            onChangeText={setRestoreNewPasswordLogin}
+            onChangeText={restoreNewPasswordLogin.onChangeText}
+            isSelectActive={restoreNewPasswordLogin.isActive}
           />
           <Input
             textPlaceholder="Повторите новый пароль"
             inputModeText="text"
-            onChangeText={setRestoreRepeatNewPasswordLogin}
+            onChangeText={restoreRepeatNewPasswordLogin.onChangeText}
+            isSelectActive={restoreRepeatNewPasswordLogin.isActive}
           />
           <ButtonCustom
             textBtn="Восстановить пароль"

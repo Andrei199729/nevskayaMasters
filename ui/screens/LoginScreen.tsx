@@ -7,10 +7,12 @@ import {useEffect, useState} from 'react';
 import {errorTextEmail} from '../../shared/texts';
 import ErrorText from '../../shared/ErrorText/ErrorText';
 import HeaderScreen from './HeaderScreen';
+import {INavigationScreenProps} from '../../shared/types';
+import useInput from '../../hooks/useInput';
 
-function LoginScreen({navigation}: any) {
-  const [emailLogin, setEmailLogin] = useState<string>('');
-  const [passwordLogin, setPasswordLogin] = useState<string>('');
+function LoginScreen({navigation}: INavigationScreenProps) {
+  const emailInput = useInput('');
+  const passwordInput = useInput('');
   const [disabledLoginState, setDisabledLoginState] = useState<boolean>(true);
   const [emailError, setEmailError] = useState<boolean>(true);
   const [localError, setLocalError] = useState<string | undefined>(
@@ -18,10 +20,10 @@ function LoginScreen({navigation}: any) {
   );
 
   useEffect(() => {
-    const isFormValid = emailLogin && passwordLogin.length > 6; // Проверяем, что и email, и пароль введены
-    setEmailError(!emailLogin); // Устанавливаем ошибку, если email некорректен
+    const isFormValid = emailInput && passwordInput.value.length > 6; // Проверяем, что и email, и пароль введены
+    setEmailError(!emailInput); // Устанавливаем ошибку, если email некорректен
     setDisabledLoginState(!isFormValid); // Отключаем кнопку, если форма не валидна
-  }, [emailLogin, passwordLogin]);
+  }, [emailInput, passwordInput]);
 
   const onSubmitMainScreen = () => {
     navigation.navigate('Main');
@@ -39,13 +41,15 @@ function LoginScreen({navigation}: any) {
           <Input
             textPlaceholder="Введите Email"
             inputModeText="email"
-            onChangeText={setEmailLogin}
+            onChangeText={emailInput.onChangeText}
             errorState={emailError}
+            isSelectActive={emailInput.isActive}
           />
           <Input
             textPlaceholder="Введите Пароль"
             isPassword
-            onChangeText={setPasswordLogin}
+            onChangeText={passwordInput.onChangeText}
+            isSelectActive={passwordInput.isActive}
           />
           <ButtonCustom
             textBtn="Авторизоваться"
@@ -53,7 +57,7 @@ function LoginScreen({navigation}: any) {
             onPress={onSubmitMainScreen}
           />
         </View>
-        {emailError && emailLogin.length > 0 && (
+        {emailError && emailInput.value.length > 0 && (
           <ErrorText errorText={localError} />
         )}
       </AuthSection>

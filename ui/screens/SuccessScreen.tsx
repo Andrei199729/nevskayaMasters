@@ -8,9 +8,12 @@ import {validateEmail} from '../../customFunc/customFunc';
 import {errorNumberCodeRestore} from '../../shared/texts';
 import ErrorText from '../../shared/ErrorText/ErrorText';
 import HeaderScreen from './HeaderScreen';
+import {INavigationScreenProps} from '../../shared/types';
+import useInput from '../../hooks/useInput';
 
-function SuccessScreen({navigation}: any) {
-  const [restoreCodeLogin, setRestoreCodeLogin] = useState<string>('');
+function SuccessScreen({navigation}: INavigationScreenProps) {
+  const restoreCodeLogin = useInput('');
+
   const [disabledRestoreCodeState, setDisabledRestoreCodeState] =
     useState<boolean>(true);
   const [restoreCodeCodeError, setRestoreCodeError] = useState<boolean>(false);
@@ -21,13 +24,12 @@ function SuccessScreen({navigation}: any) {
   const handleTextChange = (text: string) => {
     // Проверяем, что вводятся только числа
     const filteredText = text.replace(/[^0-9]/g, '');
-    setRestoreCodeLogin(filteredText);
   };
 
   useEffect(() => {
-    setRestoreCodeError(!restoreCodeLogin); // Устанавливаем ошибку, если email некорректен
-    setDisabledRestoreCodeState(!restoreCodeLogin); // Отключаем кнопку, если форма не валидна
-  }, [restoreCodeLogin]);
+    setRestoreCodeError(!restoreCodeLogin.value); // Устанавливаем ошибку, если email некорректен
+    setDisabledRestoreCodeState(!restoreCodeLogin.value); // Отключаем кнопку, если форма не валидна
+  }, [restoreCodeLogin.value]);
 
   const onSubmitCode = () => {
     navigation.navigate('NewPassword');
@@ -41,7 +43,8 @@ function SuccessScreen({navigation}: any) {
             textPlaceholder="Введите код, который пришел на почту"
             inputModeText="numeric"
             keyboardType="numeric"
-            onChangeText={handleTextChange}
+            onChangeText={restoreCodeLogin.onChangeText}
+            isSelectActive={restoreCodeLogin.isActive}
           />
           <ButtonCustom
             textBtn="Отправить"
@@ -49,7 +52,7 @@ function SuccessScreen({navigation}: any) {
             onPress={onSubmitCode}
           />
         </View>
-        {restoreCodeCodeError && restoreCodeLogin.length > 0 && (
+        {restoreCodeCodeError && restoreCodeLogin.value.length > 0 && (
           <ErrorText errorText={localError} />
         )}
       </AuthSection>

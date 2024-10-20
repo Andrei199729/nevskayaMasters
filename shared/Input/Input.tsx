@@ -44,7 +44,7 @@ export function Input({
       <TextInput
         style={{
           ...styles.input,
-          color: !errorState ? Colors.black : Colors.red,
+          color: errorState ? Colors.red : Colors.black,
           ...(!isSelectActive && styles.selectActive),
         }}
         {...props}
@@ -53,6 +53,7 @@ export function Input({
         secureTextEntry={isPassword && !isPasswordVisible}
         placeholder={textPlaceholder}
         autoCapitalize="none"
+        maxLength={isPassword ? 24 : 100}
       />
       {isPassword && (
         <Pressable

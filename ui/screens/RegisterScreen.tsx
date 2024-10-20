@@ -8,28 +8,32 @@ import {errorTextPassword} from '../../shared/texts';
 import ErrorText from '../../shared/ErrorText/ErrorText';
 import {validatePassword} from '../../customFunc/customFunc';
 import HeaderScreen from './HeaderScreen';
+import {INavigationScreenProps} from '../../shared/types';
+import useInput from '../../hooks/useInput';
 
-function RegisterScreen({navigation}: any) {
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [repeatPassword, setRepeatPassword] = useState<string>('');
+function RegisterScreen({navigation}: INavigationScreenProps) {
+  const emailInput = useInput('');
+  const passwordInput = useInput('');
+  const repeatPassword = useInput('');
+
   const [disabledState, setDisabledState] = useState<boolean>(true);
+  const [inputError, setInputError] = useState<boolean>(false);
   const [localError, setLocalError] = useState<string | undefined>(
     errorTextPassword,
   );
 
   useEffect(() => {
+    // Проверяем, совпадают ли пароли
     if (
-      email &&
-      password &&
-      repeatPassword
-      // validatePassword(password)
+      emailInput.value &&
+      passwordInput.value === repeatPassword.value &&
+      passwordInput.value.length !== 0
     ) {
       setDisabledState(false);
     } else {
       setDisabledState(true);
     }
-  }, [email, password, repeatPassword]);
+  }, [emailInput.value, passwordInput.value, repeatPassword.value]);
 
   return (
     <HeaderScreen>
@@ -43,28 +47,32 @@ function RegisterScreen({navigation}: any) {
           <Input
             textPlaceholder="Введите Email"
             inputModeText="email"
-            onChangeText={setEmail}
+            onChangeText={emailInput.onChangeText}
+            isSelectActive={emailInput.isActive}
           />
 
           <Input
             textPlaceholder="Введите Пароль"
             isPassword
-            onChangeText={setPassword}
-            errorState={disabledState}
+            onChangeText={passwordInput.onChangeText}
+            errorState={inputError}
+            isSelectActive={passwordInput.isActive}
           />
           <Input
             textPlaceholder="Повторите пароль"
             isPassword
-            onChangeText={setRepeatPassword}
+            onChangeText={repeatPassword.onChangeText}
+            isSelectActive={repeatPassword.isActive}
+            errorState={inputError}
           />
           <ButtonCustom
             textBtn="Зарегистрироваться"
             disabledState={disabledState}
           />
         </View>
-        {!password && password.length > 0 && (
+        {passwordInput.value.length <= 6 ? (
           <ErrorText errorText={localError} />
-        )}
+        ) : null}
       </AuthSection>
     </HeaderScreen>
   );

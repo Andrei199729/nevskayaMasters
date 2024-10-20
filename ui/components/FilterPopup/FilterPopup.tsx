@@ -17,7 +17,7 @@ import {useNavigation, useNavigationState} from '@react-navigation/native';
 export default function FilterPopup() {
   const navigation = useNavigation();
   const [isActiveBtn, setIsActiveBtn] = useState<boolean>(true);
-  const [selectedReset, setSelectedReset] = useState(null);
+  const [selectedReset, setSelectedReset] = useState<boolean | null>(null);
   const [selectedTextDefault, setSelectedTextDefault] = useState({
     status: 'Статус',
     pay: 'Оплата',
@@ -41,21 +41,21 @@ export default function FilterPopup() {
           options={arrSelectStatus}
           textDefaultSelect={selectedTextDefault.status}
           isActiveBtnState={(item: boolean) => setIsActiveBtn(item)}
-          onSelectedReset={(item: any) => setSelectedReset(item)}
+          onSelectedReset={item => setSelectedReset(item)}
         />
         <SelectCustom
           isSelect
           options={arrSelectPay}
           textDefaultSelect={selectedTextDefault.pay}
           isActiveBtnState={(item: boolean) => setIsActiveBtn(item)}
-          onSelectedReset={(item: any) => setSelectedReset(item)}
+          onSelectedReset={item => setSelectedReset(item)}
         />
         <SelectCustom
           isSelect
           options={arrSelectCompany}
           textDefaultSelect={selectedTextDefault.company}
           isActiveBtnState={(item: boolean) => setIsActiveBtn(item)}
-          onSelectedReset={(item: any) => setSelectedReset(item)}
+          onSelectedReset={item => setSelectedReset(item)}
         />
       </View>
       <View style={styles.blockDate}>
@@ -68,7 +68,7 @@ export default function FilterPopup() {
             options={arrSelectCity}
             textDefaultSelect={selectedTextDefault.city}
             isActiveBtnState={(item: boolean) => setIsActiveBtn(item)}
-            onSelectedReset={(item: any) => setSelectedReset(item)}
+            onSelectedReset={item => setSelectedReset(item)}
           />
         </View>
       </View>

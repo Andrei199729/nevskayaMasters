@@ -1,7 +1,12 @@
 import {StyleSheet, Text, View} from 'react-native';
 import {Colors, Radius} from '../../../shared/tokens';
+interface SquareProps {
+  size: number;
+}
 
-export default function Square({size}: any) {
+export default function Square({size}: SquareProps) {
+  console.log(size);
+
   return <View style={[styles.square, {width: size, height: size}]}></View>;
 }
 

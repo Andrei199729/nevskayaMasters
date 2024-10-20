@@ -1,7 +1,8 @@
 import {Text, Pressable, StyleSheet} from 'react-native';
 import {Colors, Fonts} from '../tokens';
+import {NavigationProp} from '@react-navigation/native';
 
-function ButtonLinkAuth({
+function ButtonLink({
   navigationPath,
   textBtn,
   path,
@@ -32,4 +33,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ButtonLinkAuth;
+export default ButtonLink;

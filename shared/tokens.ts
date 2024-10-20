@@ -12,6 +12,7 @@ export const Colors = {
   lightGraySix: '#D9D9D9',
   lightGraySeven: '#D7D7D7',
   lightGrayEight: '#CDCDCD',
+  lightGrayNine: '#F1F1F1',
   statusBar: '#373737',
   menuBottom: '#383838',
 };

@@ -7,16 +7,15 @@ import {Input} from '../../../shared/Input/Input';
 import ButtonCustom from '../../../shared/ButtonCustom/ButtonCustom';
 import {Colors} from '../../../shared/tokens';
 import {validateNumber} from '../../../customFunc/customFunc';
+import {IWallData} from '../../../shared/types';
 
 interface IAddSizeWall {
   numberWall: number;
-  setSizeWall: any;
-  onSaveSizeWall?: any;
+  onSaveSizeWall: (data: IWallData) => void;
 }
 
 export default function AddSizeWall({
   numberWall,
-  setSizeWall,
   onSaveSizeWall,
 }: IAddSizeWall) {
   const [heightRight, setHeightRight] = useState<string>('');
@@ -38,7 +37,6 @@ export default function AddSizeWall({
       validWidthBottom
     ) {
       const wallData = {heightRight, heightLeft, widthTop, widthBottom};
-      setSizeWall(wallData);
       onSaveSizeWall(wallData);
     }
     setViewInput(false);

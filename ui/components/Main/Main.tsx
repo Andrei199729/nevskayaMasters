@@ -3,7 +3,7 @@ import MainScreen from '../../screens/MainScreen';
 import ObjectApplication from '../../../shared/ObjectApplication/ObjectApplication';
 import {ObjectStatus} from '../../../shared/types';
 import HeaderScreen from '../../screens/HeaderScreen';
-import ButtonLinkAuth from '../../../shared/ButtonLinkAuth/ButtonLinkAuth';
+import ButtonLink from '../../../shared/ButtonLink/ButtonLink';
 import {useNavigation, useNavigationState} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 
@@ -21,18 +21,19 @@ function Main() {
   ];
   return (
     <HeaderScreen>
-      <MainScreen
-        mainTitle="Объекты"
-        path="main"
-        pathLink="Politics"
-        textBtn="Политика кофиденциальности">
+      <MainScreen mainTitle="Объекты" path="main" pathLink="Politics">
         {arrObjectApplication.map((item, index) => {
           return <ObjectApplication key={index} status={item.status} />;
         })}
-        <ButtonLinkAuth
-          navigationPath={navigation} // navigationPath={navigation}
+        <ButtonLink
+          navigationPath={navigation}
           textBtn="Политика кофиденциальности"
           path={'Policy'}
+        />
+        <ButtonLink
+          navigationPath={navigation}
+          textBtn="Развернутый объект"
+          path={'UnwrappedProduct'}
         />
       </MainScreen>
     </HeaderScreen>

@@ -1,3 +1,4 @@
+import {NavigationProp} from '@react-navigation/native';
 import {ReactNode} from 'react';
 
 export enum ObjectStatus {
@@ -32,4 +33,20 @@ export interface IMainScreen {
 export interface ISelectOption {
   text: string;
   id: number;
+}
+
+export interface IDataItem {
+  id: string;
+  name: string;
+}
+
+export interface IWallData {
+  heightRight: string;
+  heightLeft: string;
+  widthTop: string;
+  widthBottom: string;
+}
+
+export interface INavigationScreenProps {
+  navigation: NavigationProp<any>;
 }

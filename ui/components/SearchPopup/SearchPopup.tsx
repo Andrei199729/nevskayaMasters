@@ -17,19 +17,12 @@ import {
   arrSelectCompany,
   arrSelectPay,
   arrSelectStatus,
+  data,
 } from '../../../shared/texts';
 import CalendarElement from '../../../shared/CalendarElement/CalendarElement';
 import {useNavigation, useNavigationState} from '@react-navigation/native';
 import {Input} from '../../../shared/Input/Input';
-
-const data = [
-  {id: '1', name: 'zamer'},
-  {id: '2', name: 'zamer 20x15'},
-  {id: '3', name: 'zamer 20x15'},
-  {id: '4', name: 'Согласовано. Выполняется'},
-  {id: '5', name: 'zamer 20x15'},
-  {id: '6', name: 'Согласовано отправлен'},
-];
+import {IDataItem} from '../../../shared/types';
 
 export default function SearchPopup() {
   const navigation = useNavigation();
@@ -37,7 +30,7 @@ export default function SearchPopup() {
     state => state.routes[state.index].name,
   );
 
-  const [selectedOption, setSelectedOption] = useState('');
+  const [selectedOption, setSelectedOption] = useState<IDataItem | null>(null);
   const [searchText, setSearchText] = useState('');
   const [isActiveBtn, setIsActiveBtn] = useState<boolean>(true);
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -58,7 +51,8 @@ export default function SearchPopup() {
     setIsActiveBtn(false);
     setIsSelectActive(!isSelectActive);
   };
-  const handleOptionSelect = (option: any) => {
+
+  const handleOptionSelect = (option: IDataItem) => {
     setSelectedOption(option);
     setSearchText(option.name);
     setIsOpen(false);

@@ -1,12 +1,14 @@
 import {StyleSheet, Text, View} from 'react-native';
 import {Colors, Fonts, Gaps} from '../../shared/tokens';
-import ButtonLinkAuth from '../../shared/ButtonLinkAuth/ButtonLinkAuth';
+import ButtonLink from '../../shared/ButtonLink/ButtonLink';
 import Title from '../../shared/Title/Title';
+import {INavigationScreenProps} from '../../shared/types';
+import {NavigationProp} from '@react-navigation/native';
 
 interface AuthSectionProps {
   children: React.ReactNode;
   title: string;
-  navigation: any;
+  navigation: NavigationProp<any>;
   textBtn?: string;
   pathLink?: string;
   textWithBtn?: string;
@@ -20,7 +22,7 @@ function AuthSection({children, ...props}: AuthSectionProps) {
         {children}
         <View style={styles.blockQuestion}>
           <Text style={styles.question}>{props.textWithBtn}</Text>
-          <ButtonLinkAuth
+          <ButtonLink
             navigationPath={props.navigation}
             textBtn={props.textBtn}
             path={props.pathLink}
