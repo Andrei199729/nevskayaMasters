@@ -5,8 +5,6 @@ interface SquareProps {
 }
 
 export default function Square({size}: SquareProps) {
-  console.log(size);
-
   return <View style={[styles.square, {width: size, height: size}]}></View>;
 }
 

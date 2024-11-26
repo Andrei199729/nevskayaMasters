@@ -13,7 +13,7 @@ function ButtonCustom({
   ...props
 }: PressableProps & {
   textBtn: string;
-  disabledState: boolean;
+  disabledState?: boolean;
 }) {
   return (
     <Pressable {...props}>

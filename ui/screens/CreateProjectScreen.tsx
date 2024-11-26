@@ -35,6 +35,7 @@ export default function CreateProjectScreen() {
         key={Date.now()}
         numberWall={prev.length + 1}
         onSaveSizeWall={onSaveSizeWall}
+        setSizeWalls={() => {}}
       />,
     ]);
   };

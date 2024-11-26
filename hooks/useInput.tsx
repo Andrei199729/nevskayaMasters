@@ -13,7 +13,12 @@ function useInput(initialValue: string) {
     }
   };
 
-  return {value, isActive, onChangeText};
+  const onChangeTextNotLength = (text: string) => {
+    setValue(text);
+    setIsActive(text.length === 0);
+  };
+
+  return {value, isActive, onChangeText, onChangeTextNotLength};
 }
 
 export default useInput;

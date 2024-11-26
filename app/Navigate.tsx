@@ -13,6 +13,7 @@ import SearchPopup from '../ui/components/SearchPopup/SearchPopup';
 import CreateProjectScreen from '../ui/screens/CreateProjectScreen';
 import PrivacyPolicy from '../ui/components/PrivacyPolicy/PrivacyPolicy';
 import UnwrappedProductScreen from '../ui/screens/UnwrappedProductScreen';
+import FormDataAddProductScreen from '../ui/screens/FormDataAddProductScreen';
 
 const Stack = createStackNavigator();
 
@@ -50,7 +51,6 @@ function Navigate() {
           name="Main"
           component={Main}
         />
-
         <Stack.Screen
           options={{headerShown: false}}
           name="Filter"
@@ -75,6 +75,11 @@ function Navigate() {
           options={{headerShown: false}}
           name="UnwrappedProduct"
           component={UnwrappedProductScreen}
+        />
+        <Stack.Screen
+          options={{headerShown: false}}
+          name="FormDataAddProduct"
+          component={FormDataAddProductScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>

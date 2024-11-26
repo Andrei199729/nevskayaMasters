@@ -18,6 +18,8 @@ import ButtonDownload from '../../shared/ButtonDownload/ButtonDownload';
 import SelectCustom from '../../shared/SelectCustom/SelectCustom';
 import SelectProducts from '../../shared/SelectProducts/SelectProducts';
 import {arrWs} from '../../shared/texts';
+import ButtonAddProduct from '../../shared/ButtonAddProduct/ButtonAddProduct';
+import {useNavigation} from '@react-navigation/native';
 
 interface IUnwrappedProductScreen {
   applicationNumber?: string;
@@ -28,6 +30,10 @@ function UnwrappedProductScreen({
   navigation,
   ...props
 }: IUnwrappedProductScreen) {
+  const onClickAddProduct = () => {
+    navigation.navigate('FormDataAddProduct');
+  };
+
   return (
     <HeaderScreen>
       <MainScreen mainTitle={`№ ${'заявки'}`}>
@@ -47,10 +53,15 @@ function UnwrappedProductScreen({
           #изделие.2
         </Text>
         <View style={styles.boxTitle}>
-          <Title title="Изделия" />
-          <SelectProducts options={arrWs} nameSelect="Санузел" />
-          <Text style={styles.textProduct}>Кухня</Text>
-          <Text style={styles.textProduct}>Ванная комната</Text>
+          <View style={styles.boxAdd}>
+            <Title title="Изделия" />
+            <ButtonAddProduct onClickAddProduct={onClickAddProduct} />
+          </View>
+          <View style={styles.boxTitle}>
+            <Text style={styles.textProduct}>Кухня</Text>
+            <Text style={styles.textProduct}>Кухня</Text>
+            <Text style={styles.textProduct}>Ванная комната</Text>
+          </View>
         </View>
         <View style={styles.boxTitle}>
           <Title title="Файлы от менеджера" />
@@ -97,6 +108,11 @@ const styles = StyleSheet.create({
     fontSize: Fonts.f14,
     color: Colors.black,
     paddingVertical: 6,
+  },
+  boxAdd: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
 });
 

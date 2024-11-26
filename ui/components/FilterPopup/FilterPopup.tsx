@@ -42,6 +42,7 @@ export default function FilterPopup() {
           textDefaultSelect={selectedTextDefault.status}
           isActiveBtnState={(item: boolean) => setIsActiveBtn(item)}
           onSelectedReset={item => setSelectedReset(item)}
+          countWallText={() => {}}
         />
         <SelectCustom
           isSelect
@@ -49,6 +50,7 @@ export default function FilterPopup() {
           textDefaultSelect={selectedTextDefault.pay}
           isActiveBtnState={(item: boolean) => setIsActiveBtn(item)}
           onSelectedReset={item => setSelectedReset(item)}
+          countWallText={() => {}}
         />
         <SelectCustom
           isSelect
@@ -56,6 +58,7 @@ export default function FilterPopup() {
           textDefaultSelect={selectedTextDefault.company}
           isActiveBtnState={(item: boolean) => setIsActiveBtn(item)}
           onSelectedReset={item => setSelectedReset(item)}
+          countWallText={() => {}}
         />
       </View>
       <View style={styles.blockDate}>
@@ -69,6 +72,7 @@ export default function FilterPopup() {
             textDefaultSelect={selectedTextDefault.city}
             isActiveBtnState={(item: boolean) => setIsActiveBtn(item)}
             onSelectedReset={item => setSelectedReset(item)}
+            countWallText={() => {}}
           />
         </View>
       </View>

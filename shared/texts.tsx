@@ -1,4 +1,4 @@
-import {IDataItem, ISelectOption} from './types';
+import {IDataElementsWall, IDataItem, ISelectOption} from './types';
 
 export const errorTextPassword =
   '*Пароль может состоять только из английских букв и цифр и иметь длину от 6 до 24 символов';
@@ -42,6 +42,13 @@ export const arrWs: ISelectOption[] = [
   {text: 'Санузел', id: 2},
 ];
 
+export const arrCountWall: any = [
+  {text: '2', id: 1},
+  {text: '4', id: 2},
+  {text: '6', id: 3},
+  {text: '8', id: 4},
+];
+
 export const data: IDataItem[] = [
   {id: '1', name: 'zamer'},
   {id: '2', name: 'zamer 20x15'},
@@ -49,4 +56,12 @@ export const data: IDataItem[] = [
   {id: '4', name: 'Согласовано. Выполняется'},
   {id: '5', name: 'zamer 20x15'},
   {id: '6', name: 'Согласовано отправлен'},
+];
+
+export const arrDataElementsWall: IDataElementsWall[] = [
+  {nameElement: 'Вентиляция', stateElement: 'ventilation', id: 1},
+  {nameElement: 'Двери', stateElement: 'elementDoor', id: 2},
+  {nameElement: 'Окно', stateElement: 'elementWindow', id: 3},
+  {nameElement: 'Розетка', stateElement: 'elementSocket', id: 4},
+  {nameElement: 'Батарея', stateElement: 'elementBattery', id: 5},
 ];

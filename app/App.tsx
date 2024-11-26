@@ -1,14 +1,13 @@
 import React from 'react';
 import {SafeAreaView, StyleSheet} from 'react-native';
 import Navigate from './Navigate';
-import {createStackNavigator} from '@react-navigation/stack';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-const Stack = createStackNavigator();
-const Tab = createBottomTabNavigator();
+import {ButtonProvider} from '../shared/ButtonContext/ButtonContext';
 function App(): React.JSX.Element {
   return (
     <SafeAreaView style={styles.container}>
-      <Navigate />
+      <ButtonProvider>
+        <Navigate />
+      </ButtonProvider>
     </SafeAreaView>
   );
 }

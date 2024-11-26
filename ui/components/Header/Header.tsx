@@ -1,7 +1,7 @@
 import {StyleSheet, Text, View} from 'react-native';
 import {Colors, Fonts, Gaps, Radius} from '../../../shared/tokens';
 import ButtonHeader from '../../../shared/ButtonHeader/ButtonHeader';
-import {useState} from 'react';
+import {useContext, useEffect, useState} from 'react';
 import Search from '../../../assets/images/icon/iconFunc/search';
 import FilterIcon from '../../../assets/images/icon/iconFunc/filter-icon';
 import ProfileIcon from '../../../assets/images/icon/iconFunc/profile-icon';
@@ -9,6 +9,7 @@ import {useNavigation, useNavigationState} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {PathScreenAuth, PathScreenHeader} from '../../../shared/types';
 import ProfilePopup from '../ProfilePopup/ProfilePopup';
+import ButtonContext from '../../../shared/ButtonContext/ButtonContext';
 interface IButtonState {
   icon: JSX.Element; // Элемент JSX для иконки
   state: boolean;
@@ -27,12 +28,19 @@ export default function Header() {
   const currentRouteName = useNavigationState(
     state => state.routes[state.index].name,
   );
+  const {activeButtonIndex, setActiveButtonIndex} = useContext(ButtonContext);
   const [buttonActive, setButtonActive] = useState<Array<IButtonState>>([
     {icon: <Search />, state: false, pathScreen: PathScreenHeader.Search},
     {icon: <FilterIcon />, state: false, pathScreen: PathScreenHeader.Filter},
     {icon: <ProfileIcon />, state: false, pathScreen: PathScreenHeader.Profile},
   ]);
   const [profilePopup, setProfilePopup] = useState<boolean>(false);
+
+  useEffect(() => {
+    return () => {
+      setActiveButtonIndex(null);
+    };
+  }, []);
 
   const onClickBtnHeader = (index: number) => {
     const newActiveButtons = buttonActive.map((active, i) => ({
@@ -45,6 +53,7 @@ export default function Header() {
     }));
     setButtonActive(newActiveButtons);
     const screenName = newActiveButtons[index].pathScreen;
+    setActiveButtonIndex(index);
     if (
       currentRouteName === PathScreenAuth.Login ||
       currentRouteName === PathScreenAuth.NewPassword ||
@@ -54,7 +63,7 @@ export default function Header() {
     ) {
       setButtonActive(newActiveButtonsDisabled);
       navigation.canGoBack();
-      setProfilePopup(false);
+      setActiveButtonIndex(null);
     } else {
       if (screenName !== PathScreenHeader.Profile) {
         navigation.navigate(screenName as keyof RootStackParamList);
@@ -76,7 +85,7 @@ export default function Header() {
             key={index}
             onPressClick={() => onClickBtnHeader(index)}
             icon={active.icon}
-            isActive={active.state}
+            isActive={activeButtonIndex === index}
           />
         ))}
       </View>

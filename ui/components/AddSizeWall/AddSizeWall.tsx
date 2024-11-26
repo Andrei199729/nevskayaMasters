@@ -12,16 +12,20 @@ import {IWallData} from '../../../shared/types';
 interface IAddSizeWall {
   numberWall: number;
   onSaveSizeWall: (data: IWallData) => void;
+  setSizeWalls: (data: IWallData) => void;
 }
 
 export default function AddSizeWall({
   numberWall,
   onSaveSizeWall,
+  setSizeWalls,
 }: IAddSizeWall) {
   const [heightRight, setHeightRight] = useState<string>('');
   const [widthTop, setWidthTop] = useState<string>('');
   const [heightLeft, setHeightLeft] = useState<string>('');
   const [widthBottom, setWidthBottom] = useState<string>('');
+  const [wallAngleDegree, setWallAngleDegree] = useState<string>('');
+  const [radiusWall, setRadiusWall] = useState<string>('');
   const [viewInput, setViewInput] = useState<boolean>(true);
 
   const handleSubmit = () => {
@@ -29,6 +33,8 @@ export default function AddSizeWall({
     const validHeightLeft = validateNumber(heightLeft);
     const validWidthTop = validateNumber(widthTop);
     const validWidthBottom = validateNumber(widthBottom);
+    const validWallAngleDegree = validateNumber(wallAngleDegree);
+    const validRadiusWall = validateNumber(radiusWall);
 
     if (
       validHeightRight &&
@@ -36,8 +42,16 @@ export default function AddSizeWall({
       validWidthTop &&
       validWidthBottom
     ) {
-      const wallData = {heightRight, heightLeft, widthTop, widthBottom};
+      const wallData = {
+        heightRight,
+        heightLeft,
+        widthTop,
+        widthBottom,
+        wallAngleDegree,
+        radiusWall,
+      };
       onSaveSizeWall(wallData);
+      setSizeWalls(wallData);
     }
     setViewInput(false);
   };
@@ -48,29 +62,54 @@ export default function AddSizeWall({
         <View>
           <Text>Стена №{numberWall}</Text>
           <View style={styles.wallBlock}>
-            <Input
-              value={widthTop}
-              onChangeText={setWidthTop}
-              inputModeText={'numeric'}
-            />
-
-            <Input
-              value={heightRight}
-              onChangeText={setHeightRight}
-              inputModeText={'numeric'}
-            />
-
-            <Input
-              value={widthBottom}
-              onChangeText={setWidthBottom}
-              inputModeText={'numeric'}
-            />
-
-            <Input
-              value={heightLeft}
-              onChangeText={setHeightLeft}
-              inputModeText={'numeric'}
-            />
+            <View>
+              <Text>ширина верхней стены</Text>
+              <Input
+                value={widthTop}
+                onChangeText={setWidthTop}
+                inputModeText={'numeric'}
+              />
+            </View>
+            <View>
+              <Text>высота правой стены</Text>
+              <Input
+                value={heightRight}
+                onChangeText={setHeightRight}
+                inputModeText={'numeric'}
+              />
+            </View>
+            <View>
+              <Text>ширина нижней стены</Text>
+              <Input
+                value={widthBottom}
+                onChangeText={setWidthBottom}
+                inputModeText={'numeric'}
+              />
+            </View>
+            <View>
+              <Text>высота левой стены</Text>
+              <Input
+                value={heightLeft}
+                onChangeText={setHeightLeft}
+                inputModeText={'numeric'}
+              />
+            </View>
+            <View>
+              <Text>градус угла стены</Text>
+              <Input
+                value={wallAngleDegree}
+                onChangeText={setWallAngleDegree}
+                inputModeText={'numeric'}
+              />
+            </View>
+            <View>
+              <Text>радиус дуги стены</Text>
+              <Input
+                value={radiusWall}
+                onChangeText={setRadiusWall}
+                inputModeText={'numeric'}
+              />
+            </View>
           </View>
           <ButtonCustom
             textBtn="Сохранить данные"

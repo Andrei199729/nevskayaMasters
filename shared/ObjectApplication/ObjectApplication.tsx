@@ -21,6 +21,7 @@ function ObjectApplication({status, ...props}: IObjectApplication) {
     }
   };
   const opacityText = status === ObjectStatus.Completed ? 0.2 : 1;
+  const opacity = status === ObjectStatus.Completed ? 1 : 0.5;
 
   return (
     <View
@@ -42,16 +43,16 @@ function ObjectApplication({status, ...props}: IObjectApplication) {
               style={[
                 styles.textApplication,
                 styles.textOpacityApplication,
-                {opacity: status === 'completed' ? 1 : 0.5},
+                {opacity: opacity},
               ]}>
               01.01.2024 в 18:00
             </Text>
-            {status === 'completed' && <PencilIcon />}
+            {status === ObjectStatus.Completed && <PencilIcon />}
           </View>
         </View>
         <View style={styles.boxPencilApplication}>
           <Text style={styles.textApplication}>Статус</Text>
-          {status === 'completed' && <PencilIcon />}
+          {status === ObjectStatus.Completed && <PencilIcon />}
         </View>
       </View>
       <Text
@@ -67,7 +68,10 @@ function ObjectApplication({status, ...props}: IObjectApplication) {
           style={[
             styles.textApplication,
             styles.textOpacityApplication,
-            {opacity: opacityText},
+            {
+              opacity:
+                status === ObjectStatus.Completed ? opacityText : opacity,
+            },
           ]}>
           Контакт для связи:
         </Text>
@@ -92,7 +96,10 @@ function ObjectApplication({status, ...props}: IObjectApplication) {
             style={[
               styles.textApplication,
               styles.textOpacityApplication,
-              {opacity: opacityText},
+              {
+                opacity:
+                  status === ObjectStatus.Completed ? opacityText : opacity,
+              },
             ]}>
             Изделий
           </Text>
@@ -100,7 +107,10 @@ function ObjectApplication({status, ...props}: IObjectApplication) {
             style={[
               styles.textApplication,
               styles.textOpacityApplication,
-              {opacity: opacityText},
+              {
+                opacity:
+                  status === ObjectStatus.Completed ? opacityText : opacity,
+              },
             ]}>
             (10)
           </Text>

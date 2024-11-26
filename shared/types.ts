@@ -45,8 +45,26 @@ export interface IWallData {
   heightLeft: string;
   widthTop: string;
   widthBottom: string;
+  wallAngleDegree?: string;
+  radiusWall?: string;
 }
 
 export interface INavigationScreenProps {
   navigation: NavigationProp<any>;
+}
+
+export interface IAddBlockDimensions {
+  numberWall: number;
+  saveSizeWall?: IWallData;
+}
+
+export interface IModalWall extends IAddBlockDimensions {
+  modalVisible: boolean;
+  setModalVisible: (item: boolean) => void;
+}
+
+export interface IDataElementsWall {
+  id: number;
+  nameElement: string;
+  stateElement: string;
 }

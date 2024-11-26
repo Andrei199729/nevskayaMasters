@@ -10,6 +10,7 @@ interface ISelect {
   textDefaultSelect?: string;
   isActiveBtnState: (state: boolean) => void;
   onSelectedReset: (dimmed: boolean, open: boolean) => void;
+  countWallText: (item: string) => void;
 }
 
 export default function SelectCustom({
@@ -18,6 +19,7 @@ export default function SelectCustom({
   textDefaultSelect,
   isActiveBtnState,
   onSelectedReset,
+  countWallText,
   ...props
 }: ISelect) {
   const rotateAnim = useRef(new Animated.Value(0)).current;
@@ -65,6 +67,7 @@ export default function SelectCustom({
     setIsOpen(false);
     setIsDimmed(false);
     setIsSelectActive(!isSelectActive);
+    countWallText(option.text);
 
     Animated.timing(rotateAnim, {
       toValue: isOpen ? 0 : 1,

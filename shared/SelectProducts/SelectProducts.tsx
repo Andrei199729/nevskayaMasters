@@ -66,7 +66,9 @@ export default function SelectProducts({
           <View style={styles.selectContent}>
             <View style={styles.selectBox}>
               {options?.map((option, index) => (
-                <Text key={index}>{option.text}</Text>
+                <Text key={index} style={styles.textOption}>
+                  {option.text}
+                </Text>
               ))}
             </View>
           </View>

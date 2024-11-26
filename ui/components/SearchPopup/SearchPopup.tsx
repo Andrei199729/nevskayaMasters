@@ -34,7 +34,6 @@ export default function SearchPopup() {
   const [searchText, setSearchText] = useState('');
   const [isActiveBtn, setIsActiveBtn] = useState<boolean>(true);
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  console.log(selectedOption);
 
   const [isDimmed, setIsDimmed] = useState(true);
   const [isSelectActive, setIsSelectActive] = useState(true);
