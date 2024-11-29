@@ -14,6 +14,7 @@ import CreateProjectScreen from '../ui/screens/CreateProjectScreen';
 import PrivacyPolicy from '../ui/components/PrivacyPolicy/PrivacyPolicy';
 import UnwrappedProductScreen from '../ui/screens/UnwrappedProductScreen';
 import FormDataAddProductScreen from '../ui/screens/FormDataAddProductScreen';
+import ProductScreen from '../ui/screens/ProductScreen';
 
 const Stack = createStackNavigator();
 
@@ -80,6 +81,11 @@ function Navigate() {
           options={{headerShown: false}}
           name="FormDataAddProduct"
           component={FormDataAddProductScreen}
+        />
+        <Stack.Screen
+          options={{headerShown: false}}
+          name="Product"
+          component={ProductScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>

@@ -11,8 +11,8 @@ import {IWallData} from '../../../shared/types';
 
 interface IAddSizeWall {
   numberWall: number;
-  onSaveSizeWall: (data: IWallData) => void;
-  setSizeWalls: (data: IWallData) => void;
+  onSaveSizeWall: any;
+  setSizeWalls: any;
 }
 
 export default function AddSizeWall({
@@ -51,7 +51,6 @@ export default function AddSizeWall({
         radiusWall,
       };
       onSaveSizeWall(wallData);
-      setSizeWalls(wallData);
     }
     setViewInput(false);
   };

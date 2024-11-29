@@ -17,7 +17,7 @@ export default function CreateProjectScreen() {
   const [addDimensions, setAddDimensions] = useState<JSX.Element[]>([]);
   const [addSizeWall, setAddSizeWall] = useState<JSX.Element[]>([]);
 
-  const onSaveSizeWall = (currentSizeWall: IWallData) => {
+  const onSaveSizeWall = (currentSizeWall: any) => {
     setAddDimensions(prev => [
       ...prev,
       <AddBlockDimensions

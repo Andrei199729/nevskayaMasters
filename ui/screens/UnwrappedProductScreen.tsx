@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {Pressable, StyleSheet, Text, View} from 'react-native';
 import AuthSection from '../section/AuthSection';
 import ButtonCustom from '../../shared/ButtonCustom/ButtonCustom';
 import {Colors, Fonts, Gaps} from '../../shared/tokens';
@@ -28,12 +28,34 @@ interface IUnwrappedProductScreen {
 
 function UnwrappedProductScreen({
   navigation,
+  route,
   ...props
-}: IUnwrappedProductScreen) {
+}: IUnwrappedProductScreen & any) {
+  const {dataProduct, nameRoom, arrElements} = route.params || {};
+  console.log(arrElements, 'arrElements');
+
+  const [productsRooms, setProductsRooms] = useState<any>([]);
+  useEffect(() => {
+    if (nameRoom) {
+      setProductsRooms((prevProducts: any) => [
+        ...prevProducts,
+        {
+          nameRoom: nameRoom,
+          dataProduct: dataProduct,
+          arrElements: arrElements,
+        },
+      ]);
+    }
+  }, [nameRoom]);
   const onClickAddProduct = () => {
     navigation.navigate('FormDataAddProduct');
   };
 
+  const onClickLinkProduct = (productRoom: any) => {
+    navigation.navigate('Product', {
+      productRoom: productRoom,
+    });
+  };
   return (
     <HeaderScreen>
       <MainScreen mainTitle={`№ ${'заявки'}`}>
@@ -58,9 +80,18 @@ function UnwrappedProductScreen({
             <ButtonAddProduct onClickAddProduct={onClickAddProduct} />
           </View>
           <View style={styles.boxTitle}>
-            <Text style={styles.textProduct}>Кухня</Text>
-            <Text style={styles.textProduct}>Кухня</Text>
-            <Text style={styles.textProduct}>Ванная комната</Text>
+            {productsRooms?.map((productRoom: any, index: any) => {
+              return (
+                <Pressable
+                  key={index}
+                  onPress={() => onClickLinkProduct(productRoom)}>
+                  <Text style={styles.textProduct}>
+                    {index + 1}
+                    {productRoom.nameRoom}
+                  </Text>
+                </Pressable>
+              );
+            })}
           </View>
         </View>
         <View style={styles.boxTitle}>

@@ -14,27 +14,63 @@ import {
   IModalWall,
   IWallData,
 } from '../../../shared/types';
-import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import ModalElementsWall from '../ModalElementsWall/ModalElementsWall';
-import ElementWall from '../ElementWall/ElementWall';
+import ElementWallAdd from '../ElementWallAdd/ElementWallAdd';
+import {useData} from '../../../context/DataProvider';
+import ElementsProducts from '../../../shared/ElementsProducts/ElementsProducts';
 
 export default function ModalWall({
   numberWall,
   saveSizeWall,
   modalVisible,
   setModalVisible,
-  onSaveElement,
   addElement,
   onSaveElementSize,
+  setArrElements,
+  arrElements,
   ...props
 }: IModalWall & any) {
   const [elementsWallModalVisible, setElementsWallModalVisible] =
     useState<boolean>(false);
+  const [elementsData, setElementsData] = useState<any[]>(arrElements || []);
+  const {setSharedData} = useData();
+  const [dataObj, setDataObj] = useState({
+    nameElement: '',
+    stateElement: '',
+    id: 0,
+  });
+  const [visibleElements, setVisibleElements] = useState<{
+    [key: number]: boolean;
+  }>({});
   const onClickElementModal = () => {
     setElementsWallModalVisible(true);
     setModalVisible(true);
   };
+  const toggleElementVisibility = (index: number, isVisible: boolean) => {
+    setVisibleElements(prev => ({
+      ...prev,
+      [index]: isVisible, // Устанавливаем видимость только для конкретного элемента
+    }));
+  };
+  const onSaveElement = (dataEl: any) => {
+    setDataObj(prev => {
+      const update = {...prev, ...dataEl};
+      return update;
+    });
+  };
+  const onSaveDataElement = (data: any) => {
+    setElementsData(prev => {
+      let updateDate = [...prev, {data, dataObj}];
+      setArrElements(updateDate);
+      return updateDate;
+    });
+  };
 
+  useEffect(() => {
+    if (arrElements) {
+      setElementsData(arrElements);
+    }
+  }, [arrElements]);
   return (
     <>
       <Modal
@@ -51,7 +87,24 @@ export default function ModalWall({
                 left: '10%',
                 zIndex: 4,
               }}>
-              {addElement}
+              {elementsData?.map((element: any, index: any) => {
+                return (
+                  <ElementWallAdd
+                    key={index}
+                    element={element}
+                    position={index}
+                    nameElement={element.dataObj.nameElement}
+                    stateElement={element.dataObj.stateElement}
+                    onPressVisible={() => toggleElementVisibility(index, true)}
+                    isVisible={visibleElements}
+                    setVisible={toggleElementVisibility}
+                    elementsData={elementsData}
+                    setElementsData={setElementsData}
+                    onSaveElementSize={onSaveDataElement}
+                    setModalVisibleWall={setElementsWallModalVisible}
+                  />
+                );
+              })}
             </View>
             <Pressable onPress={onClickElementModal}>
               <View style={{backgroundColor: Colors.white}}>
@@ -137,7 +190,7 @@ export default function ModalWall({
         numberWall={numberWall}
         saveSizeWall={saveSizeWall}
         onSaveElement={onSaveElement}
-        onSaveElementSize={onSaveElementSize}
+        onSaveElementSize={onSaveDataElement}
       />
     </>
   );

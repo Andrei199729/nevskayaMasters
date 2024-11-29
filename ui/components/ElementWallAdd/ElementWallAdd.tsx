@@ -11,25 +11,26 @@ export default function ElementWallAdd({
   dataSizeElement,
   addedElement,
   modalVisibleSizes,
-  setIsModalVisible,
+  setVisible,
   isActive,
   dataElement,
   isModalVisible,
   selectedElement,
+  onSaveDataElement,
+  element,
+  isVisible,
   elementsData,
+  setElementsData,
+  onSaveElementSize,
+  setModalVisibleWall,
   ...props
 }: any) {
-  const [isVisible, setVisible] = useState(false);
-  const onClickVisible = () => {
-    onPressVisible();
-    setVisible(true);
-  };
   return (
     <View style={{position: addedElement ? 'relative' : 'static'}}>
-      <Pressable onPress={onClickVisible}>
+      <Pressable onPress={onPressVisible}>
         <View style={{flexDirection: 'row', gap: 10}}>
           <Text>
-            {position} {nameElement}
+            {position + 1} {nameElement}
           </Text>
           {stateElement === 'ventilation' && (
             <View style={styles.elementVentilation}></View>
@@ -64,11 +65,15 @@ export default function ElementWallAdd({
         position={position}
         nameElement={nameElement}
         addedElement={addedElement}
-        isModalVisible={isVisible}
-        setIsModalVisible={setVisible}
+        isVisible={isVisible}
+        setVisible={setVisible}
         dataSizeElement={dataSizeElement}
-        elementsData={elementsData}
         selectedElement={selectedElement}
+        element={element}
+        elementsData={elementsData}
+        setElementsData={setElementsData}
+        onSaveElementSize={onSaveElementSize}
+        setModalVisibleWall={setModalVisibleWall}
       />
     </View>
   );

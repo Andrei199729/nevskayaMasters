@@ -17,13 +17,11 @@ export default function ModalElementsWall({
 }: IModalWall & any) {
   const [element, setElement] = useState(false);
   const [nameElementWall, setNameElementWall] = useState<any>([]);
-  const [dataEl, setDataEl] = useState<any>([]);
-  // Обновляем `dataEl` и вызываем `onSaveElement` только когда `dataEl` изменяется
 
-  const onClickElement = (data: IDataElementsWall, index: number) => {
+  const onClickElement = async (data: IDataElementsWall, index: number) => {
     setElement(!element);
     setNameElementWall(data);
-    onSaveElement(data, index); // Сохраняем данные только при наличии данных
+    onSaveElement(data); // Сохраняем данные только при наличии данных
   };
 
   return (

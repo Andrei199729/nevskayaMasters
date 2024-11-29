@@ -15,55 +15,16 @@ import ElementWallAdd from '../ElementWallAdd/ElementWallAdd';
 export default function AddBlockDimensions({
   numberWall,
   saveSizeWall,
+  setArrElements,
+  arrElements,
   ...props
-}: IAddBlockDimensions) {
+}: any) {
   const [modalVisible, setModalVisible] = useState(false);
-  const [addElement, setAddElement] = useState<JSX.Element[]>([]);
-  const [elementsData, setElementsData] = useState<any[]>([]);
-
-  const [selectedElement, setSelectedElement] = useState<any>([]); // Данные текущего выбранного элемента
-  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
-
-  const onClickDataElement = (index: number) => {
-    const selected = elementsData[index];
-    console.log(selected);
-    console.log(index);
-  };
-
-  const onSaveDataElement = (data: any) => {
-    setElementsData(prev => {
-      const updatedData = [...prev, data];
-      console.log('Обновлённый массив данных:', updatedData); // Отладка
-      return updatedData;
-    });
-  };
-
-  const onSaveElement = (dataElement: any, index: any) => {
-    setAddElement(prev => [
-      ...prev,
-      <ElementWallAdd
-        key={prev.length}
-        nameElement={dataElement.nameElement}
-        stateElement={dataElement.stateElement}
-        position={prev.length + 1}
-        onPressVisible={() => setSelectedElement(elementsData[index])}
-        dataElement={dataElement}
-        addedElement={true}
-        selectedElement={selectedElement}
-        elementsData={elementsData}
-      />,
-    ]);
-  };
 
   const onClickWallIncrease = () => {
     setModalVisible(!modalVisible);
+    console.log(numberWall - 1);
   };
-
-  useEffect(() => {
-    if (selectedElement) {
-      setIsModalVisible(true);
-    }
-  }, [selectedElement]);
 
   return (
     <SafeAreaProvider>
@@ -73,11 +34,8 @@ export default function AddBlockDimensions({
           setModalVisible={setModalVisible}
           numberWall={numberWall}
           saveSizeWall={saveSizeWall}
-          onSaveElementSize={(data: any) => {
-            onSaveDataElement(data);
-          }}
-          onSaveElement={onSaveElement}
-          addElement={addElement}
+          setArrElements={setArrElements}
+          arrElements={arrElements}
         />
         <Pressable onPress={onClickWallIncrease}>
           <View>

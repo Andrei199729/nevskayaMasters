@@ -15,6 +15,7 @@ export default function ElementWall({
   dataElement,
   isModalVisible,
   selectedElement,
+  element,
   ...props
 }: any) {
   return (

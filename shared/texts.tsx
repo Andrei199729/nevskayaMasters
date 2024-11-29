@@ -59,9 +59,9 @@ export const data: IDataItem[] = [
 ];
 
 export const arrDataElementsWall: IDataElementsWall[] = [
-  {nameElement: 'Вентиляция', stateElement: 'ventilation', id: 1},
-  {nameElement: 'Двери', stateElement: 'elementDoor', id: 2},
-  {nameElement: 'Окно', stateElement: 'elementWindow', id: 3},
-  {nameElement: 'Розетка', stateElement: 'elementSocket', id: 4},
-  {nameElement: 'Батарея', stateElement: 'elementBattery', id: 5},
+  {nameElement: 'Вентиляция', stateElement: 'ventilation', id: 0},
+  {nameElement: 'Двери', stateElement: 'elementDoor', id: 1},
+  {nameElement: 'Окно', stateElement: 'elementWindow', id: 2},
+  {nameElement: 'Розетка', stateElement: 'elementSocket', id: 3},
+  {nameElement: 'Батарея', stateElement: 'elementBattery', id: 4},
 ];
