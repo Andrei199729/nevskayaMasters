@@ -94,7 +94,7 @@ export default function ModalFormElement({
       // radiusElement: radiusElement.value,
     };
 
-    onSaveElementSize(updatedDataObjectSizeElement);
+    onSaveElementSize(updatedDataObjectSizeElement, numberWall - 1);
 
     setModalVisible(!modalVisible);
     setModalVisibleWall(false);

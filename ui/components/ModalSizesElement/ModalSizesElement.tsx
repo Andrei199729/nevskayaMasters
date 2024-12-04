@@ -47,23 +47,22 @@ export default function ModalSizesElement({
   };
 
   const onClickEdit = () => {
-    console.log('edit');
     setDataEditElement({
       nameElementWall: nameElement,
-      locationElementTop: element.data.locationElementTop,
-      locationElementRight: element.data.locationElementRight,
-      locationElementLeft: element.data.locationElementLeft,
-      locationElementBottom: element.data.locationElementBottom,
-      widthTop: element.data.widthTop,
-      widthBottom: element.data.widthBottom,
-      heightLeft: element.data.heightLeft,
-      heightRight: element.data.heightRight,
-      radiusElement: element.data.radiusElement,
+      locationElementTop: element?.elements?.data?.locationElementTop || '',
+      locationElementRight: element?.elements?.data?.locationElementRight || '',
+      locationElementLeft: element?.elements?.data?.locationElementLeft || '',
+      locationElementBottom:
+        element?.elements?.data?.locationElementBottom || '',
+      widthTop: element?.elements?.data?.widthTop || '',
+      widthBottom: element?.elements?.data?.widthBottom || '',
+      heightLeft: element?.elements?.data?.heightLeft || '',
+      heightRight: element?.elements?.data?.heightRight || '',
+      radiusElement: element?.elements?.data?.radiusElement || '',
     });
     setIsVisibleEditModal(true);
   };
-
-  // console.log(dataEditElement, 'dataEditElement');
+  console.log(element.elements, 'element');
 
   return (
     <Modal
@@ -89,58 +88,58 @@ export default function ModalSizesElement({
               <Text>
                 {position + 1} {nameElement}
               </Text>
-              {element.data.locationElementTop !== '' && (
+              {element?.elements?.data?.locationElementTop !== '' && (
                 <View>
                   <Text> 1 расположение сверху</Text>
-                  <Text>{element.data.locationElementTop}</Text>
+                  <Text>{element?.elements?.data?.locationElementTop}</Text>
                 </View>
               )}
-              {element.data.locationElementBottom !== '' && (
+              {element?.elements?.data?.locationElementBottom !== '' && (
                 <View>
                   <Text> 2 расположение снизу</Text>
-                  <Text>{element.data.locationElementBottom}</Text>
+                  <Text>{element?.elements?.data?.locationElementBottom}</Text>
                 </View>
               )}
-              {element.data.locationElementRight !== '' && (
+              {element?.elements?.data?.locationElementRight !== '' && (
                 <View>
                   <Text> 3 расположение справа</Text>
-                  <Text>{element.data.locationElementRight}</Text>
+                  <Text>{element?.elements?.data?.locationElementRight}</Text>
                 </View>
               )}
-              {element.data.locationElementLeft !== '' && (
+              {element?.elements?.data?.locationElementLeft !== '' && (
                 <View>
                   <Text> 4 расположение слева</Text>
-                  <Text>{element.data.locationElementLeft}</Text>
+                  <Text>{element?.elements?.data?.locationElementLeft}</Text>
                 </View>
               )}
-              {element.data.widthTop !== '' && (
+              {element?.elements?.data?.widthTop !== '' && (
                 <View>
                   <Text> 5 размер стены сверху</Text>
-                  <Text>{element.data.widthTop}</Text>
+                  <Text>{element?.elements?.data?.widthTop}</Text>
                 </View>
               )}
-              {element.data.widthBottom !== '' && (
+              {element?.elements?.data?.widthBottom !== '' && (
                 <View>
                   <Text> 6 размер стены снизу</Text>
-                  <Text>{element.data.widthBottom}</Text>
+                  <Text>{element?.elements?.data?.widthBottom}</Text>
                 </View>
               )}
-              {element.data.heightRight !== '' && (
+              {element?.elements?.data?.heightRight !== '' && (
                 <View>
                   <Text> 7 размер стены справа</Text>
-                  <Text>{element.data.heightRight}</Text>
+                  <Text>{element?.elements?.data?.heightRight}</Text>
                 </View>
               )}
-              {element.data.heightLeft !== '' && (
+              {element?.elements?.data?.heightLeft !== '' && (
                 <View>
                   <Text> 8 размер стены слева</Text>
-                  <Text>{element.data.heightLeft}</Text>
+                  <Text>{element?.elements?.data?.heightLeft}</Text>
                 </View>
               )}
-              {element.data.radiusElement !== '' && (
+              {element?.elements?.data?.radiusElement !== '' && (
                 <View>
                   <Text> 9 радиус стены</Text>
-                  <Text>{element.data.radiusElement}</Text>
+                  <Text>{element?.elements?.data?.radiusElement}</Text>
                 </View>
               )}
               <ButtonCustom textBtn="Редактировать" onPress={onClickEdit} />

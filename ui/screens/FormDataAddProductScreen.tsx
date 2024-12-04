@@ -30,6 +30,7 @@ export default function FormDataAddProductScreen() {
   const [isActiveBtn, setIsActiveBtn] = useState<boolean>(true);
   const [countWall, setCountWall] = useState('');
   const [sizeWalls, setSizeWalls] = useState<any[]>([]);
+  const [sizeElements, setSizeElements] = useState<any[] | undefined>([]);
   const [arrElements, setArrElements] = useState([]);
   const onSaveSizeWall = (currentSizeWall: any) => {
     setSizeWalls(prev => {
@@ -42,7 +43,6 @@ export default function FormDataAddProductScreen() {
     navigation.navigate('UnwrappedProduct', {
       dataProduct: sizeWalls,
       nameRoom: nameRoom.value,
-      arrElements: arrElements,
     });
   };
 
@@ -74,6 +74,7 @@ export default function FormDataAddProductScreen() {
                   key={index}
                   saveSizeWall={wall.currentSizeWall}
                   setArrElements={setArrElements}
+                  setSizeElements={setSizeElements}
                 />
               );
             })}
