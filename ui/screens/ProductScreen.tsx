@@ -2,10 +2,12 @@ import {ScrollView, Text, View} from 'react-native';
 import HeaderScreen from './HeaderScreen';
 import MainScreen from './MainScreen';
 import AddBlockDimensions from '../components/AddBlockDimensions/AddBlockDimensions';
+import {useContext} from 'react';
+import {DataContext} from '../../context/DataProvider';
 
 export default function ProductScreen({navigation, route, ...props}: any) {
   const {productRoom} = route.params || {};
-  console.log(productRoom.dataProduct, 'arrElements');
+  const {arrElements, setArrElements} = useContext(DataContext);
 
   return (
     <HeaderScreen>
@@ -17,7 +19,8 @@ export default function ProductScreen({navigation, route, ...props}: any) {
                 numberWall={index + 1}
                 key={index}
                 saveSizeWall={room?.currentSizeWall}
-                arrElements={productRoom.arrElements}
+                arrElements={arrElements}
+                setArrElements={setArrElements}
               />
             );
           })}

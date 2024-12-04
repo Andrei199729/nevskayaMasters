@@ -16,7 +16,6 @@ import {
 } from '../../../shared/types';
 import ModalElementsWall from '../ModalElementsWall/ModalElementsWall';
 import ElementWallAdd from '../ElementWallAdd/ElementWallAdd';
-import {useData} from '../../../context/DataProvider';
 import ElementsProducts from '../../../shared/ElementsProducts/ElementsProducts';
 
 export default function ModalWall({
@@ -33,7 +32,6 @@ export default function ModalWall({
   const [elementsWallModalVisible, setElementsWallModalVisible] =
     useState<boolean>(false);
   const [elementsData, setElementsData] = useState<any[]>(arrElements || []);
-  const {setSharedData} = useData();
   const [dataObj, setDataObj] = useState({
     nameElement: '',
     stateElement: '',
@@ -65,6 +63,9 @@ export default function ModalWall({
       return updateDate;
     });
   };
+  const handleClose = () => {
+    setModalVisible(false);
+  };
 
   useEffect(() => {
     if (arrElements) {
@@ -78,111 +79,115 @@ export default function ModalWall({
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => setModalVisible(!modalVisible)}>
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <View
-              style={{
-                position: 'absolute',
-                top: '10%',
-                left: '10%',
-                zIndex: 4,
-              }}>
-              {elementsData?.map((element: any, index: any) => {
-                return (
-                  <ElementWallAdd
-                    key={index}
-                    element={element}
-                    position={index}
-                    nameElement={element.dataObj.nameElement}
-                    stateElement={element.dataObj.stateElement}
-                    onPressVisible={() => toggleElementVisibility(index, true)}
-                    isVisible={visibleElements}
-                    setVisible={toggleElementVisibility}
-                    elementsData={elementsData}
-                    setElementsData={setElementsData}
-                    onSaveElementSize={onSaveDataElement}
-                    setModalVisibleWall={setElementsWallModalVisible}
-                  />
-                );
-              })}
-            </View>
-            <Pressable onPress={onClickElementModal}>
-              <View style={{backgroundColor: Colors.white}}>
-                <Text style={styles.textDimensions}>Стена №{numberWall}</Text>
-                <View
-                  style={[
-                    styles.wallBlock,
-                    styles.addedWall,
-                    styles.addedWallModal,
-                  ]}>
-                  <View style={[styles.sizeWall, styles.wallTop]}>
-                    <Text
-                      style={{
-                        ...styles.textDimensions,
-                        fontSize: modalVisible ? Fonts.f24 : Fonts.f12,
-                      }}>
-                      {saveSizeWall?.widthTop}
-                    </Text>
-                  </View>
-                  <View style={[styles.sizeWall, styles.wallRight]}>
-                    <Text
-                      style={{
-                        ...styles.textDimensions,
-                        fontSize: modalVisible ? Fonts.f24 : Fonts.f12,
-                      }}>
-                      {saveSizeWall?.heightRight}
-                    </Text>
-                  </View>
-                  <View style={[styles.sizeWall, styles.wallBottom]}>
-                    <Text
-                      style={{
-                        ...styles.textDimensions,
-                        fontSize: modalVisible ? Fonts.f24 : Fonts.f12,
-                      }}>
-                      {saveSizeWall?.widthBottom}
-                    </Text>
-                  </View>
-                  <View style={[styles.sizeWall, styles.wallLeft]}>
-                    <Text
-                      style={{
-                        ...styles.textDimensions,
-                        fontSize: modalVisible ? Fonts.f24 : Fonts.f12,
-                      }}>
-                      {saveSizeWall?.heightLeft}
-                    </Text>
-                  </View>
-                  {saveSizeWall?.wallAngleDegree && (
-                    <>
-                      <View
-                        style={[
-                          styles.sizeWall,
-                          styles.borderLineAngle,
-                        ]}></View>
-                      <View style={[styles.sizeWall, styles.wallAngleDegree]}>
-                        <Text
-                          style={{
-                            ...styles.textDimensions,
-                            fontSize: modalVisible ? Fonts.f24 : Fonts.f12,
-                          }}>
-                          {saveSizeWall?.wallAngleDegree}
-                        </Text>
-                      </View>
-                    </>
-                  )}
-                </View>
-                <View>
-                  <Text
-                    style={{
-                      ...styles.textDimensions,
-                      fontSize: modalVisible ? Fonts.f24 : Fonts.f12,
-                    }}>
-                    {saveSizeWall?.radiusWall}
-                  </Text>
-                </View>
+        <TouchableWithoutFeedback onPress={handleClose}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <View
+                style={{
+                  position: 'absolute',
+                  top: '10%',
+                  left: '10%',
+                  zIndex: 4,
+                }}>
+                {elementsData?.map((element: any, index: any) => {
+                  return (
+                    <ElementWallAdd
+                      key={index}
+                      element={element}
+                      position={index}
+                      nameElement={element.dataObj.nameElement}
+                      stateElement={element.dataObj.stateElement}
+                      onPressVisible={() =>
+                        toggleElementVisibility(index, true)
+                      }
+                      isVisible={visibleElements}
+                      setVisible={toggleElementVisibility}
+                      elementsData={elementsData}
+                      setElementsData={setElementsData}
+                      onSaveElementSize={onSaveDataElement}
+                      setModalVisibleWall={setElementsWallModalVisible}
+                    />
+                  );
+                })}
               </View>
-            </Pressable>
+              <Pressable onPress={onClickElementModal}>
+                <View style={{backgroundColor: Colors.white}}>
+                  <Text style={styles.textDimensions}>Стена №{numberWall}</Text>
+                  <View
+                    style={[
+                      styles.wallBlock,
+                      styles.addedWall,
+                      styles.addedWallModal,
+                    ]}>
+                    <View style={[styles.sizeWall, styles.wallTop]}>
+                      <Text
+                        style={{
+                          ...styles.textDimensions,
+                          fontSize: modalVisible ? Fonts.f24 : Fonts.f12,
+                        }}>
+                        {saveSizeWall?.widthTop}
+                      </Text>
+                    </View>
+                    <View style={[styles.sizeWall, styles.wallRight]}>
+                      <Text
+                        style={{
+                          ...styles.textDimensions,
+                          fontSize: modalVisible ? Fonts.f24 : Fonts.f12,
+                        }}>
+                        {saveSizeWall?.heightRight}
+                      </Text>
+                    </View>
+                    <View style={[styles.sizeWall, styles.wallBottom]}>
+                      <Text
+                        style={{
+                          ...styles.textDimensions,
+                          fontSize: modalVisible ? Fonts.f24 : Fonts.f12,
+                        }}>
+                        {saveSizeWall?.widthBottom}
+                      </Text>
+                    </View>
+                    <View style={[styles.sizeWall, styles.wallLeft]}>
+                      <Text
+                        style={{
+                          ...styles.textDimensions,
+                          fontSize: modalVisible ? Fonts.f24 : Fonts.f12,
+                        }}>
+                        {saveSizeWall?.heightLeft}
+                      </Text>
+                    </View>
+                    {saveSizeWall?.wallAngleDegree && (
+                      <>
+                        <View
+                          style={[
+                            styles.sizeWall,
+                            styles.borderLineAngle,
+                          ]}></View>
+                        <View style={[styles.sizeWall, styles.wallAngleDegree]}>
+                          <Text
+                            style={{
+                              ...styles.textDimensions,
+                              fontSize: modalVisible ? Fonts.f24 : Fonts.f12,
+                            }}>
+                            {saveSizeWall?.wallAngleDegree}
+                          </Text>
+                        </View>
+                      </>
+                    )}
+                  </View>
+                  <View>
+                    <Text
+                      style={{
+                        ...styles.textDimensions,
+                        fontSize: modalVisible ? Fonts.f24 : Fonts.f12,
+                      }}>
+                      {saveSizeWall?.radiusWall}
+                    </Text>
+                  </View>
+                </View>
+              </Pressable>
+            </View>
           </View>
-        </View>
+        </TouchableWithoutFeedback>
       </Modal>
       <ModalElementsWall
         modalVisible={elementsWallModalVisible}

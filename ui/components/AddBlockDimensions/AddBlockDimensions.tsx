@@ -23,7 +23,6 @@ export default function AddBlockDimensions({
 
   const onClickWallIncrease = () => {
     setModalVisible(!modalVisible);
-    console.log(numberWall - 1);
   };
 
   return (

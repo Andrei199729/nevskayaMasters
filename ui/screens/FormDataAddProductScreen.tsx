@@ -1,6 +1,6 @@
 import {ScrollView, Text, View} from 'react-native';
 import {Input} from '../../shared/Input/Input';
-import {useState} from 'react';
+import {useContext, useState} from 'react';
 import useInput from '../../hooks/useInput';
 import SelectCustom from '../../shared/SelectCustom/SelectCustom';
 import {arrCountWall} from '../../shared/texts';
@@ -9,6 +9,7 @@ import {IWallData} from '../../shared/types';
 import ButtonCustom from '../../shared/ButtonCustom/ButtonCustom';
 import AddBlockDimensions from '../components/AddBlockDimensions/AddBlockDimensions';
 import {useNavigation} from '@react-navigation/native';
+import {DataContext} from '../../context/DataProvider';
 
 interface IObjProduct {
   nameRoom?: string;
@@ -27,10 +28,12 @@ export default function FormDataAddProductScreen() {
   const [selectedTextDefault, setSelectedTextDefault] = useState({
     defaultCount: 'Выберите количество стен',
   });
+  const {arrElements, setArrElements} = useContext(DataContext);
+
   const [isActiveBtn, setIsActiveBtn] = useState<boolean>(true);
   const [countWall, setCountWall] = useState('');
   const [sizeWalls, setSizeWalls] = useState<any[]>([]);
-  const [arrElements, setArrElements] = useState([]);
+  // const [arrElements, setArrElements] = useState([]);
   const onSaveSizeWall = (currentSizeWall: any) => {
     setSizeWalls(prev => {
       let updateDateWalls = [...prev, {currentSizeWall}];

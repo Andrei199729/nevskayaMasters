@@ -32,7 +32,6 @@ function UnwrappedProductScreen({
   ...props
 }: IUnwrappedProductScreen & any) {
   const {dataProduct, nameRoom, arrElements} = route.params || {};
-  console.log(arrElements, 'arrElements');
 
   const [productsRooms, setProductsRooms] = useState<any>([]);
   useEffect(() => {
