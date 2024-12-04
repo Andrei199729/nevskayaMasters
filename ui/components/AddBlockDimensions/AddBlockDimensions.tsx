@@ -25,7 +25,7 @@ export default function AddBlockDimensions({
   const onClickWallIncrease = () => {
     setModalVisible(!modalVisible);
   };
-  console.log(arrElements, 'product');
+  // console.log(arrElements, 'product');
 
   return (
     <SafeAreaProvider>

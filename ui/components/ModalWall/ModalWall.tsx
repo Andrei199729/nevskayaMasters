@@ -69,19 +69,22 @@ export default function ModalWall({
         // Если стена существует, добавляем новый элемент в её массив
         updatedData[wallIndex].elements.push({
           data,
-          dataObj: {nameElement: '', stateElement: ''},
+          dataObj,
         });
       } else {
         // Если стены нет, создаём новую запись
         updatedData.push({
-          wall,
-          elements: [{data, dataObj: {nameElement: '', stateElement: ''}}],
+          wall: wall + 1,
+          data,
+          dataObj,
         });
       }
 
       return updatedData;
     });
   };
+  console.log(elementsData, 'elementsData');
+  console.log(JSON.stringify(elementsData, null, 2));
   const handleClose = () => {
     setModalVisible(false);
   };
@@ -91,7 +94,6 @@ export default function ModalWall({
       setElementsData(arrElements);
     }
   }, [arrElements]);
-  console.log(elementsData, 'elementsData');
 
   return (
     <>
@@ -99,7 +101,7 @@ export default function ModalWall({
         animationType="slide"
         transparent={true}
         visible={modalVisible}
-        onRequestClose={() => setModalVisible(!modalVisible)}
+        onRequestClose={() => setModalVisible(!modalVisible)}>
         <TouchableWithoutFeedback onPress={handleClose}>
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
@@ -111,13 +113,15 @@ export default function ModalWall({
                   zIndex: 4,
                 }}>
                 {elementsData?.map((element: any, index: any) => {
+                  console.log(element, 'elementsData');
+
                   return (
                     <ElementWallAdd
                       key={index}
-                      element={element}
+                      element={element?.data}
                       position={index}
-                      nameElement={element.dataObj.nameElement}
-                      stateElement={element.dataObj.stateElement}
+                      nameElement={element?.dataObj?.nameElement}
+                      stateElement={element?.dataObj?.stateElement}
                       onPressVisible={() =>
                         toggleElementVisibility(index, true)
                       }
@@ -193,8 +197,7 @@ export default function ModalWall({
                           </Text>
                         </View>
                       </>
-</View>
-                  <View>
+                    )}
                     <Text
                       style={{
                         ...styles.textDimensions,

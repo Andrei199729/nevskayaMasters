@@ -29,6 +29,7 @@ export default function FormDataAddProductScreen() {
     defaultCount: 'Выберите количество стен',
   });
   const {arrElements, setArrElements} = useContext(DataContext);
+  console.log(arrElements, 'arrElements');
 
   const [isActiveBtn, setIsActiveBtn] = useState<boolean>(true);
   const [countWall, setCountWall] = useState('');
@@ -45,6 +46,7 @@ export default function FormDataAddProductScreen() {
     navigation.navigate('UnwrappedProduct', {
       dataProduct: sizeWalls,
       nameRoom: nameRoom.value,
+      arrElements: arrElements,
     });
   };
 

@@ -32,7 +32,7 @@ export default function ModalFormElement({
     dataEditElement?.heightRight || '',
   );
   const [widthTop, setWidthTop] = useState<string>(
-    dataEditElement?.setWidthTop || '',
+    dataEditElement?.widthTop || '',
   );
   const [heightLeft, setHeightLeft] = useState<string>(
     dataEditElement?.heightLeft || '',
@@ -59,15 +59,15 @@ export default function ModalFormElement({
 
   useEffect(() => {
     if (dataEditElement) {
-      setHeightRight(dataEditElement.heightRight || '');
-      setWidthTop(dataEditElement.widthTop || '');
-      setHeightLeft(dataEditElement.heightLeft || '');
-      setWidthBottom(dataEditElement.widthBottom || '');
-      setRadiusElement(dataEditElement.radiusElement || '');
-      setLocationElementTop(dataEditElement.locationElementTop || '');
-      setLocationElementRight(dataEditElement.locationElementRight || '');
-      setLocationElementLeft(dataEditElement.locationElementLeft || '');
-      setLocationElementBottom(dataEditElement.locationElementBottom || '');
+      setHeightRight(dataEditElement?.heightRight || '');
+      setWidthTop(dataEditElement?.widthTop || '');
+      setHeightLeft(dataEditElement?.heightLeft || '');
+      setWidthBottom(dataEditElement?.widthBottom || '');
+      setRadiusElement(dataEditElement?.radiusElement || '');
+      setLocationElementTop(dataEditElement?.locationElementTop || '');
+      setLocationElementRight(dataEditElement?.locationElementRight || '');
+      setLocationElementLeft(dataEditElement?.locationElementLeft || '');
+      setLocationElementBottom(dataEditElement?.locationElementBottom || '');
     }
   }, [dataEditElement]);
 
@@ -95,7 +95,6 @@ export default function ModalFormElement({
     };
 
     onSaveElementSize(updatedDataObjectSizeElement, numberWall - 1);
-
     setModalVisible(!modalVisible);
     setModalVisibleWall(false);
   };
