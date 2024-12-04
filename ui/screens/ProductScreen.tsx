@@ -6,14 +6,15 @@ import {useContext} from 'react';
 import {DataContext} from '../../context/DataProvider';
 
 export default function ProductScreen({navigation, route, ...props}: any) {
-  const {productRoom} = route.params || {};
+  const {productRoom} = route.params || [];
+  console.log(productRoom, 'productRoom');
   const {arrElements, setArrElements} = useContext(DataContext);
 
   return (
     <HeaderScreen>
       <MainScreen mainTitle={`Комната: ${productRoom.nameRoom}`}>
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-          {productRoom?.dataProduct.map((room: any, index: number) => {
+          {/* {productRoom?.dataProduct.map((room: any, index: number) => {
             return (
               <AddBlockDimensions
                 numberWall={index + 1}
@@ -23,7 +24,7 @@ export default function ProductScreen({navigation, route, ...props}: any) {
                 setArrElements={setArrElements}
               />
             );
-          })}
+          })} */}
         </ScrollView>
       </MainScreen>
     </HeaderScreen>

@@ -17,6 +17,7 @@ export default function AddBlockDimensions({
   saveSizeWall,
   setArrElements,
   arrElements,
+  setSizeElements,
   ...props
 }: any) {
   const [modalVisible, setModalVisible] = useState(false);
@@ -24,6 +25,7 @@ export default function AddBlockDimensions({
   const onClickWallIncrease = () => {
     setModalVisible(!modalVisible);
   };
+  console.log(arrElements, 'product');
 
   return (
     <SafeAreaProvider>
@@ -35,6 +37,7 @@ export default function AddBlockDimensions({
           saveSizeWall={saveSizeWall}
           setArrElements={setArrElements}
           arrElements={arrElements}
+          setSizeElements={setSizeElements}
         />
         <Pressable onPress={onClickWallIncrease}>
           <View>

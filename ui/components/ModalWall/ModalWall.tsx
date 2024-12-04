@@ -27,6 +27,7 @@ export default function ModalWall({
   onSaveElementSize,
   setArrElements,
   arrElements,
+  setSizeElements,
   ...props
 }: IModalWall & any) {
   const [elementsWallModalVisible, setElementsWallModalVisible] =
@@ -56,11 +57,29 @@ export default function ModalWall({
       return update;
     });
   };
-  const onSaveDataElement = (data: any) => {
+  const onSaveDataElement = (data: any, wall: number) => {
     setElementsData(prev => {
-      let updateDate = [...prev, {data, dataObj}];
-      setArrElements(updateDate);
-      return updateDate;
+      // Создаем копию предыдущих данных
+      let updatedData = [...prev];
+
+      // Находим индекс стены
+      const wallIndex = updatedData.findIndex(item => item.wall === wall);
+
+      if (wallIndex !== -1) {
+        // Если стена существует, добавляем новый элемент в её массив
+        updatedData[wallIndex].elements.push({
+          data,
+          dataObj: {nameElement: '', stateElement: ''},
+        });
+      } else {
+        // Если стены нет, создаём новую запись
+        updatedData.push({
+          wall,
+          elements: [{data, dataObj: {nameElement: '', stateElement: ''}}],
+        });
+      }
+
+      return updatedData;
     });
   };
   const handleClose = () => {
@@ -72,13 +91,15 @@ export default function ModalWall({
       setElementsData(arrElements);
     }
   }, [arrElements]);
+  console.log(elementsData, 'elementsData');
+
   return (
     <>
       <Modal
         animationType="slide"
         transparent={true}
         visible={modalVisible}
-        onRequestClose={() => setModalVisible(!modalVisible)}>
+        onRequestClose={() => setModalVisible(!modalVisible)}
         <TouchableWithoutFeedback onPress={handleClose}>
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
@@ -172,8 +193,7 @@ export default function ModalWall({
                           </Text>
                         </View>
                       </>
-                    )}
-                  </View>
+</View>
                   <View>
                     <Text
                       style={{
