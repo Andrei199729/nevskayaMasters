@@ -1,15 +1,15 @@
 import React, {createContext, useState, useContext} from 'react';
+import {View, Text, Button} from 'react-native';
 
-const DataContext = createContext<any>(null);
+// Создаём контекст
+export const DataContext = createContext<any>(null);
 
 export const DataProvider = ({children}: any) => {
-  const [sharedData, setSharedData] = useState(null);
+  const [arrElements, setArrElements] = useState<any[]>([]);
 
   return (
-    <DataContext.Provider value={{sharedData, setSharedData}}>
+    <DataContext.Provider value={{arrElements, setArrElements}}>
       {children}
     </DataContext.Provider>
   );
 };
-
-export const useData = () => useContext(DataContext);
