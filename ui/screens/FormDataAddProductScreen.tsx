@@ -1,6 +1,6 @@
 import {ScrollView, Text, View} from 'react-native';
 import {Input} from '../../shared/Input/Input';
-import {useContext, useState} from 'react';
+import {SetStateAction, useContext, useState} from 'react';
 import useInput from '../../hooks/useInput';
 import SelectCustom from '../../shared/SelectCustom/SelectCustom';
 import {arrCountWall} from '../../shared/texts';
@@ -29,16 +29,27 @@ export default function FormDataAddProductScreen() {
     defaultCount: 'Выберите количество стен',
   });
   const {arrElements, setArrElements} = useContext(DataContext);
-  console.log(arrElements, 'arrElements');
 
   const [isActiveBtn, setIsActiveBtn] = useState<boolean>(true);
   const [countWall, setCountWall] = useState('');
   const [sizeWalls, setSizeWalls] = useState<any[]>([]);
+  // console.log(sizeWalls, 'sizeWalls');
+
   const [sizeElements, setSizeElements] = useState<any[] | undefined>([]);
+  console.log(sizeElements, 'sizeElements');
+  // console.log(sizeWalls, 'sizeWalls');
+  // console.log(JSON.stringify(sizeWalls, null, 2));
   const onSaveSizeWall = (currentSizeWall: any) => {
     setSizeWalls(prev => {
-      let updateDateWalls = [...prev, {currentSizeWall}];
-      return updateDateWalls;
+      // Создаем новый объект данных для каждой стены, чтобы избежать перезаписывания
+      const updatedWalls = [...prev];
+      // Добавляем данные текущей стены в массив
+      updatedWalls.push({
+        currentSizeWall,
+        sizeElements, // добавляем элементы, связанные с текущей стеной
+      });
+      console.log(updatedWalls, 'updatedWalls');
+      return updatedWalls;
     });
   };
 
@@ -46,7 +57,6 @@ export default function FormDataAddProductScreen() {
     navigation.navigate('UnwrappedProduct', {
       dataProduct: sizeWalls,
       nameRoom: nameRoom.value,
-      arrElements: arrElements,
     });
   };
 
@@ -78,7 +88,9 @@ export default function FormDataAddProductScreen() {
                   key={index}
                   saveSizeWall={wall.currentSizeWall}
                   setArrElements={setArrElements}
-                  setSizeElements={setSizeElements}
+                  setSizeElements={(data: SetStateAction<any[] | undefined>) =>
+                    setSizeElements(data)
+                  }
                 />
               );
             })}

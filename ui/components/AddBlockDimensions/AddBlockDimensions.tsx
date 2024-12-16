@@ -21,9 +21,11 @@ export default function AddBlockDimensions({
   ...props
 }: any) {
   const [modalVisible, setModalVisible] = useState(false);
+  // Фильтруем элементы, которые принадлежат текущей стене
 
   const onClickWallIncrease = () => {
     setModalVisible(!modalVisible);
+    console.log(numberWall - 1, 'numberWall');
   };
   // console.log(arrElements, 'product');
 

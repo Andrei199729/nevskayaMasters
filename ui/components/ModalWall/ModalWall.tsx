@@ -59,32 +59,42 @@ export default function ModalWall({
   };
   const onSaveDataElement = (data: any, wall: number) => {
     setElementsData(prev => {
-      // Создаем копию предыдущих данных
-      let updatedData = [...prev];
+      // Убедимся, что массив предыдущих данных корректен
+      const updatedData = Array.isArray(prev) ? [...prev] : [];
 
-      // Находим индекс стены
+      // Проверяем, существует ли уже стена
       const wallIndex = updatedData.findIndex(item => item.wall === wall);
 
       if (wallIndex !== -1) {
-        // Если стена существует, добавляем новый элемент в её массив
+        // Если стена существует, добавляем новый элемент
+        updatedData[wallIndex].elements = updatedData[wallIndex].elements || [];
         updatedData[wallIndex].elements.push({
           data,
-          dataObj,
+          dataObj, // Убедитесь, что dataObj доступен
         });
       } else {
         // Если стены нет, создаём новую запись
         updatedData.push({
-          wall: wall + 1,
-          data,
-          dataObj,
+          wall,
+          elements: [
+            {
+              data,
+              dataObj, // Убедитесь, что dataObj доступен
+            },
+          ],
         });
       }
+
+      // Обновляем состояние для размера элементов
+      setSizeElements(updatedData);
+      console.log(updatedData, 'updatedData');
+      console.log(JSON.stringify(updatedData, null, 2));
 
       return updatedData;
     });
   };
-  console.log(elementsData, 'elementsData');
-  console.log(JSON.stringify(elementsData, null, 2));
+  // console.log(elementsData, 'elementsData');
+  // console.log(JSON.stringify(elementsData, null, 2));
   const handleClose = () => {
     setModalVisible(false);
   };
@@ -113,26 +123,27 @@ export default function ModalWall({
                   zIndex: 4,
                 }}>
                 {elementsData?.map((element: any, index: any) => {
-                  console.log(element, 'elementsData');
-
-                  return (
-                    <ElementWallAdd
-                      key={index}
-                      element={element?.data}
-                      position={index}
-                      nameElement={element?.dataObj?.nameElement}
-                      stateElement={element?.dataObj?.stateElement}
-                      onPressVisible={() =>
-                        toggleElementVisibility(index, true)
-                      }
-                      isVisible={visibleElements}
-                      setVisible={toggleElementVisibility}
-                      elementsData={elementsData}
-                      setElementsData={setElementsData}
-                      onSaveElementSize={onSaveDataElement}
-                      setModalVisibleWall={setElementsWallModalVisible}
-                    />
-                  );
+                  console.log(element.elements, 'elementsData');
+                  return element.elements.map((item: any, indx: any) => {
+                    return (
+                      <ElementWallAdd
+                        key={index}
+                        element={item?.data}
+                        position={index}
+                        nameElement={item?.dataObj?.nameElement}
+                        stateElement={item?.dataObj?.stateElement}
+                        onPressVisible={() =>
+                          toggleElementVisibility(index, true)
+                        }
+                        isVisible={visibleElements}
+                        setVisible={toggleElementVisibility}
+                        elementsData={elementsData}
+                        setElementsData={setElementsData}
+                        onSaveElementSize={onSaveDataElement}
+                        setModalVisibleWall={setElementsWallModalVisible}
+                      />
+                    );
+                  });
                 })}
               </View>
               <Pressable onPress={onClickElementModal}>
