@@ -49,6 +49,8 @@ function UnwrappedProductScreen({
   const onClickAddProduct = () => {
     navigation.navigate('FormDataAddProduct');
   };
+  console.log(productsRooms, 'productsRooms');
+  console.log(JSON.stringify(productsRooms, null, 2));
 
   const onClickLinkProduct = (productRoom: any) => {
     navigation.navigate('Product', {

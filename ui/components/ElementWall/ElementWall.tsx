@@ -1,6 +1,5 @@
 import {View, Text, StyleSheet, Pressable} from 'react-native';
 import {Colors} from '../../../shared/tokens';
-import ModalSizesElement from '../ModalSizesElement/ModalSizesElement';
 
 export default function ElementWall({
   nameElement,

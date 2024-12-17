@@ -2,11 +2,11 @@ import {Dimensions, ScrollView, StyleSheet, Text, View} from 'react-native';
 import HeaderScreen from './HeaderScreen';
 import MainScreen from './MainScreen';
 import ObjectApplication from '../../shared/ObjectApplication/ObjectApplication';
-import {IWallData, ObjectStatus} from '../../shared/types';
+import {IElementWall, IWallData, ObjectStatus} from '../../shared/types';
 import {Colors, Gaps, Radius} from '../../shared/tokens';
 import Square from '../components/Square/Square';
 import ButtonCustom from '../../shared/ButtonCustom/ButtonCustom';
-import {useEffect, useState} from 'react';
+import {SetStateAction, useEffect, useState} from 'react';
 import AddBlockDimensions from '../components/AddBlockDimensions/AddBlockDimensions';
 import AddSizeWall from '../components/AddSizeWall/AddSizeWall';
 
@@ -24,6 +24,7 @@ export default function CreateProjectScreen() {
         key={Date.now()}
         numberWall={prev.length + 1}
         saveSizeWall={currentSizeWall}
+        setArrElements={() => {}}
       />,
     ]);
   };
@@ -35,7 +36,6 @@ export default function CreateProjectScreen() {
         key={Date.now()}
         numberWall={prev.length + 1}
         onSaveSizeWall={onSaveSizeWall}
-        setSizeWalls={() => {}}
       />,
     ]);
   };

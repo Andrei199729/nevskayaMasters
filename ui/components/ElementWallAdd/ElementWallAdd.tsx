@@ -10,13 +10,8 @@ export default function ElementWallAdd({
   onPressVisible,
   dataSizeElement,
   addedElement,
-  modalVisibleSizes,
   setVisible,
-  isActive,
-  dataElement,
-  isModalVisible,
   selectedElement,
-  onSaveDataElement,
   element,
   isVisible,
   elementsData,
@@ -62,7 +57,6 @@ export default function ElementWallAdd({
         </View>
       </Pressable>
       <ModalSizesElement
-        position={position}
         nameElement={nameElement}
         addedElement={addedElement}
         isVisible={isVisible}

@@ -1,11 +1,15 @@
-import React, {createContext, useState, useContext} from 'react';
-import {View, Text, Button} from 'react-native';
+import React, {createContext, ReactNode, useState} from 'react';
+import {IDataContext, IElementWall} from '../shared/types';
+
+interface DataProviderProps {
+  children: ReactNode;
+}
 
 // Создаём контекст
-export const DataContext = createContext<any>(null);
+export const DataContext = createContext<IDataContext | null>(null);
 
-export const DataProvider = ({children}: any) => {
-  const [arrElements, setArrElements] = useState<any[]>([]);
+export const DataProvider = ({children}: DataProviderProps) => {
+  const [arrElements, setArrElements] = useState<IElementWall[]>([]);
 
   return (
     <DataContext.Provider value={{arrElements, setArrElements}}>

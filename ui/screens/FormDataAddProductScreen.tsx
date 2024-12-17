@@ -1,6 +1,6 @@
 import {ScrollView, Text, View} from 'react-native';
 import {Input} from '../../shared/Input/Input';
-import {useContext, useState} from 'react';
+import {SetStateAction, useContext, useState} from 'react';
 import useInput from '../../hooks/useInput';
 import SelectCustom from '../../shared/SelectCustom/SelectCustom';
 import {arrCountWall} from '../../shared/texts';
@@ -28,15 +28,21 @@ export default function FormDataAddProductScreen() {
   const [selectedTextDefault, setSelectedTextDefault] = useState({
     defaultCount: 'Выберите количество стен',
   });
-  const {arrElements, setArrElements} = useContext(DataContext);
+  const context = useContext(DataContext);
+
+  // Если контекст равен null, возвращаем заглушку
+  if (!context) {
+    return <Text>Loading...</Text>;
+  }
+
+  const {arrElements, setArrElements} = context;
 
   const [isActiveBtn, setIsActiveBtn] = useState<boolean>(true);
   const [countWall, setCountWall] = useState('');
   const [sizeWalls, setSizeWalls] = useState<any[]>([]);
-  // const [arrElements, setArrElements] = useState([]);
-  const onSaveSizeWall = (currentSizeWall: any) => {
+  const onSaveSizeWall = (currentSizeWall: any, numberWall: number) => {
     setSizeWalls(prev => {
-      let updateDateWalls = [...prev, {currentSizeWall}];
+      let updateDateWalls = [...prev, {currentSizeWall, id: numberWall}];
       return updateDateWalls;
     });
   };
@@ -86,7 +92,6 @@ export default function FormDataAddProductScreen() {
               <AddSizeWall
                 numberWall={index + 1}
                 onSaveSizeWall={onSaveSizeWall}
-                setSizeWalls={(data: any) => setSizeWalls(data)}
                 key={index}
               />
             );

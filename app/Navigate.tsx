@@ -15,8 +15,9 @@ import PrivacyPolicy from '../ui/components/PrivacyPolicy/PrivacyPolicy';
 import UnwrappedProductScreen from '../ui/screens/UnwrappedProductScreen';
 import FormDataAddProductScreen from '../ui/screens/FormDataAddProductScreen';
 import ProductScreen from '../ui/screens/ProductScreen';
+import {RootStackParamList} from '../shared/types';
 
-const Stack = createStackNavigator();
+const Stack = createStackNavigator<RootStackParamList>();
 
 function Navigate() {
   return (

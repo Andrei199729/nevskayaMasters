@@ -1,8 +1,8 @@
-import {Text, Pressable, StyleSheet, View} from 'react-native';
-import {Colors, Fonts, Gaps} from '../tokens';
-import {NavigationProp} from '@react-navigation/native';
+import {StyleSheet, View} from 'react-native';
+import {Gaps} from '../tokens';
 import ButtonLink from '../ButtonLink/ButtonLink';
 import DownloadIcon from '../../assets/images/icon/iconFunc/downloadIcon';
+import {RootNavigationProp} from '../types';
 
 function ButtonDownload({
   navigationPath,
@@ -16,7 +16,7 @@ function ButtonDownload({
   return (
     <View style={styles.buttonDownload}>
       <DownloadIcon />
-      <ButtonLink navigationPath={undefined} textBtn={textBtn} />
+      <ButtonLink navigationPath={''} textBtn={textBtn} />
     </View>
   );
 }

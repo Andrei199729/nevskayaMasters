@@ -1,5 +1,5 @@
 import {Modal, View, Pressable, Text, StyleSheet} from 'react-native';
-import {IDataElementsWall, IModalWall} from '../../../shared/types';
+import {IDataElementsWall, IModal} from '../../../shared/types';
 import {Colors} from '../../../shared/tokens';
 import {useState} from 'react';
 import ModalFormElement from '../ModalFormElement/ModalFormElement';
@@ -17,10 +17,10 @@ export default function ModalSizesElement({
   element,
   elementsData,
   setElementsData,
-  // onSaveElementSize,
+  onSaveElementSize,
   setModalVisibleWall,
   ...props
-}: IModalWall & any) {
+}: any) {
   const [isVisibleEditModal, setIsVisibleEditModal] = useState<boolean>(false);
   const onClickModalClose = () => {
     setVisible(position, false);
@@ -47,7 +47,6 @@ export default function ModalSizesElement({
   };
 
   const onClickEdit = () => {
-    console.log('edit');
     setDataEditElement({
       nameElementWall: nameElement,
       locationElementTop: element.data.locationElementTop,
@@ -62,8 +61,6 @@ export default function ModalSizesElement({
     });
     setIsVisibleEditModal(true);
   };
-
-  // console.log(dataEditElement, 'dataEditElement');
 
   return (
     <Modal

@@ -10,33 +10,35 @@ import {
 import React, {useEffect, useState} from 'react';
 import {Colors, Fonts} from '../../../shared/tokens';
 import {
-  IAddBlockDimensions,
+  IArrElementsWall,
+  IElementWall,
+  IElementWallData,
   IModalWall,
-  IWallData,
+  TDataObjElement,
 } from '../../../shared/types';
 import ModalElementsWall from '../ModalElementsWall/ModalElementsWall';
 import ElementWallAdd from '../ElementWallAdd/ElementWallAdd';
-import ElementsProducts from '../../../shared/ElementsProducts/ElementsProducts';
 
 export default function ModalWall({
   numberWall,
   saveSizeWall,
   modalVisible,
   setModalVisible,
-  addElement,
-  onSaveElementSize,
   setArrElements,
   arrElements,
   ...props
-}: IModalWall & any) {
+}: any) {
   const [elementsWallModalVisible, setElementsWallModalVisible] =
     useState<boolean>(false);
-  const [elementsData, setElementsData] = useState<any[]>(arrElements || []);
-  const [dataObj, setDataObj] = useState({
+  const [elementsData, setElementsData] = useState<IArrElementsWall[]>(
+    arrElements || [],
+  );
+  const [dataObj, setDataObj] = useState<TDataObjElement>({
     nameElement: '',
     stateElement: '',
     id: 0,
   });
+  const [indexElement, setIndexElement] = useState(0);
   const [visibleElements, setVisibleElements] = useState<{
     [key: number]: boolean;
   }>({});
@@ -49,16 +51,25 @@ export default function ModalWall({
       ...prev,
       [index]: isVisible, // Устанавливаем видимость только для конкретного элемента
     }));
+    console.log(visibleElements);
   };
-  const onSaveElement = (dataEl: any) => {
+
+  const onSaveElement = (dataEl: TDataObjElement, index: number) => {
     setDataObj(prev => {
       const update = {...prev, ...dataEl};
+      setIndexElement(index);
       return update;
     });
   };
-  const onSaveDataElement = (data: any) => {
-    setElementsData(prev => {
-      let updateDate = [...prev, {data, dataObj}];
+  const onSaveDataElement = (data: IElementWallData) => {
+    setElementsData((prev: any) => {
+      const newElement: IElementWall = {
+        numberElement: indexElement,
+        data,
+        dataObj,
+      };
+      let updateDate = [...prev, newElement];
+
       setArrElements(updateDate);
       return updateDate;
     });
@@ -72,6 +83,7 @@ export default function ModalWall({
       setElementsData(arrElements);
     }
   }, [arrElements]);
+
   return (
     <>
       <Modal
@@ -89,14 +101,18 @@ export default function ModalWall({
                   left: '10%',
                   zIndex: 4,
                 }}>
-                {elementsData?.map((element: any, index: any) => {
+                {elementsData?.map((element, index) => {
                   return (
                     <ElementWallAdd
                       key={index}
                       element={element}
                       position={index}
-                      nameElement={element.dataObj.nameElement}
-                      stateElement={element.dataObj.stateElement}
+                      nameElement={
+                        element.dataObj ? element.dataObj.nameElement : ''
+                      }
+                      stateElement={
+                        element.dataObj ? element.dataObj.stateElement : ''
+                      }
                       onPressVisible={() =>
                         toggleElementVisibility(index, true)
                       }

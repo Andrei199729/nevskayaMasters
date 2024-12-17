@@ -1,24 +1,18 @@
 import {StyleSheet, Text, View} from 'react-native';
-import MainScreen from '../../screens/MainScreen';
-import HeaderScreen from '../../screens/HeaderScreen';
 import React, {useState} from 'react';
-import PopupScreen from '../../screens/PopupScreen';
 import {Input} from '../../../shared/Input/Input';
 import ButtonCustom from '../../../shared/ButtonCustom/ButtonCustom';
-import {Colors} from '../../../shared/tokens';
 import {validateNumber} from '../../../customFunc/customFunc';
-import {IWallData} from '../../../shared/types';
+import {TNumberObject} from '../../../shared/types';
 
 interface IAddSizeWall {
   numberWall: number;
-  onSaveSizeWall: any;
-  setSizeWalls: any;
+  onSaveSizeWall: (wallData: TNumberObject, numberWall: number) => void;
 }
 
 export default function AddSizeWall({
   numberWall,
   onSaveSizeWall,
-  setSizeWalls,
 }: IAddSizeWall) {
   const [heightRight, setHeightRight] = useState<string>('');
   const [widthTop, setWidthTop] = useState<string>('');
@@ -33,8 +27,6 @@ export default function AddSizeWall({
     const validHeightLeft = validateNumber(heightLeft);
     const validWidthTop = validateNumber(widthTop);
     const validWidthBottom = validateNumber(widthBottom);
-    const validWallAngleDegree = validateNumber(wallAngleDegree);
-    const validRadiusWall = validateNumber(radiusWall);
 
     if (
       validHeightRight &&
@@ -50,7 +42,7 @@ export default function AddSizeWall({
         wallAngleDegree,
         radiusWall,
       };
-      onSaveSizeWall(wallData);
+      onSaveSizeWall(wallData, numberWall);
     }
     setViewInput(false);
   };

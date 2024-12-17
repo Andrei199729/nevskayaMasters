@@ -1,11 +1,11 @@
 import {Modal, View, Pressable, Text, StyleSheet} from 'react-native';
 import {useEffect, useState} from 'react';
-import {IModalWall} from '../../../shared/types';
+import {IModal} from '../../../shared/types';
 import {Colors} from '../../../shared/tokens';
 import {Input} from '../../../shared/Input/Input';
 import ButtonCustom from '../../../shared/ButtonCustom/ButtonCustom';
 import useInput from '../../../hooks/useInput';
-interface IModalFormElement extends IModalWall {
+interface IModalFormElement extends IModal {
   nameElementWall: string;
 }
 export default function ModalFormElement({

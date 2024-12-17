@@ -7,7 +7,14 @@ import {DataContext} from '../../context/DataProvider';
 
 export default function ProductScreen({navigation, route, ...props}: any) {
   const {productRoom} = route.params || {};
-  const {arrElements, setArrElements} = useContext(DataContext);
+  const context = useContext(DataContext);
+
+  // Если контекст равен null, возвращаем заглушку
+  if (!context) {
+    return <Text>Loading...</Text>;
+  }
+
+  const {arrElements, setArrElements} = context;
 
   return (
     <HeaderScreen>

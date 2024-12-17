@@ -1,16 +1,9 @@
-import {Modal, Pressable, StyleSheet, Text, View} from 'react-native';
-import MainScreen from '../../screens/MainScreen';
-import HeaderScreen from '../../screens/HeaderScreen';
-import React, {useEffect, useState} from 'react';
-import PopupScreen from '../../screens/PopupScreen';
-import {Input} from '../../../shared/Input/Input';
-import ButtonCustom from '../../../shared/ButtonCustom/ButtonCustom';
+import {Pressable, StyleSheet, Text, View} from 'react-native';
+import React, {useState} from 'react';
 import {Colors, Fonts} from '../../../shared/tokens';
-import {IAddBlockDimensions, IWallData} from '../../../shared/types';
 import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import ModalWall from '../ModalWall/ModalWall';
-import ElementWall from '../ElementWall/ElementWall';
-import ElementWallAdd from '../ElementWallAdd/ElementWallAdd';
+import {IDataWall} from '../../../shared/types';
 
 export default function AddBlockDimensions({
   numberWall,

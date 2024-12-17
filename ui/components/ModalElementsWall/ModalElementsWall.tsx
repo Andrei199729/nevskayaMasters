@@ -1,5 +1,5 @@
 import {Modal, View, Pressable, Text, StyleSheet} from 'react-native';
-import {IDataElementsWall, IModalWall} from '../../../shared/types';
+import {IDataElementsWall, IModal} from '../../../shared/types';
 import {Colors} from '../../../shared/tokens';
 import {useEffect, useState} from 'react';
 import ModalFormElement from '../ModalFormElement/ModalFormElement';
@@ -12,16 +12,17 @@ export default function ModalElementsWall({
   numberWall,
   saveSizeWall,
   onSaveElement,
+  position,
   onSaveElementSize,
   ...props
-}: IModalWall & any) {
+}: any) {
   const [element, setElement] = useState(false);
   const [nameElementWall, setNameElementWall] = useState<any>([]);
 
-  const onClickElement = async (data: IDataElementsWall, index: number) => {
+  const onClickElement = async (data: any, index: number) => {
     setElement(!element);
     setNameElementWall(data);
-    onSaveElement(data); // Сохраняем данные только при наличии данных
+    onSaveElement(data, index); // Сохраняем данные только при наличии данных
   };
 
   return (

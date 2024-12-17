@@ -1,6 +1,7 @@
 import {Text, Pressable, StyleSheet} from 'react-native';
 import {Colors, Fonts} from '../tokens';
 import {NavigationProp} from '@react-navigation/native';
+import {RootNavigationProp, RootStackParamList} from '../types';
 
 function ButtonLink({
   navigationPath,
@@ -11,10 +12,13 @@ function ButtonLink({
   textBtn?: string;
   path?: string;
 }) {
+  const handlePress = () => {
+    // Для экрана Main передаем объект с именем
+    navigationPath.navigate(path, {name: textBtn || ''});
+  };
+
   return (
-    <Pressable
-      onPress={() => navigationPath.navigate(path, {name: textBtn})}
-      style={styles.button}>
+    <Pressable onPress={handlePress} style={styles.button}>
       <Text style={styles.buttonText}>{textBtn}</Text>
     </Pressable>
   );
