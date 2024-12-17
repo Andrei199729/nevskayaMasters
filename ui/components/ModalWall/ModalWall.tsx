@@ -10,11 +10,11 @@ import {
 import React, {useEffect, useState} from 'react';
 import {Colors, Fonts} from '../../../shared/tokens';
 import {
-  IArrElementsWall,
-  IElementWall,
-  IElementWallData,
+  // IArrElementsWall,
+  // IElementWall,
+  // IElementWallData,
   IModalWall,
-  TDataObjElement,
+  // TDataObjElement,
 } from '../../../shared/types';
 import ModalElementsWall from '../ModalElementsWall/ModalElementsWall';
 import ElementWallAdd from '../ElementWallAdd/ElementWallAdd';
@@ -30,10 +30,8 @@ export default function ModalWall({
 }: any) {
   const [elementsWallModalVisible, setElementsWallModalVisible] =
     useState<boolean>(false);
-  const [elementsData, setElementsData] = useState<IArrElementsWall[]>(
-    arrElements || [],
-  );
-  const [dataObj, setDataObj] = useState<TDataObjElement>({
+  const [elementsData, setElementsData] = useState<any[]>(arrElements || []);
+  const [dataObj, setDataObj] = useState<any>({
     nameElement: '',
     stateElement: '',
     id: 0,
@@ -54,16 +52,16 @@ export default function ModalWall({
     console.log(visibleElements);
   };
 
-  const onSaveElement = (dataEl: TDataObjElement, index: number) => {
-    setDataObj(prev => {
+  const onSaveElement = (dataEl: any, index: number) => {
+    setDataObj((prev: any) => {
       const update = {...prev, ...dataEl};
       setIndexElement(index);
       return update;
     });
   };
-  const onSaveDataElement = (data: IElementWallData) => {
+  const onSaveDataElement = (data: any) => {
     setElementsData((prev: any) => {
-      const newElement: IElementWall = {
+      const newElement: any = {
         numberElement: indexElement,
         data,
         dataObj,
@@ -107,12 +105,8 @@ export default function ModalWall({
                       key={index}
                       element={element}
                       position={index}
-                      nameElement={
-                        element.dataObj ? element.dataObj.nameElement : ''
-                      }
-                      stateElement={
-                        element.dataObj ? element.dataObj.stateElement : ''
-                      }
+                      nameElement={element.dataObj.nameElement}
+                      stateElement={element.dataObj.stateElement}
                       onPressVisible={() =>
                         toggleElementVisibility(index, true)
                       }

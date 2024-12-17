@@ -1,5 +1,5 @@
 import {Modal, View, Pressable, Text, StyleSheet} from 'react-native';
-import {IDataElementsWall, IModal} from '../../../shared/types';
+// import {IDataElementsWall, IModal} from '../../../shared/types';
 import {Colors} from '../../../shared/tokens';
 import {useState} from 'react';
 import ModalFormElement from '../ModalFormElement/ModalFormElement';

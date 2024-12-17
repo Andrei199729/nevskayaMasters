@@ -2,7 +2,10 @@ import {Dimensions, ScrollView, StyleSheet, Text, View} from 'react-native';
 import HeaderScreen from './HeaderScreen';
 import MainScreen from './MainScreen';
 import ObjectApplication from '../../shared/ObjectApplication/ObjectApplication';
-import {IElementWall, IWallData, ObjectStatus} from '../../shared/types';
+import {
+  // IElementWall, IWallData,
+  ObjectStatus,
+} from '../../shared/types';
 import {Colors, Gaps, Radius} from '../../shared/tokens';
 import Square from '../components/Square/Square';
 import ButtonCustom from '../../shared/ButtonCustom/ButtonCustom';

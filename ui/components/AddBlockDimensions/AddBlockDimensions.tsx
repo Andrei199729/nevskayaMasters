@@ -3,7 +3,7 @@ import React, {useState} from 'react';
 import {Colors, Fonts} from '../../../shared/tokens';
 import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import ModalWall from '../ModalWall/ModalWall';
-import {IDataWall} from '../../../shared/types';
+// import {IDataWall} from '../../../shared/types';
 
 export default function AddBlockDimensions({
   numberWall,
