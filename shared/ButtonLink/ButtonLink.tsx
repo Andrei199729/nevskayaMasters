@@ -7,7 +7,7 @@ function ButtonLink({
   textBtn,
   path,
 }: {
-  navigationPath: any;
+  navigationPath?: any;
   textBtn?: string;
   path?: string;
 }) {

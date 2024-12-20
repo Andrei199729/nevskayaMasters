@@ -6,6 +6,7 @@ import {useEffect, useState} from 'react';
 import HeaderScreen from './HeaderScreen';
 import {
   INavigationScreenProps,
+  IProductRoom,
   ISelectOption,
   ObjectStatus,
   PathScreen,
@@ -40,10 +41,11 @@ function UnwrappedProductScreen({
 }: IUnwrappedProductScreen) {
   const {dataProduct, nameRoom, arrElements} = route.params || {};
 
-  const [productsRooms, setProductsRooms] = useState<any>([]);
+  const [productsRooms, setProductsRooms] = useState<IProductRoom[]>([]);
+
   useEffect(() => {
     if (nameRoom) {
-      setProductsRooms((prevProducts: any) => [
+      setProductsRooms((prevProducts: IProductRoom[]) => [
         ...prevProducts,
         {
           nameRoom: nameRoom,
@@ -53,11 +55,12 @@ function UnwrappedProductScreen({
       ]);
     }
   }, [nameRoom]);
+
   const onClickAddProduct = () => {
     navigation.navigate('FormDataAddProduct');
   };
 
-  const onClickLinkProduct = (productRoom: any) => {
+  const onClickLinkProduct = (productRoom: IProductRoom) => {
     navigation.navigate('Product', {
       productRoom: productRoom,
     });
@@ -86,7 +89,7 @@ function UnwrappedProductScreen({
             <ButtonAddProduct onClickAddProduct={onClickAddProduct} />
           </View>
           <View style={styles.boxTitle}>
-            {productsRooms?.map((productRoom: any, index: any) => {
+            {productsRooms?.map((productRoom: IProductRoom, index: number) => {
               return (
                 <Pressable
                   key={index}
@@ -102,14 +105,8 @@ function UnwrappedProductScreen({
         </View>
         <View style={styles.boxTitle}>
           <Title title="Файлы от менеджера" />
-          <ButtonDownload
-            navigationPath={undefined}
-            textBtn="Полезный файл от менеджера"
-          />
-          <ButtonDownload
-            navigationPath={undefined}
-            textBtn="Полезный файл от менеджера №2"
-          />
+          <ButtonDownload textBtn="Полезный файл от менеджера" />
+          <ButtonDownload textBtn="Полезный файл от менеджера №2" />
         </View>
         <View style={styles.boxTitle}>
           <Title title="Комментарий к заявке" />

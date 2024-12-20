@@ -4,19 +4,11 @@ import {NavigationProp} from '@react-navigation/native';
 import ButtonLink from '../ButtonLink/ButtonLink';
 import DownloadIcon from '../../assets/images/icon/iconFunc/downloadIcon';
 
-function ButtonDownload({
-  navigationPath,
-  textBtn,
-  path,
-}: {
-  navigationPath: any;
-  textBtn?: string;
-  path?: string;
-}) {
+function ButtonDownload({textBtn, path}: {textBtn?: string; path?: string}) {
   return (
     <View style={styles.buttonDownload}>
       <DownloadIcon />
-      <ButtonLink navigationPath={undefined} textBtn={textBtn} />
+      <ButtonLink textBtn={textBtn} />
     </View>
   );
 }

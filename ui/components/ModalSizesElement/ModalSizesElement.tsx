@@ -40,14 +40,12 @@ export default function ModalSizesElement({
     const updatedElements = elementsData.map((item: any, index: number) =>
       index === position ? {...item, data: updatedData} : item,
     );
-    console.log(updatedElements, 'updatedElements');
 
     setElementsData(updatedElements); // Обновляем состояние
     setIsVisibleEditModal(false); // Закрываем модальное окно редактирования
   };
 
   const onClickEdit = () => {
-    console.log('edit');
     setDataEditElement({
       nameElementWall: nameElement,
       locationElementTop: element.data.locationElementTop,
@@ -62,8 +60,6 @@ export default function ModalSizesElement({
     });
     setIsVisibleEditModal(true);
   };
-
-  // console.log(dataEditElement, 'dataEditElement');
 
   return (
     <Modal

@@ -2,6 +2,7 @@ import {View, Text, StyleSheet, Pressable} from 'react-native';
 import {Colors} from '../../../shared/tokens';
 import ModalSizesElement from '../ModalSizesElement/ModalSizesElement';
 import {useState} from 'react';
+import {StateElement} from '../../../shared/types';
 
 export default function ElementWallAdd({
   nameElement,
@@ -10,13 +11,8 @@ export default function ElementWallAdd({
   onPressVisible,
   dataSizeElement,
   addedElement,
-  modalVisibleSizes,
   setVisible,
-  isActive,
-  dataElement,
-  isModalVisible,
   selectedElement,
-  onSaveDataElement,
   element,
   isVisible,
   elementsData,
@@ -32,27 +28,27 @@ export default function ElementWallAdd({
           <Text>
             {position + 1} {nameElement}
           </Text>
-          {stateElement === 'ventilation' && (
+          {stateElement === StateElement.Ventilation && (
             <View style={styles.elementVentilation}></View>
           )}
-          {stateElement === 'elementDoor' && (
+          {stateElement === StateElement.Door && (
             <View style={styles.elementDoor}></View>
           )}
-          {stateElement === 'elementWindow' && (
+          {stateElement === StateElement.Window && (
             <View
               style={{
                 ...styles.elementWindow,
                 backgroundColor: Colors.green,
               }}></View>
           )}
-          {stateElement === 'elementSocket' && (
+          {stateElement === StateElement.Socket && (
             <View
               style={{
                 ...styles.elementWindow,
                 backgroundColor: Colors.red,
               }}></View>
           )}
-          {stateElement === 'elementBattery' && (
+          {stateElement === StateElement.Battery && (
             <View
               style={{
                 ...styles.elementWindow,

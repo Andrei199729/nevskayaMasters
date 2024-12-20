@@ -11,6 +11,9 @@ import React, {useEffect, useState} from 'react';
 import {Colors, Fonts} from '../../../shared/tokens';
 import {
   IAddBlockDimensions,
+  IArrElements,
+  IDataElementsWall,
+  IElementData,
   IModalWall,
   IWallData,
 } from '../../../shared/types';
@@ -31,7 +34,9 @@ export default function ModalWall({
 }: IModalWall & any) {
   const [elementsWallModalVisible, setElementsWallModalVisible] =
     useState<boolean>(false);
-  const [elementsData, setElementsData] = useState<any[]>(arrElements || []);
+  const [elementsData, setElementsData] = useState<IArrElements[]>(
+    arrElements || [],
+  );
   const [dataObj, setDataObj] = useState({
     nameElement: '',
     stateElement: '',
@@ -50,13 +55,13 @@ export default function ModalWall({
       [index]: isVisible, // Устанавливаем видимость только для конкретного элемента
     }));
   };
-  const onSaveElement = (dataEl: any) => {
+  const onSaveElement = (dataEl: IDataElementsWall) => {
     setDataObj(prev => {
       const update = {...prev, ...dataEl};
       return update;
     });
   };
-  const onSaveDataElement = (data: any) => {
+  const onSaveDataElement = (data: IElementData) => {
     setElementsData(prev => {
       let updateDate = [...prev, {data, dataObj}];
       setArrElements(updateDate);

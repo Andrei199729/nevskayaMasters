@@ -1,5 +1,6 @@
 import React from 'react';
 import ElementWallAdd from '../../ui/components/ElementWallAdd/ElementWallAdd';
+import {IArrElements, IElementsProducts} from '../types';
 
 export default function ElementsProducts({
   elementsData,
@@ -8,10 +9,10 @@ export default function ElementsProducts({
   setElementsData,
   onSaveDataElement,
   setElementsWallModalVisible,
-}: any) {
+}: IElementsProducts) {
   return (
     <>
-      {elementsData?.map((element: any, index: any) => {
+      {elementsData?.map((element, index) => {
         return (
           <ElementWallAdd
             key={index}
