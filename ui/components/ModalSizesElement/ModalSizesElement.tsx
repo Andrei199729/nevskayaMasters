@@ -1,44 +1,55 @@
-import {Modal, View, Pressable, Text, StyleSheet} from 'react-native';
-import {IDataElementsWall, IModalWall} from '../../../shared/types';
+import {Modal, View, Text, StyleSheet} from 'react-native';
+import {IArrElements, IElementData, IModalWall} from '../../../shared/types';
 import {Colors} from '../../../shared/tokens';
 import {useState} from 'react';
 import ModalFormElement from '../ModalFormElement/ModalFormElement';
-import ElementWall from '../ElementWall/ElementWall';
-import {arrDataElementsWall} from '../../../shared/texts';
 import ButtonCustom from '../../../shared/ButtonCustom/ButtonCustom';
+
+interface IModalSizesElement {
+  setVisible: (position: number, bool: boolean) => void;
+  isVisible: {[key: number]: boolean};
+  nameElement: string;
+  position: number;
+  element: IArrElements;
+  elementsData: IArrElements[];
+  setElementsData: (elementData: IArrElements[]) => void;
+  setModalVisibleWall: (visible: boolean) => void;
+}
 
 export default function ModalSizesElement({
   setVisible,
   isVisible,
   nameElement,
   position,
-  dataSizeElement,
-  selectedElement,
   element,
   elementsData,
   setElementsData,
-  // onSaveElementSize,
   setModalVisibleWall,
   ...props
-}: IModalWall & any) {
+}: IModalSizesElement) {
   const [isVisibleEditModal, setIsVisibleEditModal] = useState<boolean>(false);
   const onClickModalClose = () => {
     setVisible(position, false);
   };
 
-  const [dataEditElement, setDataEditElement] = useState<any>({});
+  const [dataEditElement, setDataEditElement] = useState<IElementData>(
+    {} as IElementData,
+  );
 
   const onDeleteElement = () => {
     const filteredObject = elementsData.filter(
-      (item: any, index: number) => index !== position,
+      (item: IArrElements, index: number) => index !== position,
     );
     setElementsData(filteredObject);
     setVisible(position, false);
   };
 
-  const onSaveEditedElement = (updatedData: any) => {
-    const updatedElements = elementsData.map((item: any, index: number) =>
-      index === position ? {...item, data: updatedData} : item,
+  const onSaveEditedElement = (updatedData: IElementData) => {
+    console.log(JSON.stringify(updatedData, null, 2), 'updatedData');
+
+    const updatedElements = elementsData.map(
+      (item: IArrElements, index: number) =>
+        index === position ? {...item, data: updatedData} : item,
     );
 
     setElementsData(updatedElements); // Обновляем состояние

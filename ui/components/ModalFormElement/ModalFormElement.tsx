@@ -1,13 +1,22 @@
 import {Modal, View, Pressable, Text, StyleSheet} from 'react-native';
 import {useEffect, useState} from 'react';
-import {IModalWall} from '../../../shared/types';
+import {
+  IDataElementsWall,
+  IElementData,
+  IModalWall,
+} from '../../../shared/types';
 import {Colors} from '../../../shared/tokens';
 import {Input} from '../../../shared/Input/Input';
 import ButtonCustom from '../../../shared/ButtonCustom/ButtonCustom';
 import useInput from '../../../hooks/useInput';
 interface IModalFormElement extends IModalWall {
   nameElementWall: string;
+  numberWall: number;
+  setModalVisibleWall: (visible: boolean) => void;
+  onSaveElementSize: (element: IElementData) => void;
+  dataEditElement?: IElementData;
 }
+
 export default function ModalFormElement({
   modalVisible,
   setModalVisible,
@@ -17,7 +26,7 @@ export default function ModalFormElement({
   onSaveElementSize,
   dataEditElement,
   ...props
-}: IModalFormElement & any) {
+}: IModalFormElement) {
   // const locationElementTop = useInput('');
   // const locationElementRight = useInput('');
   // const locationElementLeft = useInput('');
@@ -32,7 +41,7 @@ export default function ModalFormElement({
     dataEditElement?.heightRight || '',
   );
   const [widthTop, setWidthTop] = useState<string>(
-    dataEditElement?.setWidthTop || '',
+    dataEditElement?.widthTop || '',
   );
   const [heightLeft, setHeightLeft] = useState<string>(
     dataEditElement?.heightLeft || '',

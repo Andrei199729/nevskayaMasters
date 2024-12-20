@@ -1,11 +1,20 @@
 import {Modal, View, Pressable, Text, StyleSheet} from 'react-native';
-import {IDataElementsWall, IModalWall} from '../../../shared/types';
+import {
+  IAddBlockDimensions,
+  IDataElementsWall,
+  IElementData,
+  IModalWall,
+} from '../../../shared/types';
 import {Colors} from '../../../shared/tokens';
 import {useEffect, useState} from 'react';
 import ModalFormElement from '../ModalFormElement/ModalFormElement';
 import ElementWall from '../ElementWall/ElementWall';
 import {arrDataElementsWall} from '../../../shared/texts';
-
+type TModalElementsWall = IModalWall &
+  IAddBlockDimensions & {
+    onSaveElement: (element: IDataElementsWall) => void;
+    onSaveElementSize: (element: IElementData) => void;
+  };
 export default function ModalElementsWall({
   modalVisible,
   setModalVisible,
@@ -14,9 +23,11 @@ export default function ModalElementsWall({
   onSaveElement,
   onSaveElementSize,
   ...props
-}: IModalWall & any) {
+}: TModalElementsWall) {
   const [element, setElement] = useState(false);
-  const [nameElementWall, setNameElementWall] = useState<any>([]);
+  const [nameElementWall, setNameElementWall] = useState<IDataElementsWall>(
+    {} as IDataElementsWall,
+  );
 
   const onClickElement = async (data: IDataElementsWall, index: number) => {
     setElement(!element);
@@ -54,7 +65,6 @@ export default function ModalElementsWall({
                   position={index + 1}
                   onPress={() => onClickElement(data, index)}
                   key={index}
-                  addedElement={false}
                 />
               );
             })}

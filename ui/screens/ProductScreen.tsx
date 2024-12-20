@@ -4,6 +4,7 @@ import MainScreen from './MainScreen';
 import AddBlockDimensions from '../components/AddBlockDimensions/AddBlockDimensions';
 import {useContext} from 'react';
 import {DataContext} from '../../context/DataProvider';
+import {IDataProduct} from '../../shared/types';
 
 export default function ProductScreen({navigation, route, ...props}: any) {
   const {productRoom} = route.params || {};
@@ -19,7 +20,7 @@ export default function ProductScreen({navigation, route, ...props}: any) {
     <HeaderScreen>
       <MainScreen mainTitle={`Комната: ${productRoom.nameRoom}`}>
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-          {productRoom?.dataProduct.map((room: any, index: number) => {
+          {productRoom?.dataProduct.map((room: IDataProduct, index: number) => {
             return (
               <AddBlockDimensions
                 numberWall={index + 1}

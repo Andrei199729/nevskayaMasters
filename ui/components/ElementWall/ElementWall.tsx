@@ -8,6 +8,7 @@ interface IElementWall {
   position: number;
   onPress: () => void;
 }
+
 export default function ElementWall({
   nameElement,
   stateElement,

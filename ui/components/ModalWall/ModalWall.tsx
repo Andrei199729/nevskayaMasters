@@ -10,16 +10,19 @@ import {
 import React, {useEffect, useState} from 'react';
 import {Colors, Fonts} from '../../../shared/tokens';
 import {
-  IAddBlockDimensions,
   IArrElements,
+  IDataContext,
   IDataElementsWall,
   IElementData,
   IModalWall,
-  IWallData,
 } from '../../../shared/types';
 import ModalElementsWall from '../ModalElementsWall/ModalElementsWall';
 import ElementWallAdd from '../ElementWallAdd/ElementWallAdd';
-import ElementsProducts from '../../../shared/ElementsProducts/ElementsProducts';
+type TModalWall = IModalWall &
+  IDataContext & {
+    addElement?: boolean;
+    onSaveElementSize?: (element: IElementData) => void;
+  };
 
 export default function ModalWall({
   numberWall,
@@ -31,7 +34,7 @@ export default function ModalWall({
   setArrElements,
   arrElements,
   ...props
-}: IModalWall & any) {
+}: TModalWall) {
   const [elementsWallModalVisible, setElementsWallModalVisible] =
     useState<boolean>(false);
   const [elementsData, setElementsData] = useState<IArrElements[]>(
@@ -94,7 +97,7 @@ export default function ModalWall({
                   left: '10%',
                   zIndex: 4,
                 }}>
-                {elementsData?.map((element: any, index: any) => {
+                {elementsData?.map((element, index) => {
                   return (
                     <ElementWallAdd
                       key={index}
@@ -109,7 +112,6 @@ export default function ModalWall({
                       setVisible={toggleElementVisibility}
                       elementsData={elementsData}
                       setElementsData={setElementsData}
-                      onSaveElementSize={onSaveDataElement}
                       setModalVisibleWall={setElementsWallModalVisible}
                     />
                   );

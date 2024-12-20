@@ -19,17 +19,6 @@ import AddBlockDimensions from '../components/AddBlockDimensions/AddBlockDimensi
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {DataContext} from '../../context/DataProvider';
 
-interface IObjProduct {
-  nameRoom?: string;
-  countWall?: string;
-  widthTop: string;
-  widthBottom: string;
-  heightLeft: string;
-  heightRight: string;
-  radiusWall: string;
-  wallAngleDegree: string;
-}
-
 export default function FormDataAddProductScreen() {
   const navigation =
     useNavigation<
@@ -104,7 +93,6 @@ export default function FormDataAddProductScreen() {
               <AddSizeWall
                 numberWall={index + 1}
                 onSaveSizeWall={onSaveSizeWall}
-                setSizeWalls={(data: any) => setSizeWalls(data)}
                 key={index}
               />
             );

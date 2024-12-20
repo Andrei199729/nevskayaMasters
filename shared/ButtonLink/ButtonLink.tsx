@@ -11,10 +11,13 @@ function ButtonLink({
   textBtn?: string;
   path?: string;
 }) {
+  const handlePress = () => {
+    if (navigationPath && path) {
+      navigationPath.navigate(path, {name: textBtn});
+    }
+  };
   return (
-    <Pressable
-      onPress={() => navigationPath.navigate(path, {name: textBtn})}
-      style={styles.button}>
+    <Pressable onPress={handlePress} style={styles.button}>
       <Text style={styles.buttonText}>{textBtn}</Text>
     </Pressable>
   );
