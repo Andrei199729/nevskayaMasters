@@ -5,36 +5,43 @@ import useInput from '../../hooks/useInput';
 import SelectCustom from '../../shared/SelectCustom/SelectCustom';
 import {arrCountWall} from '../../shared/texts';
 import AddSizeWall from '../components/AddSizeWall/AddSizeWall';
-import {IWallData} from '../../shared/types';
+import {
+  IDataElementsWall,
+  IDataFull,
+  IDataProduct,
+  INavigationScreenProps,
+  IWallData,
+  PathScreen,
+  RootStackParamList,
+} from '../../shared/types';
 import ButtonCustom from '../../shared/ButtonCustom/ButtonCustom';
 import AddBlockDimensions from '../components/AddBlockDimensions/AddBlockDimensions';
-import {useNavigation} from '@react-navigation/native';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {DataContext} from '../../context/DataProvider';
 
-interface IObjProduct {
-  nameRoom?: string;
-  countWall?: string;
-  widthTop: string;
-  widthBottom: string;
-  heightLeft: string;
-  heightRight: string;
-  radiusWall: string;
-  wallAngleDegree: string;
-}
-
 export default function FormDataAddProductScreen() {
-  const navigation = useNavigation<any>();
+  const navigation =
+    useNavigation<
+      NavigationProp<RootStackParamList, PathScreen.UnwrappedProduct>
+    >();
   const nameRoom = useInput('');
   const [selectedTextDefault, setSelectedTextDefault] = useState({
     defaultCount: 'Выберите количество стен',
   });
-  const {arrElements, setArrElements} = useContext(DataContext);
+
+  const dataContext = useContext(DataContext);
+
+  if (!dataContext) {
+    return null;
+  }
+
+  const {arrElements, setArrElements} = dataContext;
 
   const [isActiveBtn, setIsActiveBtn] = useState<boolean>(true);
   const [countWall, setCountWall] = useState('');
-  const [sizeWalls, setSizeWalls] = useState<any[]>([]);
+  const [sizeWalls, setSizeWalls] = useState<IDataProduct[]>([]);
   // const [arrElements, setArrElements] = useState([]);
-  const onSaveSizeWall = (currentSizeWall: any) => {
+  const onSaveSizeWall = (currentSizeWall: IWallData) => {
     setSizeWalls(prev => {
       let updateDateWalls = [...prev, {currentSizeWall}];
       return updateDateWalls;
@@ -70,7 +77,7 @@ export default function FormDataAddProductScreen() {
         <View>
           <Text>Введите размеры стен</Text>
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-            {sizeWalls?.map((wall: any, index: number) => {
+            {sizeWalls?.map((wall, index) => {
               return (
                 <AddBlockDimensions
                   numberWall={index + 1}
@@ -86,7 +93,6 @@ export default function FormDataAddProductScreen() {
               <AddSizeWall
                 numberWall={index + 1}
                 onSaveSizeWall={onSaveSizeWall}
-                setSizeWalls={(data: any) => setSizeWalls(data)}
                 key={index}
               />
             );

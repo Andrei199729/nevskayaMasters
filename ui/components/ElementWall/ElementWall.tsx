@@ -1,23 +1,21 @@
 import {View, Text, StyleSheet, Pressable} from 'react-native';
 import {Colors} from '../../../shared/tokens';
-import ModalSizesElement from '../ModalSizesElement/ModalSizesElement';
+import {IDataElementsWall} from '../../../shared/types';
+
+interface IElementWall {
+  nameElement: string;
+  stateElement: string;
+  position: number;
+  onPress: () => void;
+}
 
 export default function ElementWall({
   nameElement,
   stateElement,
   position,
   onPress,
-  dataSizeElement,
-  addedElement,
-  modalVisibleSizes,
-  setIsModalVisible,
-  isActive,
-  dataElement,
-  isModalVisible,
-  selectedElement,
-  element,
   ...props
-}: any) {
+}: IElementWall) {
   return (
     <Pressable onPress={onPress}>
       <View style={{flexDirection: 'row', gap: 10}}>

@@ -21,6 +21,19 @@ export enum PathScreenAuth {
   NewPassword = 'NewPassword',
 }
 
+export enum PathScreen {
+  Product = 'Product',
+  UnwrappedProduct = 'UnwrappedProduct',
+}
+
+export enum StateElement {
+  Ventilation = 'ventilation',
+  Door = 'elementDoor',
+  Window = 'elementWindow',
+  Socket = 'elementSocket',
+  Battery = 'elementBattery',
+}
+
 export interface IMainScreen {
   children: ReactNode;
   mainTitle?: string;
@@ -49,8 +62,25 @@ export interface IWallData {
   radiusWall?: string;
 }
 
+export type RootStackParamList = {
+  LoginScreen: undefined;
+  NewPassword: undefined;
+  RegisterScreen: undefined;
+  RestorePasswordScreen: undefined;
+  Success: undefined;
+  SuccessScreen: undefined;
+  FormDataAddProduct: undefined;
+  Main: undefined;
+  UnwrappedProduct: {
+    dataProduct: any;
+    nameRoom: string;
+    arrElements: any;
+  };
+  Product: {productRoom: any};
+};
+
 export interface INavigationScreenProps {
-  navigation: NavigationProp<any>;
+  navigation: NavigationProp<RootStackParamList, keyof RootStackParamList>;
 }
 
 export interface IAddBlockDimensions {
@@ -67,4 +97,53 @@ export interface IDataElementsWall {
   id: number;
   nameElement: string;
   stateElement: string;
+}
+
+export interface IElementWall {
+  numberElement?: number;
+  data: IElementData;
+  dataObj: IDataElementsWall;
+}
+
+export interface IDataContext {
+  arrElements?: IElementWall[];
+  setArrElements: (elements: IElementWall[]) => void;
+}
+
+export interface IElementData {
+  nameElementWall: string;
+  heightRight: string;
+  widthTop: string;
+  widthBottom: string;
+  heightLeft: string;
+  radiusElement: string;
+  locationElementTop: string;
+  locationElementRight: string;
+  locationElementLeft: string;
+  locationElementBottom: string;
+}
+
+export interface IDataProduct {
+  currentSizeWall: IWallData;
+}
+
+export interface IArrElements {
+  data: IElementData;
+  dataObj: IDataElementsWall;
+}
+
+export interface IDataFull extends IDataElementsWall, IDataProduct {}
+
+export interface IProductRoom {
+  dataProduct: IDataProduct;
+  nameRoom: string;
+  arrElements: IArrElements[];
+}
+export interface IElementsProducts {
+  elementsData: IArrElements[];
+  toggleElementVisibility: (index: number, isVisible: boolean) => void;
+  visibleElements: boolean;
+  setElementsData: () => void;
+  onSaveDataElement: (data: IElementData) => void;
+  setElementsWallModalVisible: () => void;
 }

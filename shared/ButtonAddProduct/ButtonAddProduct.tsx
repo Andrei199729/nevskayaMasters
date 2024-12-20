@@ -1,8 +1,15 @@
-import {Animated, Pressable, StyleSheet, View} from 'react-native';
+import {Animated, Pressable, StyleSheet, View, ViewProps} from 'react-native';
 import {Radius, Colors} from '../tokens';
 import CreateTask from '../../assets/images/icon/iconFunc/createTask';
 
-export default function ButtonAddProduct({onClickAddProduct, props}: any) {
+interface IButtonAddProduct extends ViewProps {
+  onClickAddProduct: () => void;
+}
+
+export default function ButtonAddProduct({
+  onClickAddProduct,
+  ...props
+}: IButtonAddProduct) {
   return (
     <Pressable {...props} onPress={onClickAddProduct}>
       <Animated.View style={styles.buttonAdd}>

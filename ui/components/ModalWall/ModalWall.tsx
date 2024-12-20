@@ -10,13 +10,19 @@ import {
 import React, {useEffect, useState} from 'react';
 import {Colors, Fonts} from '../../../shared/tokens';
 import {
-  IAddBlockDimensions,
+  IArrElements,
+  IDataContext,
+  IDataElementsWall,
+  IElementData,
   IModalWall,
-  IWallData,
 } from '../../../shared/types';
 import ModalElementsWall from '../ModalElementsWall/ModalElementsWall';
 import ElementWallAdd from '../ElementWallAdd/ElementWallAdd';
-import ElementsProducts from '../../../shared/ElementsProducts/ElementsProducts';
+type TModalWall = IModalWall &
+  IDataContext & {
+    addElement?: boolean;
+    onSaveElementSize?: (element: IElementData) => void;
+  };
 
 export default function ModalWall({
   numberWall,
@@ -28,10 +34,12 @@ export default function ModalWall({
   setArrElements,
   arrElements,
   ...props
-}: IModalWall & any) {
+}: TModalWall) {
   const [elementsWallModalVisible, setElementsWallModalVisible] =
     useState<boolean>(false);
-  const [elementsData, setElementsData] = useState<any[]>(arrElements || []);
+  const [elementsData, setElementsData] = useState<IArrElements[]>(
+    arrElements || [],
+  );
   const [dataObj, setDataObj] = useState({
     nameElement: '',
     stateElement: '',
@@ -50,13 +58,13 @@ export default function ModalWall({
       [index]: isVisible, // Устанавливаем видимость только для конкретного элемента
     }));
   };
-  const onSaveElement = (dataEl: any) => {
+  const onSaveElement = (dataEl: IDataElementsWall) => {
     setDataObj(prev => {
       const update = {...prev, ...dataEl};
       return update;
     });
   };
-  const onSaveDataElement = (data: any) => {
+  const onSaveDataElement = (data: IElementData) => {
     setElementsData(prev => {
       let updateDate = [...prev, {data, dataObj}];
       setArrElements(updateDate);
@@ -89,7 +97,7 @@ export default function ModalWall({
                   left: '10%',
                   zIndex: 4,
                 }}>
-                {elementsData?.map((element: any, index: any) => {
+                {elementsData?.map((element, index) => {
                   return (
                     <ElementWallAdd
                       key={index}
@@ -104,7 +112,6 @@ export default function ModalWall({
                       setVisible={toggleElementVisibility}
                       elementsData={elementsData}
                       setElementsData={setElementsData}
-                      onSaveElementSize={onSaveDataElement}
                       setModalVisibleWall={setElementsWallModalVisible}
                     />
                   );

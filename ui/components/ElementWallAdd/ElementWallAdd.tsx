@@ -1,30 +1,38 @@
 import {View, Text, StyleSheet, Pressable} from 'react-native';
 import {Colors} from '../../../shared/tokens';
 import ModalSizesElement from '../ModalSizesElement/ModalSizesElement';
-import {useState} from 'react';
+import {IArrElements, StateElement} from '../../../shared/types';
+
+interface IElementWallAdd {
+  nameElement: string;
+  stateElement: string;
+  position: number;
+  onPressVisible: () => void;
+  addedElement?: boolean;
+  setVisible: (index: number, isVisible: boolean) => void;
+  element: IArrElements;
+  isVisible: {[key: number]: boolean};
+  elementsData: IArrElements[];
+  setElementsData: (elementData: IArrElements[]) => void;
+  setModalVisibleWall: (visible: boolean) => void;
+}
 
 export default function ElementWallAdd({
   nameElement,
   stateElement,
   position,
   onPressVisible,
-  dataSizeElement,
   addedElement,
-  modalVisibleSizes,
   setVisible,
-  isActive,
-  dataElement,
-  isModalVisible,
-  selectedElement,
-  onSaveDataElement,
   element,
   isVisible,
   elementsData,
   setElementsData,
-  onSaveElementSize,
   setModalVisibleWall,
   ...props
-}: any) {
+}: IElementWallAdd) {
+  console.log(JSON.stringify(element, null, 2), 'element');
+
   return (
     <View style={{position: addedElement ? 'relative' : 'static'}}>
       <Pressable onPress={onPressVisible}>
@@ -32,27 +40,27 @@ export default function ElementWallAdd({
           <Text>
             {position + 1} {nameElement}
           </Text>
-          {stateElement === 'ventilation' && (
+          {stateElement === StateElement.Ventilation && (
             <View style={styles.elementVentilation}></View>
           )}
-          {stateElement === 'elementDoor' && (
+          {stateElement === StateElement.Door && (
             <View style={styles.elementDoor}></View>
           )}
-          {stateElement === 'elementWindow' && (
+          {stateElement === StateElement.Window && (
             <View
               style={{
                 ...styles.elementWindow,
                 backgroundColor: Colors.green,
               }}></View>
           )}
-          {stateElement === 'elementSocket' && (
+          {stateElement === StateElement.Socket && (
             <View
               style={{
                 ...styles.elementWindow,
                 backgroundColor: Colors.red,
               }}></View>
           )}
-          {stateElement === 'elementBattery' && (
+          {stateElement === StateElement.Battery && (
             <View
               style={{
                 ...styles.elementWindow,
@@ -64,15 +72,11 @@ export default function ElementWallAdd({
       <ModalSizesElement
         position={position}
         nameElement={nameElement}
-        addedElement={addedElement}
         isVisible={isVisible}
         setVisible={setVisible}
-        dataSizeElement={dataSizeElement}
-        selectedElement={selectedElement}
         element={element}
         elementsData={elementsData}
         setElementsData={setElementsData}
-        onSaveElementSize={onSaveElementSize}
         setModalVisibleWall={setModalVisibleWall}
       />
     </View>

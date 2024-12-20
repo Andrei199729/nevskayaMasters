@@ -2,7 +2,7 @@ import {Dimensions, ScrollView, StyleSheet, Text, View} from 'react-native';
 import HeaderScreen from './HeaderScreen';
 import MainScreen from './MainScreen';
 import ObjectApplication from '../../shared/ObjectApplication/ObjectApplication';
-import {IWallData, ObjectStatus} from '../../shared/types';
+import {IElementWall, IWallData, ObjectStatus} from '../../shared/types';
 import {Colors, Gaps, Radius} from '../../shared/tokens';
 import Square from '../components/Square/Square';
 import ButtonCustom from '../../shared/ButtonCustom/ButtonCustom';
@@ -17,29 +17,6 @@ export default function CreateProjectScreen() {
   const [addDimensions, setAddDimensions] = useState<JSX.Element[]>([]);
   const [addSizeWall, setAddSizeWall] = useState<JSX.Element[]>([]);
 
-  const onSaveSizeWall = (currentSizeWall: any) => {
-    setAddDimensions(prev => [
-      ...prev,
-      <AddBlockDimensions
-        key={Date.now()}
-        numberWall={prev.length + 1}
-        saveSizeWall={currentSizeWall}
-      />,
-    ]);
-  };
-
-  const onAddWall = () => {
-    setAddSizeWall(prev => [
-      ...prev,
-      <AddSizeWall
-        key={Date.now()}
-        numberWall={prev.length + 1}
-        onSaveSizeWall={onSaveSizeWall}
-        setSizeWalls={() => {}}
-      />,
-    ]);
-  };
-
   return (
     <HeaderScreen>
       <MainScreen>
@@ -49,11 +26,7 @@ export default function CreateProjectScreen() {
         </ScrollView>
         <View>
           {addSizeWall}
-          <ButtonCustom
-            textBtn="Добавить стену"
-            disabledState={false}
-            onPress={onAddWall}
-          />
+          <ButtonCustom textBtn="Добавить стену" disabledState={false} />
         </View>
         <View style={styles.squares}>
           {array.map((square, index) => {
