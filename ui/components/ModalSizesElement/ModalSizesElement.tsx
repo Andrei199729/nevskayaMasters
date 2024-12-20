@@ -1,5 +1,5 @@
 import {Modal, View, Text, StyleSheet} from 'react-native';
-import {IArrElements, IElementData, IModalWall} from '../../../shared/types';
+import {IArrElements, IElementData} from '../../../shared/types';
 import {Colors} from '../../../shared/tokens';
 import {useState} from 'react';
 import ModalFormElement from '../ModalFormElement/ModalFormElement';
@@ -45,8 +45,6 @@ export default function ModalSizesElement({
   };
 
   const onSaveEditedElement = (updatedData: IElementData) => {
-    console.log(JSON.stringify(updatedData, null, 2), 'updatedData');
-
     const updatedElements = elementsData.map(
       (item: IArrElements, index: number) =>
         index === position ? {...item, data: updatedData} : item,

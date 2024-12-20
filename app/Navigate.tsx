@@ -7,7 +7,6 @@ import SuccessScreen from '../ui/screens/SuccessScreen';
 import NewPasswordScreen from '../ui/screens/NewPasswordScreen';
 import Main from '../ui/components/Main/Main';
 import React from 'react';
-import PopupScreen from '../ui/screens/PopupScreen';
 import FilterPopup from '../ui/components/FilterPopup/FilterPopup';
 import SearchPopup from '../ui/components/SearchPopup/SearchPopup';
 import CreateProjectScreen from '../ui/screens/CreateProjectScreen';

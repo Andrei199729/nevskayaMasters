@@ -1,6 +1,5 @@
 import {View, Text, StyleSheet, Pressable} from 'react-native';
 import {Colors} from '../../../shared/tokens';
-import {IDataElementsWall} from '../../../shared/types';
 
 interface IElementWall {
   nameElement: string;

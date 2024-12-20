@@ -4,7 +4,6 @@ import ButtonCustom from '../../shared/ButtonCustom/ButtonCustom';
 import {Input} from '../../shared/Input/Input';
 import {Gaps} from '../../shared/tokens';
 import {useEffect, useState} from 'react';
-import {validateEmail} from '../../customFunc/customFunc';
 import {errorTextEmailRestore} from '../../shared/texts';
 import ErrorText from '../../shared/ErrorText/ErrorText';
 import HeaderScreen from './HeaderScreen';

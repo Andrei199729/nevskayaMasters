@@ -1,6 +1,5 @@
 import {Text, Pressable, StyleSheet} from 'react-native';
 import {Colors, Fonts} from '../tokens';
-import {NavigationProp} from '@react-navigation/native';
 
 function ButtonLink({
   navigationPath,

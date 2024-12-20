@@ -1,15 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import {
-  View,
-  Text,
-  Button,
-  StyleSheet,
-  Animated,
-  Pressable,
-} from 'react-native';
+import {View, Text, StyleSheet, Animated, Pressable} from 'react-native';
 import {Calendar} from 'react-native-calendars';
 import {Colors, Radius, Fonts} from '../tokens';
-import ArrowIcon from '../../assets/images/icon/iconFunc/ArrowIcon';
 import CalendarIcon from '../../assets/images/icon/iconFunc/CalendarIcon';
 
 export default function CalendarPopup({...props}) {

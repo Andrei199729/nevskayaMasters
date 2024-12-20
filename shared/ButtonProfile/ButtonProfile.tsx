@@ -5,7 +5,7 @@ import {
   StyleSheet,
   PressableProps,
 } from 'react-native';
-import {Colors, Fonts, Radius} from '../tokens';
+import {Colors, Fonts} from '../tokens';
 
 function ButtonProfile({
   textBtn,

@@ -1,4 +1,4 @@
-import {Animated, Pressable, StyleSheet, View, ViewProps} from 'react-native';
+import {Animated, Pressable, StyleSheet, ViewProps} from 'react-native';
 import {Radius, Colors} from '../tokens';
 import CreateTask from '../../assets/images/icon/iconFunc/createTask';
 

@@ -1,11 +1,7 @@
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useState} from 'react';
 import {Colors, Fonts} from '../../../shared/tokens';
-import {
-  IAddBlockDimensions,
-  IDataContext,
-  IElementData,
-} from '../../../shared/types';
+import {IAddBlockDimensions, IDataContext} from '../../../shared/types';
 import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import ModalWall from '../ModalWall/ModalWall';
 

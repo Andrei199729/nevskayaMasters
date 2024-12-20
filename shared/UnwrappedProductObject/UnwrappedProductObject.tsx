@@ -1,6 +1,5 @@
 import {StyleSheet, Text, View} from 'react-native';
 import {Colors, Fonts, Gaps, Radius} from '../tokens';
-import PencilIcon from '../../assets/images/icon/iconFunc/pencil';
 import {ObjectStatus} from '../types';
 
 interface IObjectApplication {

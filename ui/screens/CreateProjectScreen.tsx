@@ -1,32 +1,24 @@
-import {Dimensions, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {Dimensions, StyleSheet, View} from 'react-native';
 import HeaderScreen from './HeaderScreen';
 import MainScreen from './MainScreen';
 import ObjectApplication from '../../shared/ObjectApplication/ObjectApplication';
-import {IElementWall, IWallData, ObjectStatus} from '../../shared/types';
+import {ObjectStatus} from '../../shared/types';
 import {Colors, Gaps, Radius} from '../../shared/tokens';
 import Square from '../components/Square/Square';
 import ButtonCustom from '../../shared/ButtonCustom/ButtonCustom';
-import {useEffect, useState} from 'react';
-import AddBlockDimensions from '../components/AddBlockDimensions/AddBlockDimensions';
-import AddSizeWall from '../components/AddSizeWall/AddSizeWall';
+import Draw from '../components/Draw/Draw';
 
 export default function CreateProjectScreen() {
   const array = Array.from({length: 9}).fill(0);
   const {width} = Dimensions.get('window');
   const squareSize = (width - 50) / 3;
-  const [addDimensions, setAddDimensions] = useState<JSX.Element[]>([]);
-  const [addSizeWall, setAddSizeWall] = useState<JSX.Element[]>([]);
 
   return (
     <HeaderScreen>
       <MainScreen>
         <ObjectApplication status={ObjectStatus.Created} />
-        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-          <View style={styles.containerWall}>{addDimensions}</View>
-        </ScrollView>
         <View>
-          {addSizeWall}
-          <ButtonCustom textBtn="Добавить стену" disabledState={false} />
+          <Draw />
         </View>
         <View style={styles.squares}>
           {array.map((square, index) => {

@@ -6,7 +6,6 @@ import AuthSection from '../section/AuthSection';
 import {useEffect, useState} from 'react';
 import {errorTextPassword} from '../../shared/texts';
 import ErrorText from '../../shared/ErrorText/ErrorText';
-import {validatePassword} from '../../customFunc/customFunc';
 import HeaderScreen from './HeaderScreen';
 import {INavigationScreenProps} from '../../shared/types';
 import useInput from '../../hooks/useInput';

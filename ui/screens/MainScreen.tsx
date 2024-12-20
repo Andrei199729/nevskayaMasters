@@ -1,7 +1,6 @@
-import {ReactNode, useState} from 'react';
+import {useState} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
-import Title from '../../shared/Title/Title';
-import {Colors, Gaps} from '../../shared/tokens';
+import {Colors} from '../../shared/tokens';
 import Tomorrow from '../../assets/images/icon/iconFunc/tomorrow';
 import NotProcessed from '../../assets/images/icon/iconFunc/not-processed';
 import CreateTask from '../../assets/images/icon/iconFunc/createTask';

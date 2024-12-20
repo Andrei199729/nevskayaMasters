@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import MainScreen from '../../screens/MainScreen';
 import HeaderScreen from '../../screens/HeaderScreen';
 import React from 'react';

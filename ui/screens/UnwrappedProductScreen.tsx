@@ -1,32 +1,20 @@
 import {Pressable, StyleSheet, Text, View} from 'react-native';
-import AuthSection from '../section/AuthSection';
 import ButtonCustom from '../../shared/ButtonCustom/ButtonCustom';
 import {Colors, Fonts, Gaps} from '../../shared/tokens';
 import {useEffect, useState} from 'react';
 import HeaderScreen from './HeaderScreen';
 import {
-  INavigationScreenProps,
   IProductRoom,
-  ISelectOption,
   ObjectStatus,
   PathScreen,
   RootStackParamList,
 } from '../../shared/types';
 import MainScreen from './MainScreen';
-import ObjectApplication from '../../shared/ObjectApplication/ObjectApplication';
 import UnwrappedProductObject from '../../shared/UnwrappedProductObject/UnwrappedProductObject';
 import Title from '../../shared/Title/Title';
-import Download from '../../assets/images/icon/iconFunc/downloadIcon';
 import ButtonDownload from '../../shared/ButtonDownload/ButtonDownload';
-import SelectCustom from '../../shared/SelectCustom/SelectCustom';
-import SelectProducts from '../../shared/SelectProducts/SelectProducts';
-import {arrWs} from '../../shared/texts';
 import ButtonAddProduct from '../../shared/ButtonAddProduct/ButtonAddProduct';
-import {
-  NavigationProp,
-  RouteProp,
-  useNavigation,
-} from '@react-navigation/native';
+import {NavigationProp} from '@react-navigation/native';
 
 interface IUnwrappedProductScreen {
   applicationNumber?: string;

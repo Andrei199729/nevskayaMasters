@@ -1,4 +1,4 @@
-import {Modal, View, Pressable, Text, StyleSheet} from 'react-native';
+import {Modal, View, Pressable, StyleSheet} from 'react-native';
 import {
   IAddBlockDimensions,
   IDataElementsWall,

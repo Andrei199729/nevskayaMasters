@@ -1,6 +1,5 @@
-import {Text, Pressable, StyleSheet, View} from 'react-native';
-import {Colors, Fonts, Gaps} from '../tokens';
-import {NavigationProp} from '@react-navigation/native';
+import {StyleSheet, View} from 'react-native';
+import {Gaps} from '../tokens';
 import ButtonLink from '../ButtonLink/ButtonLink';
 import DownloadIcon from '../../assets/images/icon/iconFunc/downloadIcon';
 

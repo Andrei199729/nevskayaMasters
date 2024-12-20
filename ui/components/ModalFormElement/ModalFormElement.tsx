@@ -1,10 +1,6 @@
-import {Modal, View, Pressable, Text, StyleSheet} from 'react-native';
+import {Modal, View, Text, StyleSheet} from 'react-native';
 import {useEffect, useState} from 'react';
-import {
-  IDataElementsWall,
-  IElementData,
-  IModalWall,
-} from '../../../shared/types';
+import {IElementData, IModalWall} from '../../../shared/types';
 import {Colors} from '../../../shared/tokens';
 import {Input} from '../../../shared/Input/Input';
 import ButtonCustom from '../../../shared/ButtonCustom/ButtonCustom';

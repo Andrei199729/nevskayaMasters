@@ -1,6 +1,6 @@
 import React from 'react';
 import ElementWallAdd from '../../ui/components/ElementWallAdd/ElementWallAdd';
-import {IArrElements, IElementsProducts} from '../types';
+import {IElementsProducts} from '../types';
 
 export default function ElementsProducts({
   elementsData,

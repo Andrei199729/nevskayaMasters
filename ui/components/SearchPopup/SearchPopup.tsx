@@ -8,18 +8,9 @@ import {
 } from 'react-native';
 import React, {useState} from 'react';
 import PopupScreen from '../../screens/PopupScreen';
-import {Colors, Fonts, Gaps, Radius} from '../../../shared/tokens';
+import {Colors, Fonts, Radius} from '../../../shared/tokens';
 import ButtonCustom from '../../../shared/ButtonCustom/ButtonCustom';
-import ButtonClear from '../../../shared/ButtonClear/ButtonClear';
-import SelectCustom from '../../../shared/SelectCustom/SelectCustom';
-import {
-  arrSelectCity,
-  arrSelectCompany,
-  arrSelectPay,
-  arrSelectStatus,
-  data,
-} from '../../../shared/texts';
-import CalendarElement from '../../../shared/CalendarElement/CalendarElement';
+import {data} from '../../../shared/texts';
 import {useNavigation, useNavigationState} from '@react-navigation/native';
 import {Input} from '../../../shared/Input/Input';
 import {IDataItem} from '../../../shared/types';

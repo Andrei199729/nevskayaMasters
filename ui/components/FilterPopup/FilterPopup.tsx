@@ -1,5 +1,5 @@
 import {StyleSheet, Text, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import PopupScreen from '../../screens/PopupScreen';
 import {Colors, Fonts, Gaps} from '../../../shared/tokens';
 import ButtonCustom from '../../../shared/ButtonCustom/ButtonCustom';
@@ -12,7 +12,7 @@ import {
   arrSelectStatus,
 } from '../../../shared/texts';
 import CalendarElement from '../../../shared/CalendarElement/CalendarElement';
-import {useNavigation, useNavigationState} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
 export default function FilterPopup() {
   const navigation = useNavigation();

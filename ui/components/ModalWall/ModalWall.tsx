@@ -1,5 +1,4 @@
 import {
-  Keyboard,
   Modal,
   Pressable,
   StyleSheet,

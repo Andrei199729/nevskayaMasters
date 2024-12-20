@@ -1,11 +1,10 @@
-import {StyleSheet, Text} from 'react-native';
+import {StyleSheet} from 'react-native';
 import MainScreen from '../../screens/MainScreen';
 import ObjectApplication from '../../../shared/ObjectApplication/ObjectApplication';
 import {ObjectStatus} from '../../../shared/types';
 import HeaderScreen from '../../screens/HeaderScreen';
 import ButtonLink from '../../../shared/ButtonLink/ButtonLink';
 import {useNavigation, useNavigationState} from '@react-navigation/native';
-import {StackNavigationProp} from '@react-navigation/stack';
 
 function Main() {
   const navigation = useNavigation();

@@ -31,8 +31,6 @@ export default function ElementWallAdd({
   setModalVisibleWall,
   ...props
 }: IElementWallAdd) {
-  console.log(JSON.stringify(element, null, 2), 'element');
-
   return (
     <View style={{position: addedElement ? 'relative' : 'static'}}>
       <Pressable onPress={onPressVisible}>

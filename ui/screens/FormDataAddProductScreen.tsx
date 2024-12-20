@@ -6,10 +6,7 @@ import SelectCustom from '../../shared/SelectCustom/SelectCustom';
 import {arrCountWall} from '../../shared/texts';
 import AddSizeWall from '../components/AddSizeWall/AddSizeWall';
 import {
-  IDataElementsWall,
-  IDataFull,
   IDataProduct,
-  INavigationScreenProps,
   IWallData,
   PathScreen,
   RootStackParamList,

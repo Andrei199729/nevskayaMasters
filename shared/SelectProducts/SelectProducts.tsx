@@ -1,7 +1,7 @@
 import {Animated, Pressable, StyleSheet, Text, View} from 'react-native';
 import ArrowIcon from '../../assets/images/icon/iconFunc/ArrowIcon';
 import {Colors, Radius, Fonts, Gaps} from '../tokens';
-import {useEffect, useRef, useState} from 'react';
+import {useRef, useState} from 'react';
 import {ISelectOption} from '../types';
 
 interface ISelect {
