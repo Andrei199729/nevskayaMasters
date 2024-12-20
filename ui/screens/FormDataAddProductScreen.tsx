@@ -28,7 +28,14 @@ export default function FormDataAddProductScreen() {
   const [selectedTextDefault, setSelectedTextDefault] = useState({
     defaultCount: 'Выберите количество стен',
   });
-  const {arrElements, setArrElements} = useContext(DataContext);
+
+  const dataContext = useContext(DataContext);
+
+  if (!dataContext) {
+    return null;
+  }
+
+  const {arrElements, setArrElements} = dataContext;
 
   const [isActiveBtn, setIsActiveBtn] = useState<boolean>(true);
   const [countWall, setCountWall] = useState('');

@@ -8,6 +8,8 @@ import {
   INavigationScreenProps,
   ISelectOption,
   ObjectStatus,
+  PathScreen,
+  RootStackParamList,
 } from '../../shared/types';
 import MainScreen from './MainScreen';
 import ObjectApplication from '../../shared/ObjectApplication/ObjectApplication';
@@ -19,18 +21,23 @@ import SelectCustom from '../../shared/SelectCustom/SelectCustom';
 import SelectProducts from '../../shared/SelectProducts/SelectProducts';
 import {arrWs} from '../../shared/texts';
 import ButtonAddProduct from '../../shared/ButtonAddProduct/ButtonAddProduct';
-import {useNavigation} from '@react-navigation/native';
+import {
+  NavigationProp,
+  RouteProp,
+  useNavigation,
+} from '@react-navigation/native';
 
 interface IUnwrappedProductScreen {
   applicationNumber?: string;
-  navigation: any;
+  navigation: NavigationProp<RootStackParamList, PathScreen.Product>;
+  route: any;
 }
 
 function UnwrappedProductScreen({
   navigation,
   route,
   ...props
-}: IUnwrappedProductScreen & any) {
+}: IUnwrappedProductScreen) {
   const {dataProduct, nameRoom, arrElements} = route.params || {};
 
   const [productsRooms, setProductsRooms] = useState<any>([]);

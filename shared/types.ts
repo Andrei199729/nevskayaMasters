@@ -21,6 +21,10 @@ export enum PathScreenAuth {
   NewPassword = 'NewPassword',
 }
 
+export enum PathScreen {
+  Product = 'Product',
+}
+
 export interface IMainScreen {
   children: ReactNode;
   mainTitle?: string;
@@ -49,8 +53,20 @@ export interface IWallData {
   radiusWall?: string;
 }
 
+export type RootStackParamList = {
+  LoginScreen: undefined;
+  NewPassword: undefined;
+  RegisterScreen: undefined;
+  RestorePasswordScreen: undefined;
+  Success: undefined;
+  SuccessScreen: undefined;
+  FormDataAddProduct: undefined;
+  Main: undefined;
+  Product: {productRoom: any};
+};
+
 export interface INavigationScreenProps {
-  navigation: NavigationProp<any>;
+  navigation: NavigationProp<RootStackParamList, keyof RootStackParamList>;
 }
 
 export interface IAddBlockDimensions {
@@ -67,4 +83,15 @@ export interface IDataElementsWall {
   id: number;
   nameElement: string;
   stateElement: string;
+}
+
+export interface IElementWall {
+  numberElement?: number;
+  data: any;
+  dataObj: any;
+}
+
+export interface IDataContext {
+  arrElements?: IElementWall[];
+  setArrElements: (elements: IElementWall[]) => void;
 }

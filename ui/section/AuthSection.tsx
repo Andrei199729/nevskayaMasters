@@ -2,7 +2,6 @@ import {StyleSheet, Text, View} from 'react-native';
 import {Colors, Fonts, Gaps} from '../../shared/tokens';
 import ButtonLink from '../../shared/ButtonLink/ButtonLink';
 import Title from '../../shared/Title/Title';
-import {INavigationScreenProps} from '../../shared/types';
 import {NavigationProp} from '@react-navigation/native';
 
 interface AuthSectionProps {

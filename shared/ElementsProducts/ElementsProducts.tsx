@@ -1,3 +1,4 @@
+import React from 'react';
 import ElementWallAdd from '../../ui/components/ElementWallAdd/ElementWallAdd';
 
 export default function ElementsProducts({
