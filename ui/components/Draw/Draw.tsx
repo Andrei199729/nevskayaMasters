@@ -6,8 +6,10 @@ import {
   TapGestureHandler,
 } from 'react-native-gesture-handler';
 import Svg, {Path, Circle} from 'react-native-svg';
+import DrawElement from '../DrawElement/DrawElement';
 
 export default function Draw() {
+  const [drawModalVisible, setDrawModalVisible] = useState(false);
   // Хранит массив объектов, каждый из которых представляет путь (path) и его длину.
   const [paths, setPaths] = useState<{path: string; length: number}[]>([]);
   // массив стен
@@ -164,9 +166,8 @@ export default function Draw() {
   console.log(paths.length, 'Рендер всех линий');
   console.log(currentPath, 'Рендер текущей линии');
 
-  const handleLinePress = (index: number) => {
-    setSelectedLineIndex(index === selectedLineIndex ? null : index);
-    console.log(JSON.stringify(savedDrawing, null, 2), 'savedDrawing');
+  const handleLinePress = () => {
+    setDrawModalVisible(true);
   };
   return (
     <View style={styles.container}>
@@ -237,24 +238,14 @@ export default function Draw() {
       <View style={styles.savedDrawingsContainer}>
         <Text>Сохраненные рисунки:</Text>
         {savedDrawing.map((drawing, index) => (
-          <TapGestureHandler
-            key={index}
-            onHandlerStateChange={() => handleLinePress(index)} // Обрабатываем клик
-          >
-            <Svg key={index} style={styles.savedDrawing}>
-              {drawing.shapes.map(
-                (line: {path: string | undefined}, idx: number) => (
-                  <Path
-                    key={idx}
-                    d={line.path}
-                    stroke={selectedLineIndex === index ? 'blue' : 'black'}
-                    strokeWidth={4}
-                    fill="none"
-                  />
-                ),
-              )}
-            </Svg>
-          </TapGestureHandler>
+          <DrawElement
+            id={index}
+            handleLinePress={handleLinePress}
+            drawing={drawing}
+            setDrawModalVisible={setDrawModalVisible}
+            drawModalVisible={drawModalVisible && selectedLineIndex === index}
+            setSelectedLineIndex={setSelectedLineIndex}
+          />
         ))}
       </View>
     </View>

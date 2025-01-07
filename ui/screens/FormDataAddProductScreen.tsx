@@ -15,6 +15,7 @@ import ButtonCustom from '../../shared/ButtonCustom/ButtonCustom';
 import AddBlockDimensions from '../components/AddBlockDimensions/AddBlockDimensions';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {DataContext} from '../../context/DataProvider';
+import Draw from '../components/Draw/Draw';
 
 export default function FormDataAddProductScreen() {
   const navigation =
@@ -69,6 +70,9 @@ export default function FormDataAddProductScreen() {
           onSelectedReset={() => {}}
           countWallText={(item: string) => setCountWall(item)}
         />
+        <View>
+          <Draw />
+        </View>
       </View>
       {!isActiveBtn && (
         <View>
