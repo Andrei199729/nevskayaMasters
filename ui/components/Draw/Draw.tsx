@@ -3,20 +3,32 @@ import {View, Text, Button, Alert, StyleSheet} from 'react-native';
 import {
   PanGestureHandler,
   GestureHandlerRootView,
+  TapGestureHandler,
 } from 'react-native-gesture-handler';
 import Svg, {Path, Circle} from 'react-native-svg';
 
 export default function Draw() {
+  // Хранит массив объектов, каждый из которых представляет путь (path) и его длину.
   const [paths, setPaths] = useState<{path: string; length: number}[]>([]);
+  // массив стен
+  const [savedDrawing, setSavedDrawing] = useState<any[]>([]);
+
+  // Хранит текущий путь, который пользователь рисует.
   const [currentPath, setCurrentPath] = useState<string>('');
+  // Сохраняет последнюю точку, чтобы реализовать привязку при близком расположении.
   const [lastPoint, setLastPoint] = useState<{x: number; y: number} | null>(
     null,
   );
+  // Хранит все точки, используемые для вычислений, включая углы.
   const [points, setPoints] = useState<{x: number; y: number}[]>([]);
+  // Хранит углы между линиями для отображения дополнительной информации.
   const [angles, setAngles] = useState<number[]>([]); // Массив углов между линиями
-
+  const [selectedLineIndex, setSelectedLineIndex] = useState<number | null>(
+    null,
+  ); // Выбранная линия
+  // Пороговое значение расстояния для автоматической привязки точек.
   const DISTANCE_THRESHOLD = 20; // Порог для автоматического соединения
-
+  // Функция вычисляет длину линии между двумя точками по формуле расстояния.
   const calculateLength = (
     p1: {x: number; y: number},
     p2: {x: number; y: number},
@@ -24,6 +36,7 @@ export default function Draw() {
     return Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
   };
   // Проверка на близость двух точек
+  // Проверяет, находятся ли две точки на расстоянии меньше DISTANCE_THRESHOLD
   const isNearPoint = (
     point1: {x: number; y: number},
     point2: {x: number; y: number},
@@ -32,6 +45,7 @@ export default function Draw() {
     return distance <= DISTANCE_THRESHOLD;
   };
   // Функция для вычисления угла между тремя точками
+  // Вычисляет угол между тремя точками с использованием скалярного произведения.
   const calculateAngle = (
     p1: {x: number; y: number},
     p2: {x: number; y: number},
@@ -56,8 +70,8 @@ export default function Draw() {
   };
   // Обработчик события при движении пальца
   const onGestureEvent = (event: any) => {
-    const {x, y} = event.nativeEvent;
-    let adjustedPoint = {x, y};
+    const {x, y} = event.nativeEvent; // Получаем координаты текущего жеста.
+    let adjustedPoint = {x, y}; // Точка для добавления.
 
     if (lastPoint && isNearPoint(lastPoint, {x, y})) {
       // Привязываем к последней точке, если пользователь рядом
@@ -67,7 +81,7 @@ export default function Draw() {
     if (lastPoint) {
       setCurrentPath(
         (prev: string) => `${prev} L${adjustedPoint.x},${adjustedPoint.y}`,
-      );
+      ); // Добавляем точку в текущий путь.
     } else {
       // Если это первая точка новой линии, проверяем привязку
       const startPoint =
@@ -75,11 +89,13 @@ export default function Draw() {
           ? points[points.length - 1]
           : adjustedPoint;
 
-      setCurrentPath(`M${startPoint.x},${startPoint.y}`);
-      setLastPoint(startPoint);
+      setCurrentPath(`M${startPoint.x},${startPoint.y}`); // Начало нового пути.
+      setLastPoint(startPoint); // Устанавливаем первую точку.
     }
   };
   // Обработчик события завершения жеста (отпускание пальца)
+  // Проверяет возможность замыкания линии и добавляет новый путь.
+
   const onGestureEnd = () => {
     if (currentPath) {
       const pathParts = currentPath.split(' ');
@@ -92,37 +108,66 @@ export default function Draw() {
 
       if (!isNaN(endX) && !isNaN(endY) && lastPoint) {
         const newLength = calculateLength(lastPoint, {x: endX, y: endY});
-        setPaths([...paths, {path: currentPath, length: newLength}]);
-        setPoints([...points, {x: endX, y: endY}]);
 
-        // Проверка на наличие предыдущих точек перед вычислением угла
-        if (points.length >= 1) {
-          const angle = calculateAngle(
-            points[points.length - 2], // Первая линия
-            points[points.length - 1], // Вторая линия
-            {x: endX, y: endY}, // Точка конца второй линии
-          );
-          setAngles([...angles, angle]);
+        // Проверка, добавляем ли мы новый путь
+        const newPath = `M${startX},${startY} L${endX},${endY}`;
+        const pathExists = paths.some(path => path.path === newPath); // Проверяем, существует ли такой путь
+
+        if (!pathExists) {
+          setPaths([...paths, {path: newPath, length: newLength}]); // Добавляем новый путь, если его еще нет в paths
+          setPoints([...points, {x: startX, y: startY}, {x: endX, y: endY}]); // Обновляем точки
+        }
+
+        // Проверяем замыкание линии на начальную точку первой линии
+        if (points.length > 0) {
+          const firstPoint = points[0]; // Начальная точка первой линии
+
+          if (isNearPoint({x: endX, y: endY}, firstPoint)) {
+            // Добавляем линию, замыкающую путь
+            const closingPath = `M${endX},${endY} L${firstPoint.x},${firstPoint.y}`;
+            const closingPathExists = paths.some(
+              path => path.path === closingPath,
+            );
+
+            if (!closingPathExists) {
+              setPaths(prevPaths => [
+                ...prevPaths,
+                {path: closingPath, length: newLength},
+              ]);
+            }
+          }
         }
       }
-      // Рисуем прямую линию между начальной и конечной точкой
-      const newPath = `M${startX},${startY} L${endX},${endY}`;
-      const newLength = calculateLength(
-        {x: startX, y: startY},
-        {x: endX, y: endY},
-      );
-      setPaths([...paths, {path: newPath, length: newLength}]); // изменить хук название
-      setPoints([...points, {x: startX, y: startY}, {x: endX, y: endY}]); // изменить хук название
     }
 
     setCurrentPath('');
     setLastPoint(null);
   };
 
+  // Показывает уведомление о сохранении.
   const saveDrawing = () => {
-    Alert.alert('Рисунок сохранён', 'Ваш рисунок был сохранён!');
-  };
+    // Строим структуру для сохранения
+    const drawingData = {
+      shapes: paths.map((path, index) => ({
+        id: index + 1,
+        path: path.path, // Путь
+        length: path.length, // Длина линии
+        points: points, // Все точки на рисунке
+      })),
+    };
 
+    // Преобразуем данные в JSON строку для отображения
+    setSavedDrawing([...savedDrawing, drawingData]);
+    setPaths([]);
+    // Выводим в консоль и отображаем в Alert
+  };
+  console.log(paths.length, 'Рендер всех линий');
+  console.log(currentPath, 'Рендер текущей линии');
+
+  const handleLinePress = (index: number) => {
+    setSelectedLineIndex(index === selectedLineIndex ? null : index);
+    console.log(JSON.stringify(savedDrawing, null, 2), 'savedDrawing');
+  };
   return (
     <View style={styles.container}>
       <Button title="Сохранить рисунок" onPress={saveDrawing} />
@@ -188,6 +233,30 @@ export default function Draw() {
           </View>
         ))}
       </View>
+      {/* Отображение сохраненных фигур ниже */}
+      <View style={styles.savedDrawingsContainer}>
+        <Text>Сохраненные рисунки:</Text>
+        {savedDrawing.map((drawing, index) => (
+          <TapGestureHandler
+            key={index}
+            onHandlerStateChange={() => handleLinePress(index)} // Обрабатываем клик
+          >
+            <Svg key={index} style={styles.savedDrawing}>
+              {drawing.shapes.map(
+                (line: {path: string | undefined}, idx: number) => (
+                  <Path
+                    key={idx}
+                    d={line.path}
+                    stroke={selectedLineIndex === index ? 'blue' : 'black'}
+                    strokeWidth={4}
+                    fill="none"
+                  />
+                ),
+              )}
+            </Svg>
+          </TapGestureHandler>
+        ))}
+      </View>
     </View>
   );
 }
@@ -210,6 +279,16 @@ const styles = StyleSheet.create({
   },
   infoContainer: {
     marginTop: 20,
+  },
+  savedDrawingsContainer: {
+    marginTop: 20,
+    width: '100%',
+    alignItems: 'center',
+  },
+  savedDrawing: {
+    width: '100%',
+    height: 200,
+    marginVertical: 10,
   },
 });
 
