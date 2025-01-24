@@ -9,7 +9,7 @@ interface IModalFormElement extends IModalWall {
   nameElementWall: string;
   numberWall: number;
   setModalVisibleWall: (visible: boolean) => void;
-  onSaveElementSize: (element: IElementData) => void;
+  onSaveElementSize: (element: IElementData, id: number) => void;
   dataEditElement?: IElementData;
 }
 
@@ -99,7 +99,7 @@ export default function ModalFormElement({
       // radiusElement: radiusElement.value,
     };
 
-    onSaveElementSize(updatedDataObjectSizeElement);
+    onSaveElementSize(updatedDataObjectSizeElement, numberWall - 1);
 
     setModalVisible(!modalVisible);
     setModalVisibleWall(false);

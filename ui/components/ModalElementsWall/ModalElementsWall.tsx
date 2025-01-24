@@ -13,7 +13,7 @@ import {arrDataElementsWall} from '../../../shared/texts';
 type TModalElementsWall = IModalWall &
   IAddBlockDimensions & {
     onSaveElement: (element: IDataElementsWall) => void;
-    onSaveElementSize: (element: IElementData) => void;
+    onSaveElementSize: (element: IElementData, id: number) => void;
   };
 export default function ModalElementsWall({
   modalVisible,

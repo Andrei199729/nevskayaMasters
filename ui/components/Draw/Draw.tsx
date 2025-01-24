@@ -1,19 +1,42 @@
-import React, {useState} from 'react';
-import {View, Text, Button, Alert, StyleSheet} from 'react-native';
+import React, {useContext, useEffect, useState} from 'react';
+import {
+  View,
+  Text,
+  Button,
+  Alert,
+  StyleSheet,
+  ScrollView,
+  FlatList,
+} from 'react-native';
 import {
   PanGestureHandler,
   GestureHandlerRootView,
   TapGestureHandler,
 } from 'react-native-gesture-handler';
-import Svg, {Path, Circle} from 'react-native-svg';
+import Svg, {Path, Circle, Text as TextSvg} from 'react-native-svg';
 import DrawElement from '../DrawElement/DrawElement';
+import AddSizeWall from '../AddSizeWall/AddSizeWall';
+import AddBlockDimensions from '../AddBlockDimensions/AddBlockDimensions';
+import IndexWallContext from '../../../context/IndexWallContext/IndexWallContext';
 
-export default function Draw() {
+export default function Draw({
+  setArrElements,
+  arrElements,
+  setSizeWalls,
+  onSaveSizeWall,
+  sizeWalls,
+  setNumberCurrentWall,
+  numberCurrentWall,
+  setModalVisibleBacklight,
+  modalVisibleBacklight,
+}: any) {
   const [drawModalVisible, setDrawModalVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+
   // Хранит массив объектов, каждый из которых представляет путь (path) и его длину.
   const [paths, setPaths] = useState<{path: string; length: number}[]>([]);
   // массив стен
-  const [savedDrawing, setSavedDrawing] = useState<any[]>([]);
+  // const [savedDrawing, setSavedDrawing] = useState<any[]>([]);
 
   // Хранит текущий путь, который пользователь рисует.
   const [currentPath, setCurrentPath] = useState<string>('');
@@ -28,6 +51,9 @@ export default function Draw() {
   const [selectedLineIndex, setSelectedLineIndex] = useState<number | null>(
     null,
   ); // Выбранная линия
+  const [countWallDraw, setCountWallDraw] = useState(0); // Количество стен
+  const [wallsData, setWallsData] = useState<any[]>([]); // который будет хранить все AddBlockDimensions
+
   // Пороговое значение расстояния для автоматической привязки точек.
   const DISTANCE_THRESHOLD = 20; // Порог для автоматического соединения
   // Функция вычисляет длину линии между двумя точками по формуле расстояния.
@@ -148,27 +174,63 @@ export default function Draw() {
 
   // Показывает уведомление о сохранении.
   const saveDrawing = () => {
-    // Строим структуру для сохранения
-    const drawingData = {
-      shapes: paths.map((path, index) => ({
-        id: index + 1,
-        path: path.path, // Путь
-        length: path.length, // Длина линии
-        points: points, // Все точки на рисунке
-      })),
-    };
+    setSizeWalls((prevDrawing: string | any[]) => {
+      // Определяем номер стены
+      const numberWall = prevDrawing.length;
+      const countWallDraw = paths.length;
+      // Строим структуру для сохранения
+      const drawingData = {
+        numberWall,
+        countWallDraw,
+        shapes: paths.map((path, index) => ({
+          id: index + 1,
+          path: path.path, // Путь
+          length: path.length, // Длина линии
+          points: points, // Все точки на рисунке
+        })),
+        walls: wallsData,
+      };
 
-    // Преобразуем данные в JSON строку для отображения
-    setSavedDrawing([...savedDrawing, drawingData]);
+      // Обновляем состояние и передаём в `onSaveSizeWall`
+      const newDrawing = [...prevDrawing, {drawingData}];
+      return newDrawing;
+    });
+
+    setCountWallDraw(countWallDraw);
+    // Очистка путей после сохранения
     setPaths([]);
-    // Выводим в консоль и отображаем в Alert
   };
-  console.log(paths.length, 'Рендер всех линий');
-  console.log(currentPath, 'Рендер текущей линии');
+  const isLast = (index: number, paths: any) => index === paths.length - 1;
+  const handleSaveWallSize = (size: any, numberWall: number) => {
+    if (size) {
+      setWallsData(prevWalls => [
+        ...prevWalls,
+        {size, numberWall: numberWall - 1},
+      ]);
+    }
+  };
 
-  const handleLinePress = () => {
-    setDrawModalVisible(true);
-  };
+  useEffect(() => {
+    // Обновляем количество линий для последнего рисунка
+    if (sizeWalls.length > 0) {
+      const lastDrawing = sizeWalls[sizeWalls.length - 1];
+      setCountWallDraw(lastDrawing?.drawingData?.shapes?.length - 1);
+    }
+  }, [sizeWalls]);
+  useEffect(() => {
+    setSizeWalls((prevSizeWalls: any[]) => {
+      if (wallsData.length === 0) return prevSizeWalls;
+      return prevSizeWalls.map((drawing: {drawingData: any}, index: number) => {
+        if (index === prevSizeWalls.length - 1) {
+          return {
+            ...drawing,
+            drawingData: {...drawing.drawingData, walls: wallsData},
+          };
+        }
+        return drawing;
+      });
+    });
+  }, [wallsData]);
   return (
     <View style={styles.container}>
       <Button title="Сохранить рисунок" onPress={saveDrawing} />
@@ -177,15 +239,45 @@ export default function Draw() {
         <View style={styles.drawingContainer}>
           <Svg style={StyleSheet.absoluteFill}>
             {/* Рендер всех линий */}
-            {paths.map((line, index) => (
-              <Path
-                key={index}
-                d={line.path}
-                stroke="black"
-                strokeWidth={4}
-                fill="none"
-              />
-            ))}
+            {paths.map((line, index) => {
+              const pathParts = line.path.split(' ');
+              const startCoords = pathParts[0].slice(1).split(',');
+              const endCoords = pathParts[pathParts.length - 1]
+                .slice(1)
+                .split(',');
+
+              const startX = parseFloat(startCoords[0]);
+              const startY = parseFloat(startCoords[1]);
+              const endX = parseFloat(endCoords[0]);
+              const endY = parseFloat(endCoords[1]);
+
+              // Определяем позицию текста (примерно в середине линии)
+              const midX = (startX + endX) / 2;
+              const midY = (startY + endY) / 2;
+              // Проверяем, является ли текущая линия последней
+              return (
+                <React.Fragment key={index}>
+                  <Path
+                    d={line.path}
+                    stroke="black"
+                    strokeWidth={4}
+                    fill="none"
+                  />
+                  {/* Вывод длины линии рядом с ней */}
+
+                  {!isLast(index, paths) && (
+                    <TextSvg
+                      x={midX - 10}
+                      y={midY - 5}
+                      fontSize="14"
+                      fill="blue"
+                      textAnchor="middle">
+                      {index + 1}
+                    </TextSvg>
+                  )}
+                </React.Fragment>
+              );
+            })}
 
             {/* Рендер текущей линии */}
             {currentPath ? (
@@ -199,12 +291,7 @@ export default function Draw() {
 
             {/* Подсветка конечной точки */}
             {lastPoint && (
-              <Circle
-                cx={lastPoint.x}
-                cy={lastPoint.y}
-                r={5}
-                fill="red" // Красный цвет для подсветки
-              />
+              <Circle cx={lastPoint.x} cy={lastPoint.y} r={5} fill="red" />
             )}
           </Svg>
 
@@ -237,16 +324,62 @@ export default function Draw() {
       {/* Отображение сохраненных фигур ниже */}
       <View style={styles.savedDrawingsContainer}>
         <Text>Сохраненные рисунки:</Text>
-        {savedDrawing.map((drawing, index) => (
-          <DrawElement
-            id={index}
-            handleLinePress={handleLinePress}
-            drawing={drawing}
-            setDrawModalVisible={setDrawModalVisible}
-            drawModalVisible={drawModalVisible && selectedLineIndex === index}
-            setSelectedLineIndex={setSelectedLineIndex}
+
+        {sizeWalls.map((drawing: any, index: number | null) => {
+          return (
+            <DrawElement
+              key={index}
+              id={index}
+              numberWall={index}
+              drawing={drawing?.drawingData}
+              setDrawModalVisible={setDrawModalVisible}
+              drawModalVisible={drawModalVisible && selectedLineIndex === index}
+              setSelectedLineIndex={setSelectedLineIndex}
+              setArrElements={setArrElements}
+              arrElements={arrElements}
+              setSizeWalls={setSizeWalls}
+              selectedLineIndex={selectedLineIndex}
+              setNumberCurrentWall={setNumberCurrentWall}
+              numberCurrentWall={numberCurrentWall}
+              isLast={isLast}
+              setCountWallDraw={() =>
+                setCountWallDraw(drawing?.drawingData?.shapes.length)
+              }
+              modalVisibleBacklight={modalVisibleBacklight}
+            />
+          );
+        })}
+        <ScrollView
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.contentContainer}>
+          {Array.from({length: countWallDraw}, (_, index) => {
+            return (
+              <AddBlockDimensions
+                key={index}
+                numberWall={index + 1}
+                setArrElements={setArrElements}
+                setSizeWalls={setSizeWalls}
+                setNumberCurrentWall={setNumberCurrentWall}
+                numberCurrentWall={numberCurrentWall}
+                setModalVisibleBacklight={setModalVisibleBacklight}
+                modalVisibleBacklight={
+                  modalVisibleBacklight && index === numberCurrentWall
+                }
+                saveSizeWall={wallsData || {}}
+                setModalVisible={setModalVisible}
+                modalVisible={modalVisible && index === numberCurrentWall}
+              />
+            );
+          })}
+        </ScrollView>
+        {modalVisibleBacklight && (
+          <AddSizeWall
+            numberWall={numberCurrentWall + 1}
+            onSaveSizeWall={handleSaveWallSize}
+            key={numberCurrentWall}
           />
-        ))}
+        )}
       </View>
     </View>
   );
@@ -267,6 +400,8 @@ const styles = StyleSheet.create({
   },
   drawingContainer: {
     flex: 1,
+    borderColor: 'red',
+    borderWidth: 3,
   },
   infoContainer: {
     marginTop: 20,
@@ -274,211 +409,14 @@ const styles = StyleSheet.create({
   savedDrawingsContainer: {
     marginTop: 20,
     width: '100%',
-    alignItems: 'center',
   },
   savedDrawing: {
     width: '100%',
     height: 200,
     marginVertical: 10,
   },
+  contentContainer: {
+    gap: 5,
+    flexGrow: 1,
+  },
 });
-
-// import React, {useState} from 'react';
-// import {View, Text, Button, Alert, StyleSheet} from 'react-native';
-// import {
-//   PanGestureHandler,
-//   GestureHandlerRootView,
-// } from 'react-native-gesture-handler';
-// import Svg, {Path, Circle} from 'react-native-svg';
-
-// export default function Draw() {
-//   const [paths, setPaths] = useState<{path: string; length: number}[]>([]); // История путей
-//   const [currentPath, setCurrentPath] = useState<string>(''); // Текущий путь
-//   const [lastPoint, setLastPoint] = useState<{x: number; y: number} | null>(
-//     null,
-//   ); // Последняя точка
-//   const [points, setPoints] = useState<{x: number; y: number}[]>([]); // Массив всех точек
-
-//   const DISTANCE_THRESHOLD = 20; // Порог для автоматического соединения
-
-//   // Функция для вычисления расстояния между двумя точками
-//   const calculateLength = (
-//     p1: {x: number; y: number},
-//     p2: {x: number; y: number},
-//   ) => {
-//     return Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
-//   };
-
-//   // Проверка на близость двух точек
-//   const isNearPoint = (
-//     point1: {x: number; y: number},
-//     point2: {x: number; y: number},
-//   ) => {
-//     const distance = calculateLength(point1, point2);
-//     return distance <= DISTANCE_THRESHOLD;
-//   };
-
-//   // Функция для вычисления угла между тремя точками
-//   const calculateAngle = (
-//     p1: {x: number; y: number},
-//     p2: {x: number; y: number},
-//     p3: {x: number; y: number},
-//   ) => {
-//     const v1x = p2.x - p1.x;
-//     const v1y = p2.y - p1.y;
-//     const v2x = p3.x - p2.x;
-//     const v2y = p3.y - p2.y;
-
-//     const dotProduct = v1x * v2x + v1y * v2y;
-//     const magnitudeV1 = Math.sqrt(v1x * v1x + v1y * v1y);
-//     const magnitudeV2 = Math.sqrt(v2x * v2x + v2y * v2y);
-
-//     if (magnitudeV1 === 0 || magnitudeV2 === 0) return 0;
-
-//     const angle = Math.acos(dotProduct / (magnitudeV1 * magnitudeV2));
-//     return angle * (180 / Math.PI);
-//   };
-
-//   // Обработчик события при движении пальца
-//   const onGestureEvent = (event: any) => {
-//     const {x, y} = event.nativeEvent;
-
-//     let adjustedPoint = {x, y};
-
-//     if (lastPoint && isNearPoint(lastPoint, {x, y})) {
-//       // Привязываем к последней точке, если пользователь рядом
-//       adjustedPoint = lastPoint;
-//     }
-
-//     if (lastPoint) {
-//       // Добавляем текущую точку к пути
-//       setCurrentPath(
-//         (prev: string) => `${prev} L${adjustedPoint.x},${adjustedPoint.y}`,
-//       );
-//     } else {
-//       // Начинаем новый путь с первой точки
-//       setCurrentPath(`M${adjustedPoint.x},${adjustedPoint.y}`);
-//     }
-
-//     setLastPoint(adjustedPoint);
-//   };
-
-//   // Обработчик события завершения жеста (отпускание пальца)
-//   const onGestureEnd = () => {
-//     if (currentPath) {
-//       // Получаем координаты начальной и конечной точки
-//       const pathParts = currentPath.split(' ');
-//       const firstCoords = pathParts[0].slice(1).split(',');
-//       const lastCoords = pathParts[pathParts.length - 1].slice(1).split(',');
-
-//       const startX = parseFloat(firstCoords[0]);
-//       const startY = parseFloat(firstCoords[1]);
-//       const endX = parseFloat(lastCoords[0]);
-//       const endY = parseFloat(lastCoords[1]);
-
-//       // Рисуем прямую линию между начальной и конечной точкой
-//       const newPath = `M${startX},${startY} L${endX},${endY}`;
-//       const newLength = calculateLength(
-//         {x: startX, y: startY},
-//         {x: endX, y: endY},
-//       );
-
-//       setPaths([...paths, {path: newPath, length: newLength}]);
-//       setPoints([...points, {x: startX, y: startY}, {x: endX, y: endY}]);
-//     }
-
-//     setCurrentPath('');
-//     setLastPoint(null);
-//   };
-
-//   // Функция сохранения рисунка
-//   const saveDrawing = () => {
-//     Alert.alert('Рисунок сохранён', 'Ваш рисунок был сохранён!');
-//   };
-
-//   return (
-//     <View style={styles.container}>
-//       <Button title="Сохранить рисунок" onPress={saveDrawing} />
-
-//       <GestureHandlerRootView style={styles.drawingArea}>
-//         <View style={styles.drawingContainer}>
-//           <Svg style={StyleSheet.absoluteFill}>
-//             {/* Рендер всех линий */}
-//             {paths.map((line, index) => (
-//               <Path
-//                 key={index}
-//                 d={line.path}
-//                 stroke="black"
-//                 strokeWidth={4}
-//                 fill="none"
-//               />
-//             ))}
-
-//             {/* Рендер текущей линии */}
-//             {currentPath ? (
-//               <Path
-//                 d={currentPath}
-//                 stroke="black"
-//                 strokeWidth={4}
-//                 fill="none"
-//               />
-//             ) : null}
-
-//             {/* Подсветка конечной точки */}
-//             {lastPoint && (
-//               <Circle cx={lastPoint.x} cy={lastPoint.y} r={5} fill="red" />
-//             )}
-//           </Svg>
-
-//           <PanGestureHandler
-//             onGestureEvent={onGestureEvent}
-//             onEnded={onGestureEnd}>
-//             <View style={StyleSheet.absoluteFill} />
-//           </PanGestureHandler>
-//         </View>
-//       </GestureHandlerRootView>
-
-//       <View style={styles.infoContainer}>
-//         {paths.map((line, index) => (
-//           <View key={index}>
-//             <Text>
-//               Линия {index + 1}: Длина = {line.length.toFixed(2)} единиц
-//             </Text>
-//             {index > 0 && points[index - 1] && points[index] && (
-//               <Text>
-//                 Угол с предыдущей линией ={' '}
-//                 {calculateAngle(
-//                   points[index - 1],
-//                   points[index],
-//                   points[index + 1] || points[index],
-//                 ).toFixed(2)}{' '}
-//                 °
-//               </Text>
-//             )}
-//           </View>
-//         ))}
-//       </View>
-//     </View>
-//   );
-// }
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     padding: 20,
-//   },
-//   drawingArea: {
-//     flex: 1,
-//     width: '100%',
-//     height: 400,
-//     backgroundColor: '#f0f0f0',
-//   },
-//   drawingContainer: {
-//     flex: 1,
-//   },
-//   infoContainer: {
-//     marginTop: 20,
-//   },
-// });

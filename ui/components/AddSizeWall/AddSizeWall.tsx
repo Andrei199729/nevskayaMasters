@@ -1,5 +1,5 @@
 import {StyleSheet, Text, View} from 'react-native';
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {Input} from '../../../shared/Input/Input';
 import ButtonCustom from '../../../shared/ButtonCustom/ButtonCustom';
 import {validateNumber} from '../../../customFunc/customFunc';
@@ -7,7 +7,7 @@ import {IWallData} from '../../../shared/types';
 
 interface IAddSizeWall {
   numberWall: number;
-  onSaveSizeWall: (wallData: IWallData) => void;
+  onSaveSizeWall: (wallData: IWallData, numberWall: number) => void;
 }
 
 export default function AddSizeWall({
@@ -37,6 +37,7 @@ export default function AddSizeWall({
       validWidthBottom
     ) {
       const wallData = {
+        id: numberWall - 1,
         heightRight,
         heightLeft,
         widthTop,
@@ -44,7 +45,7 @@ export default function AddSizeWall({
         wallAngleDegree,
         radiusWall,
       };
-      onSaveSizeWall(wallData);
+      onSaveSizeWall(wallData, numberWall);
     }
     setViewInput(false);
   };

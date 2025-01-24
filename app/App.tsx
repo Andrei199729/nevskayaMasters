@@ -3,15 +3,19 @@ import {SafeAreaView, StyleSheet} from 'react-native';
 import Navigate from './Navigate';
 import {ButtonProvider} from '../shared/ButtonContext/ButtonContext';
 import {DataProvider} from '../context/DataProvider';
+import {IndexWallProvider} from '../context/IndexWallContext/IndexWallContext';
+import {ModalVisibleProvider} from '../context/ModalVisible/ModalVisibleContext';
 function App(): React.JSX.Element {
   return (
-    <DataProvider>
-      <SafeAreaView style={styles.container}>
-        <ButtonProvider>
-          <Navigate />
-        </ButtonProvider>
-      </SafeAreaView>
-    </DataProvider>
+    <ModalVisibleProvider>
+      <IndexWallProvider>
+        <SafeAreaView style={styles.container}>
+          <ButtonProvider>
+            <Navigate />
+          </ButtonProvider>
+        </SafeAreaView>
+      </IndexWallProvider>
+    </ModalVisibleProvider>
   );
 }
 

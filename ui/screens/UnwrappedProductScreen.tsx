@@ -1,7 +1,7 @@
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import ButtonCustom from '../../shared/ButtonCustom/ButtonCustom';
 import {Colors, Fonts, Gaps} from '../../shared/tokens';
-import {useEffect, useState} from 'react';
+import {useContext, useEffect, useState} from 'react';
 import HeaderScreen from './HeaderScreen';
 import {
   IProductRoom,
@@ -15,6 +15,7 @@ import Title from '../../shared/Title/Title';
 import ButtonDownload from '../../shared/ButtonDownload/ButtonDownload';
 import ButtonAddProduct from '../../shared/ButtonAddProduct/ButtonAddProduct';
 import {NavigationProp} from '@react-navigation/native';
+import {DataContext} from '../../context/DataProvider';
 
 interface IUnwrappedProductScreen {
   applicationNumber?: string;
@@ -27,22 +28,9 @@ function UnwrappedProductScreen({
   route,
   ...props
 }: IUnwrappedProductScreen) {
-  const {dataProduct, nameRoom, arrElements} = route.params || {};
+  const {dataProduct, nameRoom} = route.params || {};
 
   const [productsRooms, setProductsRooms] = useState<IProductRoom[]>([]);
-
-  useEffect(() => {
-    if (nameRoom) {
-      setProductsRooms((prevProducts: IProductRoom[]) => [
-        ...prevProducts,
-        {
-          nameRoom: nameRoom,
-          dataProduct: dataProduct,
-          arrElements: arrElements,
-        },
-      ]);
-    }
-  }, [nameRoom]);
 
   const onClickAddProduct = () => {
     navigation.navigate('FormDataAddProduct');
@@ -53,6 +41,19 @@ function UnwrappedProductScreen({
       productRoom: productRoom,
     });
   };
+
+  useEffect(() => {
+    if (nameRoom) {
+      setProductsRooms((prevProducts: IProductRoom[]) => [
+        ...prevProducts,
+        {
+          nameRoom: nameRoom,
+          dataProduct: dataProduct,
+          // arrElements: arrElements,
+        },
+      ]);
+    }
+  }, [nameRoom]);
   return (
     <HeaderScreen>
       <MainScreen mainTitle={`№ ${'заявки'}`}>

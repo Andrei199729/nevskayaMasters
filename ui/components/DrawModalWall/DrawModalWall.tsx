@@ -1,39 +1,214 @@
-import {Modal, StyleSheet, View} from 'react-native';
+import {
+  Modal,
+  Pressable,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 import {Colors} from '../../../shared/tokens';
-import Svg, {Path} from 'react-native-svg';
+import Svg, {G, Path, Text as TextSvg} from 'react-native-svg';
+import React, {useEffect, useState, useMemo} from 'react';
+import ModalElementsWall from '../ModalElementsWall/ModalElementsWall';
+import {
+  IArrElements,
+  IDataElementsWall,
+  IElementData,
+} from '../../../shared/types';
+import ElementWallAdd from '../ElementWallAdd/ElementWallAdd';
 
 export default function DrawModalWall({
   drawModalVisible,
   setDrawModalVisible,
   drawing,
   id,
+  setArrElements,
+  arrElements,
+  setSizeWalls,
+  selectedLineIndex,
+  numberCurrentWall,
+  isLast,
 }: any) {
+  const [elementsWallModalVisible, setElementsWallModalVisible] =
+    useState<boolean>(false);
+  const [dataObj, setDataObj] = useState({
+    nameElement: '',
+    stateElement: '',
+    id: 0,
+  });
+
+  const [elementsData, setElementsData] = useState<IArrElements[]>([]);
+  const [visibleElements, setVisibleElements] = useState<{
+    [key: number]: boolean;
+  }>({});
+  const onClickElementModal = () => {
+    setElementsWallModalVisible(true);
+    setDrawModalVisible(true);
+  };
+  const onSaveElement = (dataEl: IDataElementsWall) => {
+    setDataObj(prev => {
+      const update = {...prev, ...dataEl};
+      return update;
+    });
+  };
+  const onSaveDataElement = (data: IElementData) => {
+    // Сначала обновляем элементы в текущем стене
+    setElementsData(prev => {
+      let updatedData = [...prev, {data, dataObj}];
+      setArrElements(updatedData); // Сохраняем обновленные элементы
+      // Обновляем размеры стен, добавляем новый элемент в нужную стену по id
+      setSizeWalls((prevSizeWall: any[]) => {
+        if (!Array.isArray(prevSizeWall)) {
+          console.error(
+            'Ошибка: prevSizeWall не является массивом!',
+            prevSizeWall,
+          );
+          return [];
+        }
+
+        // Проходим по всем стенам, обновляем только ту, у которой номер wall совпадает с id текущей стены
+        return prevSizeWall.map(wall => {
+          if (wall?.drawingData?.numberWall === numberCurrentWall) {
+            // Если нашли стену с нужным номером, добавляем элемент в ее массив
+            return {
+              ...wall,
+              arrElements: [...(wall.arrElements ?? []), {data, dataObj}],
+            };
+          }
+          // Если стена не совпала, возвращаем без изменений
+          return wall;
+        });
+      });
+      return updatedData;
+    });
+  };
+
+  const toggleElementVisibility = (index: number, isVisible: boolean) => {
+    setVisibleElements(prev => ({
+      ...prev,
+      [index]: isVisible, // Устанавливаем видимость только для конкретного элемента
+    }));
+  };
+  const [clickLineDraw, setClickLineDraw] = useState(false);
+  const [selectedLine, setSelectedLine] = useState<number | null>(null);
+  const onClickLine = (index: number) => {
+    setClickLineDraw(!clickLineDraw);
+    setSelectedLine(prev => (prev === index ? null : index));
+  };
+
+  const stateColorLineDraw = (index: number | null) =>
+    selectedLine === index ? 'red' : 'black';
+
+  useEffect(() => {
+    if (arrElements) {
+      setElementsData(arrElements);
+    }
+  }, [arrElements]);
+
+  const memoizedLines = useMemo(() => {
+    return drawing?.shapes?.map((line: any, idx: number) => {
+      const pathParts = line.path.split(' ');
+      const startCoords = pathParts[0].slice(1).split(',');
+      const endCoords = pathParts[pathParts.length - 1].slice(1).split(',');
+
+      const startX = parseFloat(startCoords[0]);
+      const startY = parseFloat(startCoords[1]);
+      const endX = parseFloat(endCoords[0]);
+      const endY = parseFloat(endCoords[1]);
+
+      // Определяем позицию текста (примерно в середине линии)
+      const midX = (startX + endX) / 2;
+      const midY = (startY + endY) / 2;
+
+      return (
+        <React.Fragment key={idx}>
+          <G key={idx} onPressIn={() => onClickLine(idx)}>
+            <Path
+              d={line.path}
+              stroke={
+                !drawModalVisible
+                  ? 'blue'
+                  : selectedLine === idx
+                  ? 'red'
+                  : 'black'
+              }
+              strokeWidth={4}
+              fill="none"
+            />
+          </G>
+          {/* Вывод длины линии рядом с ней */}
+          {!isLast(idx, drawing?.shapes) && (
+            <TextSvg
+              x={midX - 10}
+              y={midY - 5} // Смещение вверх, чтобы текст не перекрывал линию
+              fontSize="14"
+              fill="blue"
+              textAnchor="middle">
+              {line.id}
+            </TextSvg>
+          )}
+        </React.Fragment>
+      );
+    });
+  }, [drawing, selectedLine]);
   return (
-    <Modal
-      animationType="slide"
-      transparent={true}
-      visible={drawModalVisible}
-      onRequestClose={() => setDrawModalVisible(!drawModalVisible)}>
-      <View style={styles.centeredView}>
-        <View style={styles.modalView}>
-          <View>
-            <Svg key={id} style={styles.savedDrawing} viewBox="0 0 200 200">
-              {drawing.shapes.map(
-                (line: {path: string | undefined}, idx: number) => (
-                  <Path
-                    key={idx}
-                    d={line.path}
-                    stroke={'black'}
-                    strokeWidth={4}
-                    fill="none"
+    <>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={drawModalVisible}
+        onRequestClose={() => setDrawModalVisible(false)}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <View
+              style={{
+                position: 'absolute',
+                top: '10%',
+                left: '10%',
+                zIndex: 4,
+              }}>
+              {elementsData?.map((element, index) => {
+                return (
+                  <ElementWallAdd
+                    key={index}
+                    element={element}
+                    position={index}
+                    nameElement={element.dataObj.nameElement}
+                    stateElement={element.dataObj.stateElement}
+                    onPressVisible={() => toggleElementVisibility(index, true)}
+                    isVisible={visibleElements}
+                    setVisible={toggleElementVisibility}
+                    elementsData={elementsData}
+                    setElementsData={setElementsData}
+                    setModalVisibleWall={setElementsWallModalVisible}
                   />
-                ),
-              )}
-            </Svg>
+                );
+              })}
+            </View>
+            <Pressable onPress={onClickElementModal}>
+              <View>
+                <Svg
+                  key={id}
+                  style={styles.savedDrawing}
+                  width="100%"
+                  height="100%"
+                  transform="scale(1.5)">
+                  {/* Рендер всех линий */}
+                  {memoizedLines}
+                </Svg>
+              </View>
+            </Pressable>
           </View>
         </View>
-      </View>
-    </Modal>
+      </Modal>
+      <ModalElementsWall
+        modalVisible={elementsWallModalVisible}
+        setModalVisible={setElementsWallModalVisible}
+        numberWall={id}
+        saveSizeWall={undefined}
+        onSaveElement={onSaveElement}
+        onSaveElementSize={onSaveDataElement}
+      />
+    </>
   );
 }
 
@@ -43,6 +218,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
+    top: 100,
     height: 500,
     zIndex: 1,
   },
@@ -61,6 +237,6 @@ const styles = StyleSheet.create({
     elevation: 10,
   },
   savedDrawing: {
-    marginVertical: 10,
+    marginVertical: 100,
   },
 });

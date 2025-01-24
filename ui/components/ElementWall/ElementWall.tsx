@@ -14,7 +14,7 @@ export default function ElementWall({
   position,
   onPress,
   ...props
-}: IElementWall) {
+}: any) {
   return (
     <Pressable onPress={onPress}>
       <View style={{flexDirection: 'row', gap: 10}}>

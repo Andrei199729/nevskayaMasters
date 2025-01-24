@@ -1,9 +1,11 @@
 import {Pressable, StyleSheet, Text, View} from 'react-native';
-import React, {useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {Colors, Fonts} from '../../../shared/tokens';
 import {IAddBlockDimensions, IDataContext} from '../../../shared/types';
 import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import ModalWall from '../ModalWall/ModalWall';
+import IndexWallContext from '../../../context/IndexWallContext/IndexWallContext';
+import ModalVisibleContext from '../../../context/ModalVisible/ModalVisibleContext';
 
 type AddBlockDimensionsProps = IAddBlockDimensions & IDataContext;
 
@@ -12,14 +14,41 @@ export default function AddBlockDimensions({
   saveSizeWall,
   setArrElements,
   arrElements,
+  setSizeWalls,
+  setNumberCurrentWall,
+  numberCurrentWall,
+  setModalVisibleBacklight,
+  modalVisibleBacklight,
   ...props
-}: AddBlockDimensionsProps) {
+}: AddBlockDimensionsProps & any) {
+  const wallIndex = numberWall - 1;
+  const [isDataFilled, setIsDataFilled] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
 
   const onClickWallIncrease = () => {
-    setModalVisible(!modalVisible);
-  };
+    setIsDataFilled(!isDataFilled);
+    if (isDataFilled) {
+      setModalVisible(true); // открываем модальное окно
+      setModalVisibleBacklight(false); // выключаем подсветку
+    } else {
+      // Если данные не заполнены, включаем подсветку
+      setModalVisibleBacklight(true); // включаем подсветку
+      setModalVisible(false); // не открываем модальное окно
+    }
 
+    // Устанавливаем текущую стену
+    setNumberCurrentWall(numberWall - 1);
+  };
+  // Проверяем, заполнены ли все данные для стены
+  // useEffect(() => {
+  //   const isFilled =
+  //     saveSizeWall[wallIndex]?.size &&
+  //     (saveSizeWall[wallIndex]?.size.widthTop ||
+  //       saveSizeWall[wallIndex]?.size.widthBottom ||
+  //       saveSizeWall[wallIndex]?.size.heightLeft ||
+  //       saveSizeWall[wallIndex]?.size.heightRight);
+  //   setIsDataFilled(isFilled); // Обновляем состояние isDataFilled
+  // }, [saveSizeWall, wallIndex]);
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.centeredView}>
@@ -30,7 +59,11 @@ export default function AddBlockDimensions({
           saveSizeWall={saveSizeWall}
           setArrElements={setArrElements}
           arrElements={arrElements}
+          setSizeWalls={setSizeWalls}
+          numberCurrentWall={numberCurrentWall}
+          wallIndex={wallIndex}
         />
+
         <Pressable onPress={onClickWallIncrease}>
           <View>
             <Text style={styles.textDimensions}>Стена №{numberWall}</Text>
@@ -39,41 +72,60 @@ export default function AddBlockDimensions({
                 styles.wallBlock,
                 {
                   ...styles.addedWall,
-                  borderColor: modalVisible ? Colors.green : Colors.black,
+                  borderColor: modalVisibleBacklight
+                    ? Colors.green
+                    : Colors.black,
                 },
               ]}>
               <View style={[styles.sizeWall, styles.wallTop]}>
                 <Text style={styles.textDimensions}>
-                  {saveSizeWall?.widthTop}
+                  {String(
+                    saveSizeWall[wallIndex]?.size?.widthTop ||
+                      saveSizeWall?.widthTop ||
+                      '',
+                  )}
                 </Text>
               </View>
               <View style={[styles.sizeWall, styles.wallRight]}>
                 <Text style={styles.textDimensions}>
-                  {saveSizeWall?.heightRight}
+                  {saveSizeWall[wallIndex]?.size?.heightRight ||
+                    saveSizeWall?.heightRight}
                 </Text>
               </View>
               <View style={[styles.sizeWall, styles.wallBottom]}>
                 <Text style={styles.textDimensions}>
-                  {saveSizeWall?.widthBottom}
+                  {saveSizeWall[wallIndex]?.size?.widthBottom ||
+                    saveSizeWall?.widthBottom}
                 </Text>
               </View>
               <View style={[styles.sizeWall, styles.wallLeft]}>
                 <Text style={styles.textDimensions}>
-                  {saveSizeWall?.heightLeft}
+                  {saveSizeWall[wallIndex]?.size?.heightLeft ||
+                    saveSizeWall?.heightLeft}
                 </Text>
               </View>
-              {saveSizeWall?.wallAngleDegree && (
+              {(saveSizeWall[wallIndex]?.size?.wallAngleDegree ||
+                saveSizeWall?.wallAngleDegree) && (
                 <>
                   <View
                     style={[styles.sizeWall, styles.borderLineAngle]}></View>
                   <View style={[styles.sizeWall, styles.wallAngleDegree]}>
-                    <Text>{saveSizeWall?.wallAngleDegree}</Text>
+                    <Text>
+                      {saveSizeWall[wallIndex]?.size?.wallAngleDegree ||
+                        saveSizeWall?.wallAngleDegree}
+                    </Text>
                   </View>
                 </>
               )}
             </View>
             <View>
-              <Text>{saveSizeWall?.radiusWall}</Text>
+              {saveSizeWall[wallIndex]?.size?.radiusWall ||
+              saveSizeWall?.radiusWall ? (
+                <Text>
+                  {saveSizeWall[wallIndex]?.size?.radiusWall ||
+                    saveSizeWall?.radiusWall}
+                </Text>
+              ) : null}
             </View>
           </View>
         </Pressable>

@@ -1,12 +1,15 @@
 import {ScrollView, Text, View} from 'react-native';
 import {Input} from '../../shared/Input/Input';
-import {useContext, useState} from 'react';
+import {useContext, useEffect, useState} from 'react';
 import useInput from '../../hooks/useInput';
 import SelectCustom from '../../shared/SelectCustom/SelectCustom';
 import {arrCountWall} from '../../shared/texts';
 import AddSizeWall from '../components/AddSizeWall/AddSizeWall';
 import {
+  IDataElementsWall,
   IDataProduct,
+  IElementData,
+  // IElementWall,
   IWallData,
   PathScreen,
   RootStackParamList,
@@ -14,9 +17,12 @@ import {
 import ButtonCustom from '../../shared/ButtonCustom/ButtonCustom';
 import AddBlockDimensions from '../components/AddBlockDimensions/AddBlockDimensions';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {DataContext} from '../../context/DataProvider';
 import Draw from '../components/Draw/Draw';
-
+import IndexWallContext from '../../context/IndexWallContext/IndexWallContext';
+interface IElementWall {
+  data: IElementData;
+  dataObj: IDataElementsWall;
+}
 export default function FormDataAddProductScreen() {
   const navigation =
     useNavigation<
@@ -27,22 +33,23 @@ export default function FormDataAddProductScreen() {
     defaultCount: 'Выберите количество стен',
   });
 
-  const dataContext = useContext(DataContext);
-
-  if (!dataContext) {
-    return null;
-  }
-
-  const {arrElements, setArrElements} = dataContext;
-
   const [isActiveBtn, setIsActiveBtn] = useState<boolean>(true);
   const [countWall, setCountWall] = useState('');
-  const [sizeWalls, setSizeWalls] = useState<IDataProduct[]>([]);
-  // const [arrElements, setArrElements] = useState([]);
+  const [numberCurrentWall, setNumberCurrentWall] = useState(0);
+  const [sizeWalls, setSizeWalls] = useState<any[]>([]);
+  const [arrElements, setArrElements] = useState<IElementWall[]>([]);
+  const [modalVisibleBacklight, setModalVisibleBacklight] = useState(false);
+  const indexWallContext = useContext(IndexWallContext);
+
+  if (!indexWallContext) {
+    return null;
+  }
+  const {activeWallIndex, setActiveWallIndex} = indexWallContext;
+
   const onSaveSizeWall = (currentSizeWall: IWallData) => {
-    setSizeWalls(prev => {
-      let updateDateWalls = [...prev, {currentSizeWall}];
-      return updateDateWalls;
+    setSizeWalls(prevWalls => {
+      let updatedWalls = [...prevWalls, {currentSizeWall}];
+      return updatedWalls;
     });
   };
 
@@ -50,7 +57,6 @@ export default function FormDataAddProductScreen() {
     navigation.navigate('UnwrappedProduct', {
       dataProduct: sizeWalls,
       nameRoom: nameRoom.value,
-      arrElements: arrElements,
     });
   };
 
@@ -71,7 +77,17 @@ export default function FormDataAddProductScreen() {
           countWallText={(item: string) => setCountWall(item)}
         />
         <View>
-          <Draw />
+          <Draw
+            setArrElements={setArrElements}
+            arrElements={arrElements}
+            setSizeWalls={setSizeWalls}
+            onSaveSizeWall={onSaveSizeWall}
+            sizeWalls={sizeWalls}
+            setNumberCurrentWall={setActiveWallIndex}
+            numberCurrentWall={activeWallIndex}
+            setModalVisibleBacklight={setModalVisibleBacklight}
+            modalVisibleBacklight={modalVisibleBacklight}
+          />
         </View>
       </View>
       {!isActiveBtn && (
@@ -85,6 +101,9 @@ export default function FormDataAddProductScreen() {
                   key={index}
                   saveSizeWall={wall.currentSizeWall}
                   setArrElements={setArrElements}
+                  setSizeWalls={setSizeWalls}
+                  setNumberCurrentWall={setActiveWallIndex}
+                  numberCurrentWall={activeWallIndex}
                 />
               );
             })}
@@ -103,6 +122,7 @@ export default function FormDataAddProductScreen() {
       {!isActiveBtn && (
         <ButtonCustom textBtn="Сохранить данные" onPress={onSaveDataWall} />
       )}
+      <ButtonCustom textBtn="Сохранить данные" onPress={onSaveDataWall} />
     </ScrollView>
   );
 }

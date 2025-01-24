@@ -54,6 +54,7 @@ export interface IDataItem {
 }
 
 export interface IWallData {
+  id?: number;
   heightRight: string;
   heightLeft: string;
   widthTop: string;
@@ -74,7 +75,7 @@ export type RootStackParamList = {
   UnwrappedProduct: {
     dataProduct: any;
     nameRoom: string;
-    arrElements: any;
+    // arrElements: any;
   };
   Product: {productRoom: any};
 };
@@ -125,6 +126,8 @@ export interface IElementData {
 
 export interface IDataProduct {
   currentSizeWall: IWallData;
+  shapes?: any;
+  arrElements?: any;
 }
 
 export interface IArrElements {
@@ -137,7 +140,7 @@ export interface IDataFull extends IDataElementsWall, IDataProduct {}
 export interface IProductRoom {
   dataProduct: IDataProduct;
   nameRoom: string;
-  arrElements: IArrElements[];
+  // arrElements: IArrElements[];
 }
 export interface IElementsProducts {
   elementsData: IArrElements[];
