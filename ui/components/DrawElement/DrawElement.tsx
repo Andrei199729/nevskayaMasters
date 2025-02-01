@@ -8,89 +8,56 @@ import DrawModalWall from '../DrawModalWall/DrawModalWall';
 export default function DrawElement({
   id,
   drawing,
-  drawModalVisible,
-  setDrawModalVisible,
-  setSelectedLineIndex,
-  arrElements,
-  setArrElements,
-  setSizeWalls,
-  selectedLineIndex,
-  numberWall,
-  setNumberCurrentWall,
-  numberCurrentWall,
   isLast,
-  modalVisibleBacklight,
+  onClickLine,
+  selectedLine,
 }: any) {
-  const handleLinePress = (numberCurrentWall: number) => {
-    setSelectedLineIndex(id); // Устанавливаем ID выбранной стены
-    setDrawModalVisible(true); // Открываем модалку
-    setNumberCurrentWall(numberCurrentWall);
-  };
-
-  const stateColorVisibleModal = drawModalVisible ? 'blue' : 'black';
+  const stateColorLineDraw = (index: number | null) =>
+    selectedLine === index ? 'black' : 'red';
 
   return (
-    <>
-      {drawModalVisible && (
-        <DrawModalWall
-          drawModalVisible={drawModalVisible}
-          setDrawModalVisible={setDrawModalVisible}
-          drawing={drawing}
-          id={id}
-          setArrElements={setArrElements}
-          arrElements={arrElements}
-          setSizeWalls={setSizeWalls}
-          selectedLineIndex={selectedLineIndex}
-          numberCurrentWall={numberCurrentWall}
-          isLast={isLast}
-        />
-      )}
-      <Pressable
-        style={styles.container}
-        onPress={() => handleLinePress(numberWall)}>
-        <Svg style={StyleSheet.absoluteFill}>
-          {/* Рендер всех линий */}
-          {drawing?.shapes?.map((line: any, idx: number) => {
-            const pathParts = line.path.split(' ');
-            const startCoords = pathParts[0].slice(1).split(',');
-            const endCoords = pathParts[pathParts.length - 1]
-              .slice(1)
-              .split(',');
+    <Pressable style={styles.container}>
+      <Svg style={StyleSheet.absoluteFill}>
+        {/* Рендер всех линий */}
+        {drawing?.shapes?.map((line: any, idx: number) => {
+          const pathParts = line.path.split(' ');
+          const startCoords = pathParts[0].slice(1).split(',');
+          const endCoords = pathParts[pathParts.length - 1].slice(1).split(',');
 
-            const startX = parseFloat(startCoords[0]);
-            const startY = parseFloat(startCoords[1]);
-            const endX = parseFloat(endCoords[0]);
-            const endY = parseFloat(endCoords[1]);
+          const startX = parseFloat(startCoords[0]);
+          const startY = parseFloat(startCoords[1]);
+          const endX = parseFloat(endCoords[0]);
+          const endY = parseFloat(endCoords[1]);
 
-            // Определяем позицию текста (примерно в середине линии)
-            const midX = (startX + endX) / 2;
-            const midY = (startY + endY) / 2;
+          // Определяем позицию текста (примерно в середине линии)
+          const midX = (startX + endX) / 2;
+          const midY = (startY + endY) / 2;
 
-            return (
-              <React.Fragment key={idx}>
+          return (
+            <React.Fragment key={idx}>
+              <G key={idx} onPressIn={() => onClickLine(idx)}>
                 <Path
                   d={line.path}
-                  stroke={stateColorVisibleModal}
+                  stroke={selectedLine === idx ? 'red' : 'black'}
                   strokeWidth={4}
                   fill="none"
                 />
-                {/* Вывод длины линии рядом с ней */}
                 {!isLast(idx, drawing?.shapes) && (
                   <TextSvg
-                    x={midX - 10}
-                    y={midY - 5} // Смещение вверх, чтобы текст не перекрывал линию
+                    x={midX}
+                    y={midY - 5}
                     fontSize="14"
                     fill="blue"
                     textAnchor="middle">
                     {line.id}
                   </TextSvg>
                 )}
-              </React.Fragment>
-            );
-          })}
-        </Svg>
-      </Pressable>
-    </>
+              </G>
+            </React.Fragment>
+          );
+        })}
+      </Svg>
+    </Pressable>
   );
 }
 const styles = StyleSheet.create({

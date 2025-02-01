@@ -1,9 +1,8 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
   Button,
-  Alert,
   StyleSheet,
   ScrollView,
   FlatList,
@@ -17,7 +16,7 @@ import Svg, {Path, Circle, Text as TextSvg} from 'react-native-svg';
 import DrawElement from '../DrawElement/DrawElement';
 import AddSizeWall from '../AddSizeWall/AddSizeWall';
 import AddBlockDimensions from '../AddBlockDimensions/AddBlockDimensions';
-import IndexWallContext from '../../../context/IndexWallContext/IndexWallContext';
+import ButtonCustom from '../../../shared/ButtonCustom/ButtonCustom';
 
 export default function Draw({
   setArrElements,
@@ -32,7 +31,7 @@ export default function Draw({
 }: any) {
   const [drawModalVisible, setDrawModalVisible] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-
+  const [openFormDataSize, setOpenFormDataSize] = useState(false);
   // Хранит массив объектов, каждый из которых представляет путь (path) и его длину.
   const [paths, setPaths] = useState<{path: string; length: number}[]>([]);
   // массив стен
@@ -53,7 +52,10 @@ export default function Draw({
   ); // Выбранная линия
   const [countWallDraw, setCountWallDraw] = useState(0); // Количество стен
   const [wallsData, setWallsData] = useState<any[]>([]); // который будет хранить все AddBlockDimensions
+  const [clickLineDraw, setClickLineDraw] = useState(false); // клик на линию
+  const [selectedLine, setSelectedLine] = useState<number | null>(null);
 
+  const [indexLineWallDraw, setIndexLineWallDraw] = useState(0); // клик на линию
   // Пороговое значение расстояния для автоматической привязки точек.
   const DISTANCE_THRESHOLD = 20; // Порог для автоматического соединения
   // Функция вычисляет длину линии между двумя точками по формуле расстояния.
@@ -96,31 +98,57 @@ export default function Draw({
     const angle = Math.acos(dotProduct / (magnitudeV1 * magnitudeV2));
     return angle * (180 / Math.PI);
   };
+
+  // Функция для добавления новой линии
+  // const addNewLine = (
+  //   startPoint: {x: number; y: number},
+  //   endPoint: {x: number; y: number},
+  // ) => {
+  //   const newPath = `M${startPoint.x},${startPoint.y} L${endPoint.x},${endPoint.y}`;
+  //   const newLength = Math.sqrt(
+  //     (endPoint.x - startPoint.x) ** 2 + (endPoint.y - startPoint.y) ** 2,
+  //   );
+
+  //   // Обновляем пути и точки
+  //   setPaths(prevPaths => [...prevPaths, {path: newPath, length: newLength}]);
+
+  //   setPoints(prevPoints => [...prevPoints, startPoint, endPoint]);
+  // };
+
   // Обработчик события при движении пальца
   const onGestureEvent = (event: any) => {
     const {x, y} = event.nativeEvent; // Получаем координаты текущего жеста.
+    if (isNaN(x) || isNaN(y)) {
+      console.warn('Invalid coordinates: x and y must be numbers');
+      return; // Прерываем выполнение, если координаты некорректны
+    }
     let adjustedPoint = {x, y}; // Точка для добавления.
 
     if (lastPoint && isNearPoint(lastPoint, {x, y})) {
       // Привязываем к последней точке, если пользователь рядом
       adjustedPoint = lastPoint;
     }
-
     if (lastPoint) {
-      setCurrentPath(
-        (prev: string) => `${prev} L${adjustedPoint.x},${adjustedPoint.y}`,
-      ); // Добавляем точку в текущий путь.
+      setCurrentPath((prev: string) => {
+        const newPath = `${prev} L${Math.round(adjustedPoint.x)},${Math.round(
+          adjustedPoint.y,
+        )}`;
+        return newPath;
+      }); // Добавляем точку в текущий путь.
     } else {
       // Если это первая точка новой линии, проверяем привязку
       const startPoint =
         points.length > 0 && isNearPoint(points[points.length - 1], {x, y})
           ? points[points.length - 1]
           : adjustedPoint;
-
+      if (isNaN(startPoint.x) || isNaN(startPoint.y)) {
+        return;
+      }
       setCurrentPath(`M${startPoint.x},${startPoint.y}`); // Начало нового пути.
       setLastPoint(startPoint); // Устанавливаем первую точку.
     }
   };
+
   // Обработчик события завершения жеста (отпускание пальца)
   // Проверяет возможность замыкания линии и добавляет новый путь.
 
@@ -129,13 +157,15 @@ export default function Draw({
       const pathParts = currentPath.split(' ');
       const firstCoords = pathParts[0].slice(1).split(',');
       const lastCoords = pathParts[pathParts.length - 1].slice(1).split(',');
-      const startX = parseFloat(firstCoords[0]);
-      const startY = parseFloat(firstCoords[1]);
-      const endX = parseFloat(lastCoords[0]);
-      const endY = parseFloat(lastCoords[1]);
+      const startX = Math.round(parseFloat(firstCoords[0]));
+      const startY = Math.round(parseFloat(firstCoords[1]));
+      const endX = Math.round(parseFloat(lastCoords[0]));
+      const endY = Math.round(parseFloat(lastCoords[1]));
 
       if (!isNaN(endX) && !isNaN(endY) && lastPoint) {
-        const newLength = calculateLength(lastPoint, {x: endX, y: endY});
+        const newLength = Math.round(
+          calculateLength(lastPoint, {x: endX, y: endY}),
+        );
 
         // Проверка, добавляем ли мы новый путь
         const newPath = `M${startX},${startY} L${endX},${endY}`;
@@ -165,11 +195,45 @@ export default function Draw({
             }
           }
         }
+        // addLineToLastRoom(startX, startY, endX, endY);
       }
     }
 
     setCurrentPath('');
     setLastPoint(null);
+  };
+
+  const addLineToLastRoom = (
+    startX: number,
+    startY: number,
+    endX: number,
+    endY: number,
+  ) => {
+    // Получаем текущие координаты линии
+
+    const newPath = `M${startX},${startY} L${endX},${endY}`;
+    const pathExists = paths.some(path => path.path === newPath); // Проверяем, существует ли такой путь
+
+    if (!isNaN(endX) && !isNaN(endY) && lastPoint) {
+      const newLength = calculateLength(lastPoint, {x: endX, y: endY});
+      // Находим последнюю комнату
+      setPaths((prevRooms: any) => {
+        const lastRoom = prevRooms[prevRooms.length - 1];
+        if (!pathExists) {
+          const updatedRoom = {
+            ...lastRoom,
+            path: [...lastRoom.path, newPath], // Добавляем новую линию в комнату
+          };
+          return [...prevRooms.slice(0, -1), updatedRoom]; // Обновляем последнюю комнату
+        }
+
+        return prevRooms;
+      });
+      if (!pathExists) {
+        setPaths([...paths, {path: newPath, length: newLength}]); // Добавляем новый путь, если его еще нет в paths
+        setPoints([...points, {x: startX, y: startY}, {x: endX, y: endY}]); // Обновляем точки
+      }
+    }
   };
 
   // Показывает уведомление о сохранении.
@@ -201,14 +265,79 @@ export default function Draw({
     setPaths([]);
   };
   const isLast = (index: number, paths: any) => index === paths.length - 1;
+
   const handleSaveWallSize = (size: any, numberWall: number) => {
-    if (size) {
-      setWallsData(prevWalls => [
-        ...prevWalls,
-        {size, numberWall: numberWall - 1},
-      ]);
+    if (!size) return;
+
+    setWallsData(prevWalls => {
+      const updatedWalls = prevWalls.map(wall =>
+        wall.numberWall === numberWall - 1 ? {...wall, size} : wall,
+      );
+
+      // Если стена уже есть, обновляем её, иначе добавляем новую
+      return prevWalls.some(wall => wall.numberWall === numberWall - 1)
+        ? updatedWalls
+        : [...prevWalls, {size, numberWall: numberWall - 1}];
+    });
+  };
+
+  const onClickLine = (index: number) => {
+    setClickLineDraw(!clickLineDraw);
+    setSelectedLine(prev => (prev === index ? null : index));
+    setIndexLineWallDraw(index);
+  };
+
+  const [dataEditWall, setDataEditWall] = useState({});
+  const [isEditing, setIsEditing] = useState(false); //состояние для редактирования
+
+  const onClickEditDataWall = (size: any, currentWall: any) => {
+    if (!size) {
+      return [];
+    } else {
+      setDataEditWall(size);
     }
   };
+
+  const onClickWallIncrease = (size: any, wallIndex: any, click: any) => {
+    switch (click) {
+      case 'wall':
+        // Логика, если клик был сделан на стену
+        setNumberCurrentWall(wallIndex);
+        onClickLine(wallIndex);
+
+        // setIsDataFilled(!isDataFilled);
+        setIsEditing(false);
+
+        if (size) {
+          setModalVisible(true);
+          setModalVisibleBacklight(false);
+          setOpenFormDataSize(false);
+        } else {
+          setModalVisible(false);
+          setModalVisibleBacklight(true);
+          setOpenFormDataSize(true);
+        }
+
+        break;
+
+      case 'button':
+        // Логика, если клик был сделан на кнопку
+        setNumberCurrentWall(wallIndex);
+        setIsEditing(true); // Можно выполнять какие-то другие действия для кнопки
+        onClickEditDataWall(size, wallIndex);
+
+        setModalVisible(false);
+        setModalVisibleBacklight(true);
+        setOpenFormDataSize(true);
+
+        break;
+
+      default:
+        // Логика по умолчанию (если нужно обработать другие случаи)
+        break;
+    }
+  };
+  //
 
   useEffect(() => {
     // Обновляем количество линий для последнего рисунка
@@ -217,6 +346,7 @@ export default function Draw({
       setCountWallDraw(lastDrawing?.drawingData?.shapes?.length - 1);
     }
   }, [sizeWalls]);
+
   useEffect(() => {
     setSizeWalls((prevSizeWalls: any[]) => {
       if (wallsData.length === 0) return prevSizeWalls;
@@ -251,10 +381,17 @@ export default function Draw({
               const endX = parseFloat(endCoords[0]);
               const endY = parseFloat(endCoords[1]);
 
+              const safeStartX = isNaN(startX) ? 0 : startX;
+              const safeStartY = isNaN(startY) ? 0 : startY;
+              const safeEndX = isNaN(endX) ? 0 : endX;
+              const safeEndY = isNaN(endY) ? 0 : endY;
+
+              const midX = (safeStartX + safeEndX) / 2;
+              const midY = (safeStartY + safeEndY) / 2;
+
               // Определяем позицию текста (примерно в середине линии)
-              const midX = (startX + endX) / 2;
-              const midY = (startY + endY) / 2;
               // Проверяем, является ли текущая линия последней
+
               return (
                 <React.Fragment key={index}>
                   <Path
@@ -263,6 +400,7 @@ export default function Draw({
                     strokeWidth={4}
                     fill="none"
                   />
+
                   {/* Вывод длины линии рядом с ней */}
 
                   {!isLast(index, paths) && (
@@ -346,38 +484,67 @@ export default function Draw({
                 setCountWallDraw(drawing?.drawingData?.shapes.length)
               }
               modalVisibleBacklight={modalVisibleBacklight}
+              setClickLineDraw={setClickLineDraw}
+              clickLineDraw={clickLineDraw}
+              onClickLine={onClickLine}
+              selectedLine={selectedLine}
             />
           );
         })}
-        <ScrollView
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.contentContainer}>
-          {Array.from({length: countWallDraw}, (_, index) => {
+        <FlatList
+          horizontal
+          data={Array.from({length: countWallDraw}, (_, index) => index)}
+          keyExtractor={item => item.toString()}
+          renderItem={({item: index}) => {
+            const currentWall = index === numberCurrentWall;
+
             return (
-              <AddBlockDimensions
-                key={index}
-                numberWall={index + 1}
-                setArrElements={setArrElements}
-                setSizeWalls={setSizeWalls}
-                setNumberCurrentWall={setNumberCurrentWall}
-                numberCurrentWall={numberCurrentWall}
-                setModalVisibleBacklight={setModalVisibleBacklight}
-                modalVisibleBacklight={
-                  modalVisibleBacklight && index === numberCurrentWall
-                }
-                saveSizeWall={wallsData || {}}
-                setModalVisible={setModalVisible}
-                modalVisible={modalVisible && index === numberCurrentWall}
-              />
+              <View style={{flexDirection: 'column', gap: 5}}>
+                {wallsData[index] && (
+                  <Text>Редактировать стену №{index + 1}</Text>
+                )}
+                <AddBlockDimensions
+                  key={index}
+                  numberWall={index + 1}
+                  setArrElements={setArrElements}
+                  setSizeWalls={setSizeWalls}
+                  setNumberCurrentWall={setNumberCurrentWall}
+                  numberCurrentWall={numberCurrentWall}
+                  setModalVisibleBacklight={setModalVisibleBacklight}
+                  modalVisibleBacklight={modalVisibleBacklight && currentWall}
+                  saveSizeWall={wallsData || {}}
+                  setModalVisible={setModalVisible}
+                  modalVisible={modalVisible && currentWall}
+                  setClickLineDraw={setClickLineDraw}
+                  clickLineDraw={clickLineDraw && index === indexLineWallDraw}
+                  onClickLine={onClickLine}
+                  onClickEditDataWall={onClickEditDataWall}
+                  onClickWallIncrease={onClickWallIncrease}
+                />
+                {wallsData[index]?.size && (
+                  <ButtonCustom
+                    textBtn="Редактировать стену"
+                    onPress={() =>
+                      onClickWallIncrease(
+                        wallsData[index]?.size,
+                        index,
+                        'button',
+                      )
+                    }
+                  />
+                )}
+              </View>
             );
-          })}
-        </ScrollView>
-        {modalVisibleBacklight && (
+          }}
+        />
+        {openFormDataSize && (
           <AddSizeWall
             numberWall={numberCurrentWall + 1}
             onSaveSizeWall={handleSaveWallSize}
-            key={numberCurrentWall}
+            dataEditWall={dataEditWall}
+            setDataEditWall={setDataEditWall}
+            setModalVisibleBacklight={setModalVisibleBacklight}
+            setOpenFormDataSize={setOpenFormDataSize}
           />
         )}
       </View>

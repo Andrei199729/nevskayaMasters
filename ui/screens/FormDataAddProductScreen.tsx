@@ -39,6 +39,7 @@ export default function FormDataAddProductScreen() {
   const [sizeWalls, setSizeWalls] = useState<any[]>([]);
   const [arrElements, setArrElements] = useState<IElementWall[]>([]);
   const [modalVisibleBacklight, setModalVisibleBacklight] = useState(false);
+  const [openFormDataSizeWall, setOpenFormDataSizeWall] = useState(false);
   const indexWallContext = useContext(IndexWallContext);
 
   if (!indexWallContext) {
@@ -87,6 +88,8 @@ export default function FormDataAddProductScreen() {
             numberCurrentWall={activeWallIndex}
             setModalVisibleBacklight={setModalVisibleBacklight}
             modalVisibleBacklight={modalVisibleBacklight}
+            setOpenFormDataSizeWall={setOpenFormDataSizeWall}
+            openFormDataSizeWall={openFormDataSizeWall}
           />
         </View>
       </View>

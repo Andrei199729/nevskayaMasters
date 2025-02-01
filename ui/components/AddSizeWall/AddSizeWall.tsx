@@ -1,10 +1,10 @@
-import {StyleSheet, Text, View} from 'react-native';
-import React, {useContext, useState} from 'react';
+import {Pressable, StyleSheet, Text, View} from 'react-native';
+import React, {useContext, useEffect, useState} from 'react';
 import {Input} from '../../../shared/Input/Input';
 import ButtonCustom from '../../../shared/ButtonCustom/ButtonCustom';
 import {validateNumber} from '../../../customFunc/customFunc';
 import {IWallData} from '../../../shared/types';
-
+import {Checkbox, RadioButton} from 'react-native-paper';
 interface IAddSizeWall {
   numberWall: number;
   onSaveSizeWall: (wallData: IWallData, numberWall: number) => void;
@@ -13,13 +13,32 @@ interface IAddSizeWall {
 export default function AddSizeWall({
   numberWall,
   onSaveSizeWall,
-}: IAddSizeWall) {
-  const [heightRight, setHeightRight] = useState<string>('');
-  const [widthTop, setWidthTop] = useState<string>('');
-  const [heightLeft, setHeightLeft] = useState<string>('');
-  const [widthBottom, setWidthBottom] = useState<string>('');
-  const [wallAngleDegree, setWallAngleDegree] = useState<string>('');
-  const [radiusWall, setRadiusWall] = useState<string>('');
+  dataEditWall,
+  setModalVisibleBacklight,
+  setOpenFormDataSize,
+}: IAddSizeWall & any) {
+  const [heightRight, setHeightRight] = useState<string>(
+    dataEditWall?.heightRight || '',
+  );
+  const [widthTop, setWidthTop] = useState<string>(
+    dataEditWall?.widthTop || '',
+  );
+  const [heightLeft, setHeightLeft] = useState<string>(
+    dataEditWall?.heightLeft || '',
+  );
+  const [widthBottom, setWidthBottom] = useState<string>(
+    dataEditWall?.widthBottom || '',
+  );
+  const [wallAngleDegree, setWallAngleDegree] = useState<string>(
+    dataEditWall?.wallAngleDegree || '',
+  );
+  const [radiusWall, setRadiusWall] = useState<string>(
+    dataEditWall?.radiusWall || '',
+  );
+
+  const [valueDegree, setValueDegree] = useState(
+    dataEditWall?.valueDegree || '',
+  );
   const [viewInput, setViewInput] = useState<boolean>(true);
 
   const handleSubmit = () => {
@@ -44,11 +63,26 @@ export default function AddSizeWall({
         widthBottom,
         wallAngleDegree,
         radiusWall,
+        valueDegree,
       };
       onSaveSizeWall(wallData, numberWall);
     }
     setViewInput(false);
+    setModalVisibleBacklight(false);
+    setOpenFormDataSize(false);
   };
+
+  useEffect(() => {
+    if (dataEditWall) {
+      setHeightRight(dataEditWall.heightRight || '');
+      setWidthTop(dataEditWall.widthTop || '');
+      setHeightLeft(dataEditWall.heightLeft || '');
+      setWidthBottom(dataEditWall.widthBottom || '');
+      setRadiusWall(dataEditWall.radiusWall || '');
+      setWallAngleDegree(dataEditWall.wallAngleDegree || '');
+      setValueDegree(dataEditWall.valueDegree || '');
+    }
+  }, [dataEditWall]);
 
   return (
     <>
@@ -89,6 +123,14 @@ export default function AddSizeWall({
               />
             </View>
             <View>
+              <Text>радиус дуги стены</Text>
+              <Input
+                value={radiusWall}
+                onChangeText={setRadiusWall}
+                inputModeText={'numeric'}
+              />
+            </View>
+            <View>
               <Text>градус угла стены</Text>
               <Input
                 value={wallAngleDegree}
@@ -96,13 +138,22 @@ export default function AddSizeWall({
                 inputModeText={'numeric'}
               />
             </View>
-            <View>
-              <Text>радиус дуги стены</Text>
-              <Input
-                value={radiusWall}
-                onChangeText={setRadiusWall}
-                inputModeText={'numeric'}
-              />
+            <View style={styles.container}>
+              <Text style={styles.label}>Выберите тип угла:</Text>
+              <View style={{padding: 20}}>
+                <RadioButton.Group
+                  onValueChange={newValue => setValueDegree(newValue)}
+                  value={valueDegree}>
+                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <RadioButton value="interior" />
+                    <Text>Внутренний угол</Text>
+                  </View>
+                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <RadioButton value="external" />
+                    <Text>Внешний угол</Text>
+                  </View>
+                </RadioButton.Group>
+              </View>
             </View>
           </View>
           <ButtonCustom
@@ -126,8 +177,28 @@ export default function AddSizeWall({
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   wallBlock: {
     maxWidth: '100%',
     width: '100%',
+  },
+
+  checkboxContainer: {
+    flexDirection: 'column',
+    gap: 8,
+  },
+  checkbox: {
+    alignSelf: 'center',
+  },
+  label: {
+    margin: 8,
+  },
+  checkboxRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });

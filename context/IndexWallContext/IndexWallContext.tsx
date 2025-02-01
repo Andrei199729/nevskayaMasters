@@ -1,17 +1,17 @@
 import React, {createContext, useState, ReactNode} from 'react';
 
 interface IndexWallContextProps {
-  activeWallIndex: number | null;
-  setActiveWallIndex: (index: number | null) => void;
+  activeWallIndex: number;
+  setActiveWallIndex: (index: number) => void;
 }
 
 const IndexWallContext = createContext<IndexWallContextProps>({
-  activeWallIndex: null,
+  activeWallIndex: 0,
   setActiveWallIndex: () => {},
 });
 
 export const IndexWallProvider = ({children}: {children: ReactNode}) => {
-  const [activeWallIndex, setActiveWallIndex] = useState<number | null>(null);
+  const [activeWallIndex, setActiveWallIndex] = useState<number>(0);
 
   return (
     <IndexWallContext.Provider value={{activeWallIndex, setActiveWallIndex}}>

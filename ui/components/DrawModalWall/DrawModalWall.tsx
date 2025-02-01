@@ -50,37 +50,6 @@ export default function DrawModalWall({
       return update;
     });
   };
-  const onSaveDataElement = (data: IElementData) => {
-    // Сначала обновляем элементы в текущем стене
-    setElementsData(prev => {
-      let updatedData = [...prev, {data, dataObj}];
-      setArrElements(updatedData); // Сохраняем обновленные элементы
-      // Обновляем размеры стен, добавляем новый элемент в нужную стену по id
-      setSizeWalls((prevSizeWall: any[]) => {
-        if (!Array.isArray(prevSizeWall)) {
-          console.error(
-            'Ошибка: prevSizeWall не является массивом!',
-            prevSizeWall,
-          );
-          return [];
-        }
-
-        // Проходим по всем стенам, обновляем только ту, у которой номер wall совпадает с id текущей стены
-        return prevSizeWall.map(wall => {
-          if (wall?.drawingData?.numberWall === numberCurrentWall) {
-            // Если нашли стену с нужным номером, добавляем элемент в ее массив
-            return {
-              ...wall,
-              arrElements: [...(wall.arrElements ?? []), {data, dataObj}],
-            };
-          }
-          // Если стена не совпала, возвращаем без изменений
-          return wall;
-        });
-      });
-      return updatedData;
-    });
-  };
 
   const toggleElementVisibility = (index: number, isVisible: boolean) => {
     setVisibleElements(prev => ({
@@ -200,14 +169,14 @@ export default function DrawModalWall({
           </View>
         </View>
       </Modal>
-      <ModalElementsWall
+      {/* <ModalElementsWall
         modalVisible={elementsWallModalVisible}
         setModalVisible={setElementsWallModalVisible}
         numberWall={id}
         saveSizeWall={undefined}
         onSaveElement={onSaveElement}
         onSaveElementSize={onSaveDataElement}
-      />
+      /> */}
     </>
   );
 }

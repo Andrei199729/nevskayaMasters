@@ -6,6 +6,7 @@ import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import ModalWall from '../ModalWall/ModalWall';
 import IndexWallContext from '../../../context/IndexWallContext/IndexWallContext';
 import ModalVisibleContext from '../../../context/ModalVisible/ModalVisibleContext';
+import ButtonCustom from '../../../shared/ButtonCustom/ButtonCustom';
 
 type AddBlockDimensionsProps = IAddBlockDimensions & IDataContext;
 
@@ -19,36 +20,17 @@ export default function AddBlockDimensions({
   numberCurrentWall,
   setModalVisibleBacklight,
   modalVisibleBacklight,
+  setClickLineDraw,
+  clickLineDraw,
+  onClickLine,
+  onClickEditDataWall,
+  onClickWallIncrease,
+  setModalVisible,
+  modalVisible,
   ...props
 }: AddBlockDimensionsProps & any) {
   const wallIndex = numberWall - 1;
-  const [isDataFilled, setIsDataFilled] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
 
-  const onClickWallIncrease = () => {
-    setIsDataFilled(!isDataFilled);
-    if (isDataFilled) {
-      setModalVisible(true); // открываем модальное окно
-      setModalVisibleBacklight(false); // выключаем подсветку
-    } else {
-      // Если данные не заполнены, включаем подсветку
-      setModalVisibleBacklight(true); // включаем подсветку
-      setModalVisible(false); // не открываем модальное окно
-    }
-
-    // Устанавливаем текущую стену
-    setNumberCurrentWall(numberWall - 1);
-  };
-  // Проверяем, заполнены ли все данные для стены
-  // useEffect(() => {
-  //   const isFilled =
-  //     saveSizeWall[wallIndex]?.size &&
-  //     (saveSizeWall[wallIndex]?.size.widthTop ||
-  //       saveSizeWall[wallIndex]?.size.widthBottom ||
-  //       saveSizeWall[wallIndex]?.size.heightLeft ||
-  //       saveSizeWall[wallIndex]?.size.heightRight);
-  //   setIsDataFilled(isFilled); // Обновляем состояние isDataFilled
-  // }, [saveSizeWall, wallIndex]);
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.centeredView}>
@@ -64,7 +46,14 @@ export default function AddBlockDimensions({
           wallIndex={wallIndex}
         />
 
-        <Pressable onPress={onClickWallIncrease}>
+        <Pressable
+          onPress={() =>
+            onClickWallIncrease(
+              saveSizeWall[wallIndex]?.size,
+              wallIndex,
+              'wall',
+            )
+          }>
           <View>
             <Text style={styles.textDimensions}>Стена №{numberWall}</Text>
             <View
@@ -104,26 +93,26 @@ export default function AddBlockDimensions({
                     saveSizeWall?.heightLeft}
                 </Text>
               </View>
-              {(saveSizeWall[wallIndex]?.size?.wallAngleDegree ||
-                saveSizeWall?.wallAngleDegree) && (
+              {(saveSizeWall[wallIndex]?.size?.radiusWall ||
+                saveSizeWall?.radiusWall) && (
                 <>
                   <View
                     style={[styles.sizeWall, styles.borderLineAngle]}></View>
-                  <View style={[styles.sizeWall, styles.wallAngleDegree]}>
+                  <View style={[styles.sizeWall, styles.radiusWall]}>
                     <Text>
-                      {saveSizeWall[wallIndex]?.size?.wallAngleDegree ||
-                        saveSizeWall?.wallAngleDegree}
+                      {saveSizeWall[wallIndex]?.size?.radiusWall ||
+                        saveSizeWall?.radiusWall}
                     </Text>
                   </View>
                 </>
               )}
             </View>
             <View>
-              {saveSizeWall[wallIndex]?.size?.radiusWall ||
-              saveSizeWall?.radiusWall ? (
+              {saveSizeWall[wallIndex]?.size?.wallAngleDegree ||
+              saveSizeWall?.wallAngleDegree ? (
                 <Text>
-                  {saveSizeWall[wallIndex]?.size?.radiusWall ||
-                    saveSizeWall?.radiusWall}
+                  {saveSizeWall[wallIndex]?.size?.wallAngleDegree ||
+                    saveSizeWall?.wallAngleDegree}
                 </Text>
               ) : null}
             </View>
@@ -140,6 +129,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    marginBottom: 30,
   },
   wallBlock: {
     width: '100%',
@@ -147,16 +137,14 @@ const styles = StyleSheet.create({
   },
   addedWall: {
     position: 'relative',
-    width: '100%',
+    width: 300,
+    flex: 1,
     borderWidth: 2,
     borderColor: Colors.black,
     borderStyle: 'solid',
-    height: 100,
+    height: 300,
   },
-  addedWallModal: {
-    width: 400,
-    height: '80%',
-  },
+
   sizeWall: {
     position: 'absolute',
   },
@@ -185,7 +173,7 @@ const styles = StyleSheet.create({
     top: '70%',
     width: '100%',
   },
-  wallAngleDegree: {
+  radiusWall: {
     top: '50%',
     left: '50%',
     transform: [{translateX: -2}],

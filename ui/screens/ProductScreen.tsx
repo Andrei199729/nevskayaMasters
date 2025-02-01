@@ -1,4 +1,4 @@
-import {ScrollView, Text, View} from 'react-native';
+import {FlatList, ScrollView, Text, View} from 'react-native';
 import HeaderScreen from './HeaderScreen';
 import MainScreen from './MainScreen';
 import AddBlockDimensions from '../components/AddBlockDimensions/AddBlockDimensions';
@@ -9,8 +9,8 @@ import IndexWallContext from '../../context/IndexWallContext/IndexWallContext';
 import ModalVisibleContext from '../../context/ModalVisible/ModalVisibleContext';
 
 export default function ProductScreen({navigation, route, ...props}: any) {
-  const [drawModalVisible, setDrawModalVisible] = useState(false);
-  const [wallModalVisible, setWallModalVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisibleBacklight, setModalVisibleBacklight] = useState(false);
   const [selectedLineIndex, setSelectedLineIndex] = useState<number | null>(
     null,
   ); // Выбранная линия
@@ -22,9 +22,11 @@ export default function ProductScreen({navigation, route, ...props}: any) {
     return null;
   }
   const {activeWallIndex, setActiveWallIndex} = indexWallContext;
-
-  console.log(JSON.stringify(productRoom, null, 2), 'productRoom');
-
+  const openModalVisible = (wallIndex: any, index: number) => {
+    const stateModal = wallIndex === index ? wallIndex : null;
+    setModalVisible(stateModal);
+    setModalVisibleBacklight(stateModal);
+  };
   return (
     <HeaderScreen>
       <MainScreen mainTitle={`Комната: ${productRoom.nameRoom}`}>
@@ -34,8 +36,6 @@ export default function ProductScreen({navigation, route, ...props}: any) {
               id={index}
               key={index}
               drawing={room?.drawingData}
-              // setDrawModalVisible={setDrawModalVisible}
-              // drawModalVisible={drawModalVisible && selectedLineIndex === index}
               setSelectedLineIndex={setSelectedLineIndex}
               arrElements={room?.arrElements}
               setNumberCurrentWall={() => {}}
@@ -43,34 +43,37 @@ export default function ProductScreen({navigation, route, ...props}: any) {
             />
           );
         })}
-        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-          {productRoom?.dataProduct.map(
-            (room: IDataProduct & any, index: number) => {
-              return room.drawingData.walls.map(
-                (wall: any, wallIndex: number) => {
-                  const isActiveWall = wallIndex === activeWallIndex;
-                  console.log(
-                    JSON.stringify(wall?.size?.arrElements, null, 2),
-                    'wall',
-                  );
-
-                  return (
-                    <AddBlockDimensions
-                      numberWall={wallIndex + 1}
-                      key={wallIndex}
-                      arrElements={wall?.size?.arrElements}
-                      setNumberCurrentWall={setActiveWallIndex}
-                      saveSizeWall={wall.size || {}}
-                      // setModalVisibleBacklight={() => {}}
-                      setModalVisibleBacklight={setDrawModalVisible}
-                      modalVisibleBacklight={drawModalVisible && isActiveWall}
-                    />
-                  );
-                },
-              );
-            },
+        <FlatList
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          data={productRoom?.dataProduct.flatMap((room: IDataProduct & any) =>
+            room.drawingData.walls.map((wall: any, wallIndex: number) => ({
+              ...wall,
+              wallIndex,
+            })),
           )}
-        </ScrollView>
+          keyExtractor={(_, index) => index.toString()}
+          renderItem={({item: wall, index}) => {
+            const isActiveWall = wall.wallIndex === index;
+            return (
+              <AddBlockDimensions
+                numberWall={wall.wallIndex + 1}
+                arrElements={wall?.size?.arrElements}
+                setNumberCurrentWall={setActiveWallIndex}
+                saveSizeWall={wall.size || {}}
+                setModalVisibleBacklight={setModalVisibleBacklight}
+                modalVisibleBacklight={modalVisibleBacklight === wall.wallIndex}
+                onClickLine={() => {}}
+                onClickEditDataWall={() => {}}
+                setModalVisible={setModalVisible}
+                modalVisible={modalVisible === wall.wallIndex}
+                onClickWallIncrease={() =>
+                  openModalVisible(wall.wallIndex, index)
+                }
+              />
+            );
+          }}
+        />
       </MainScreen>
     </HeaderScreen>
   );

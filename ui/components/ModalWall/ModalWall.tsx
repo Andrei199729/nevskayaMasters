@@ -116,9 +116,6 @@ export default function ModalWall({
     });
   };
 
-  // console.log(elementsData, 'elementsData');
-  // console.log(saveSizeWall, 'saveSizeWall');
-
   const handleClose = () => {
     setModalVisible(false);
   };
@@ -218,37 +215,37 @@ export default function ModalWall({
                           saveSizeWall?.heightLeft}
                       </Text>
                     </View>
-                    {(saveSizeWall[wallIndex]?.size?.wallAngleDegree ||
-                      saveSizeWall?.wallAngleDegree) && (
+                    {(saveSizeWall[wallIndex]?.size?.radiusWall ||
+                      saveSizeWall?.radiusWall) && (
                       <>
                         <View
                           style={[
                             styles.sizeWall,
                             styles.borderLineAngle,
                           ]}></View>
-                        <View style={[styles.sizeWall, styles.wallAngleDegree]}>
+                        <View style={[styles.sizeWall, styles.radiusWall]}>
                           <Text
                             style={{
                               ...styles.textDimensions,
                               fontSize: modalVisible ? Fonts.f24 : Fonts.f12,
                             }}>
-                            {saveSizeWall[wallIndex]?.size?.wallAngleDegree ||
-                              saveSizeWall?.wallAngleDegree}
+                            {saveSizeWall[wallIndex]?.size?.radiusWall ||
+                              saveSizeWall?.radiusWall}
                           </Text>
                         </View>
                       </>
                     )}
                   </View>
                   <View>
-                    {saveSizeWall[wallIndex]?.size?.radiusWall ||
-                    saveSizeWall?.radiusWall ? (
+                    {saveSizeWall[wallIndex]?.size?.wallAngleDegree ||
+                    saveSizeWall?.wallAngleDegree ? (
                       <Text
                         style={{
                           ...styles.textDimensions,
                           fontSize: modalVisible ? Fonts.f24 : Fonts.f12,
                         }}>
-                        {saveSizeWall[wallIndex]?.size?.radiusWall ||
-                          saveSizeWall?.radiusWall}
+                        {saveSizeWall[wallIndex]?.size?.wallAngleDegree ||
+                          saveSizeWall?.wallAngleDegree}
                       </Text>
                     ) : null}
                   </View>
@@ -334,7 +331,7 @@ const styles = StyleSheet.create({
     top: '70%',
     width: '100%',
   },
-  wallAngleDegree: {
+  radiusWall: {
     top: '50%',
     left: '50%',
     transform: [{translateX: -2}],
