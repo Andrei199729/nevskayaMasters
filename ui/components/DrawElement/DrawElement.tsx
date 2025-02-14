@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import {TapGestureHandler} from 'react-native-gesture-handler';
 import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
@@ -11,9 +11,28 @@ export default function DrawElement({
   isLast,
   onClickLine,
   selectedLine,
+  isStyleLine,
+  openFormDataSize,
+  setStrokeDasharrays,
+  strokeDasharrays,
+  numberWall,
 }: any) {
+  const [lineStrokeDasharrays, setLineStrokeDasharrays] = useState('10');
+
   const stateColorLineDraw = (index: number | null) =>
     selectedLine === index ? 'black' : 'red';
+
+  // При первом рендере все линии будут пунктирными
+
+  // Обновляем все линии, если данные заполнены
+  useEffect(() => {
+    if (openFormDataSize && numberWall !== undefined) {
+      setStrokeDasharrays((prev: any) => ({
+        ...prev,
+        [numberWall - 1]: '0', // Делаем текущую линию пунктирной
+      }));
+    }
+  }, [openFormDataSize, numberWall]);
 
   return (
     <Pressable style={styles.container}>
@@ -41,6 +60,10 @@ export default function DrawElement({
                   stroke={selectedLine === idx ? 'red' : 'black'}
                   strokeWidth={4}
                   fill="none"
+                  strokeDasharray={
+                    strokeDasharrays[idx] ||
+                    (!isStyleLine && lineStrokeDasharrays)
+                  } // Используем состояние для strokeDasharray
                 />
                 {!isLast(idx, drawing?.shapes) && (
                   <TextSvg

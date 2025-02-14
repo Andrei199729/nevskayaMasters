@@ -76,6 +76,7 @@ export type RootStackParamList = {
     dataProduct: any;
     nameRoom: string;
     // arrElements: any;
+    editEl: any;
   };
   Product: {productRoom: any};
 };
@@ -112,6 +113,7 @@ export interface IDataContext {
 }
 
 export interface IElementData {
+  id: number;
   nameElementWall: string;
   heightRight: string;
   widthTop: string;
@@ -131,6 +133,7 @@ export interface IDataProduct {
 }
 
 export interface IArrElements {
+  element: any;
   data: IElementData;
   dataObj: IDataElementsWall;
 }
@@ -145,8 +148,8 @@ export interface IProductRoom {
 export interface IElementsProducts {
   elementsData: IArrElements[];
   toggleElementVisibility: (index: number, isVisible: boolean) => void;
-  visibleElements: boolean;
+  visibleElements: boolean | any;
   setElementsData: () => void;
-  onSaveDataElement: (data: IElementData) => void;
+  onSaveDataElement: (data: IElementData | any) => void;
   setElementsWallModalVisible: () => void;
 }

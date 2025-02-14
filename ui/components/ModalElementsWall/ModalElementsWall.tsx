@@ -22,8 +22,10 @@ export default function ModalElementsWall({
   saveSizeWall,
   onSaveElement,
   onSaveElementSize,
+  updateSizeWalls,
+  position,
   ...props
-}: TModalElementsWall) {
+}: TModalElementsWall | any) {
   const [element, setElement] = useState(false);
   const [nameElementWall, setNameElementWall] = useState<IDataElementsWall>(
     {} as IDataElementsWall,
@@ -50,6 +52,8 @@ export default function ModalElementsWall({
         numberWall={numberWall}
         nameElementWall={nameElementWall.nameElement}
         onSaveElementSize={onSaveElementSize}
+        updateSizeWalls={updateSizeWalls}
+        position={position}
       />
       <View>
         <Pressable

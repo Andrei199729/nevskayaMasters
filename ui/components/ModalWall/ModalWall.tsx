@@ -34,18 +34,18 @@ export default function ModalWall({
   setModalVisible,
   addElement,
   onSaveElementSize,
-  setArrElements,
-  arrElements,
   setSizeWalls,
   numberCurrentWall,
   wallIndex,
+  arrElements,
+  setEdit,
+  sizeWalls,
   ...props
 }: TModalWall & any) {
   const [elementsWallModalVisible, setElementsWallModalVisible] =
     useState<boolean>(false);
-  const [elementsData, setElementsData] = useState<IArrElements[]>(
-    arrElements || [],
-  );
+  const [elementsData, setElementsData] = useState<IArrElements[]>([]);
+
   const [dataObj, setDataObj] = useState({
     nameElement: '',
     stateElement: '',
@@ -54,6 +54,7 @@ export default function ModalWall({
   const [visibleElements, setVisibleElements] = useState<{
     [key: number]: boolean;
   }>({});
+  const [forceRender, setForceRender] = useState(false);
   const onClickElementModal = () => {
     setElementsWallModalVisible(true);
     setModalVisible(true);
@@ -71,49 +72,64 @@ export default function ModalWall({
     });
   };
 
-  const onSaveDataElement = (data: IElementData) => {
-    setElementsData(prev => {
-      let updatedData = [...prev, {data, dataObj}];
-      setArrElements(updatedData); // 🔥 Гарантированное обновление
+  const addElementToData = (data: IElementData) => {
+    setElementsData((prev: any) => {
+      const updatedElements = [...prev, {data, dataObj}];
+      setEdit(updatedElements);
+      return updatedElements;
+    });
+  };
 
-      setSizeWalls((prevSizeWall: any[]) => {
-        if (!Array.isArray(prevSizeWall)) {
-          console.error(
-            'Ошибка: prevSizeWall не является массивом!',
-            prevSizeWall,
-          );
-          return [];
-        }
+  const updateSizeWalls = (data: IElementData, wallId: number) => {
+    setSizeWalls((prevSizeWall: any[]) => {
+      if (!Array.isArray(prevSizeWall)) {
+        console.error(
+          '❌ Ошибка: prevSizeWall не является массивом!',
+          prevSizeWall,
+        );
+        return [];
+      }
 
-        return prevSizeWall.map(wall => {
-          return {
-            ...wall,
-            drawingData: {
-              ...wall.drawingData,
-              walls: wall.drawingData.walls.map(
-                (wallData: {size: {id: any; arrElements: any}}) => {
-                  if (wallData.size.id === numberCurrentWall) {
-                    return {
-                      ...wallData,
-                      size: {
-                        ...wallData.size,
-                        arrElements: [
-                          ...(wallData.size?.arrElements || []),
-                          {data, dataObj},
-                        ],
-                      },
-                    };
-                  }
-                  return wallData;
+      // Создаем глубокую копию массива стен
+      const newWalls = prevSizeWall.map(wall => {
+        const updatedDrawingData = {...wall.drawingData};
+
+        // Обновляем массив стен внутри drawingData
+        updatedDrawingData.walls = updatedDrawingData.walls.map(
+          (wallData: {size: {id: any; arrElements: any}}) => {
+            if (wallData.size.id === numberCurrentWall) {
+              return {
+                ...wallData,
+                size: {
+                  ...wallData.size,
+                  arrElements: {
+                    wallId,
+                    elements: [
+                      ...(wallData.size?.arrElements?.elements ?? []),
+                      {data, dataObj},
+                    ], // Добавляем новый элемент
+                  },
                 },
-              ),
-            },
-          };
-        });
+              };
+            }
+            return wallData;
+          },
+        );
+
+        return {
+          ...wall,
+          drawingData: updatedDrawingData,
+        };
       });
 
-      return updatedData;
+      return newWalls;
     });
+  };
+
+  const onSaveDataElement = (data: IElementData, wallId: number) => {
+    addElementToData(data);
+    updateSizeWalls(data, wallId);
+    setForceRender(prev => !prev); // Вызываем перерисовку, если необходимо
   };
 
   const handleClose = () => {
@@ -121,10 +137,8 @@ export default function ModalWall({
   };
 
   useEffect(() => {
-    if (arrElements) {
-      setElementsData(arrElements);
-    }
-  }, [arrElements]);
+    setElementsData(arrElements ?? []);
+  }, [arrElements]); // Обновляем, если `arrElements` изменилось
 
   return (
     <>
@@ -149,8 +163,8 @@ export default function ModalWall({
                       key={index}
                       element={element}
                       position={index}
-                      nameElement={element.dataObj.nameElement}
-                      stateElement={element.dataObj.stateElement}
+                      nameElement={element?.dataObj?.nameElement || null}
+                      stateElement={element?.dataObj?.stateElement || null}
                       onPressVisible={() =>
                         toggleElementVisibility(index, true)
                       }
@@ -159,6 +173,8 @@ export default function ModalWall({
                       elementsData={elementsData}
                       setElementsData={setElementsData}
                       setModalVisibleWall={setElementsWallModalVisible}
+                      arrElements={arrElements}
+                      setEdit={setEdit}
                     />
                   );
                 })}

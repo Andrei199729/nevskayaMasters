@@ -15,7 +15,6 @@ import Title from '../../shared/Title/Title';
 import ButtonDownload from '../../shared/ButtonDownload/ButtonDownload';
 import ButtonAddProduct from '../../shared/ButtonAddProduct/ButtonAddProduct';
 import {NavigationProp} from '@react-navigation/native';
-import {DataContext} from '../../context/DataProvider';
 
 interface IUnwrappedProductScreen {
   applicationNumber?: string;
@@ -28,7 +27,7 @@ function UnwrappedProductScreen({
   route,
   ...props
 }: IUnwrappedProductScreen) {
-  const {dataProduct, nameRoom} = route.params || {};
+  const {dataProduct, nameRoom, editEl} = route.params || {};
 
   const [productsRooms, setProductsRooms] = useState<IProductRoom[]>([]);
 
@@ -43,17 +42,29 @@ function UnwrappedProductScreen({
   };
 
   useEffect(() => {
-    if (nameRoom) {
-      setProductsRooms((prevProducts: IProductRoom[]) => [
-        ...prevProducts,
-        {
-          nameRoom: nameRoom,
-          dataProduct: dataProduct,
-          // arrElements: arrElements,
-        },
-      ]);
+    if (nameRoom && dataProduct) {
+      setProductsRooms(prevProducts => {
+        const existingRoomIndex = prevProducts.findIndex(
+          room => room.nameRoom === nameRoom,
+        );
+
+        if (existingRoomIndex !== -1) {
+          const updatedRooms = [...prevProducts];
+          updatedRooms[existingRoomIndex].dataProduct = dataProduct;
+          return updatedRooms;
+        } else {
+          return [
+            ...prevProducts,
+            {
+              nameRoom: nameRoom,
+              dataProduct: dataProduct,
+              editEl: editEl,
+            },
+          ];
+        }
+      });
     }
-  }, [nameRoom]);
+  }, [route.params]);
   return (
     <HeaderScreen>
       <MainScreen mainTitle={`№ ${'заявки'}`}>

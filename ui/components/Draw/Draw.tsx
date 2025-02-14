@@ -19,8 +19,6 @@ import AddBlockDimensions from '../AddBlockDimensions/AddBlockDimensions';
 import ButtonCustom from '../../../shared/ButtonCustom/ButtonCustom';
 
 export default function Draw({
-  setArrElements,
-  arrElements,
   setSizeWalls,
   onSaveSizeWall,
   sizeWalls,
@@ -28,6 +26,8 @@ export default function Draw({
   numberCurrentWall,
   setModalVisibleBacklight,
   modalVisibleBacklight,
+  setEdit,
+  editEl,
 }: any) {
   const [drawModalVisible, setDrawModalVisible] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -56,6 +56,10 @@ export default function Draw({
   const [selectedLine, setSelectedLine] = useState<number | null>(null);
 
   const [indexLineWallDraw, setIndexLineWallDraw] = useState(0); // клик на линию
+  const [isStyleLine, setIsStyleLine] = useState(false); // клик на линию
+  const [strokeDasharrays, setStrokeDasharrays] = useState<{
+    [key: number]: string;
+  }>({});
   // Пороговое значение расстояния для автоматической привязки точек.
   const DISTANCE_THRESHOLD = 20; // Порог для автоматического соединения
   // Функция вычисляет длину линии между двумя точками по формуле расстояния.
@@ -98,22 +102,6 @@ export default function Draw({
     const angle = Math.acos(dotProduct / (magnitudeV1 * magnitudeV2));
     return angle * (180 / Math.PI);
   };
-
-  // Функция для добавления новой линии
-  // const addNewLine = (
-  //   startPoint: {x: number; y: number},
-  //   endPoint: {x: number; y: number},
-  // ) => {
-  //   const newPath = `M${startPoint.x},${startPoint.y} L${endPoint.x},${endPoint.y}`;
-  //   const newLength = Math.sqrt(
-  //     (endPoint.x - startPoint.x) ** 2 + (endPoint.y - startPoint.y) ** 2,
-  //   );
-
-  //   // Обновляем пути и точки
-  //   setPaths(prevPaths => [...prevPaths, {path: newPath, length: newLength}]);
-
-  //   setPoints(prevPoints => [...prevPoints, startPoint, endPoint]);
-  // };
 
   // Обработчик события при движении пальца
   const onGestureEvent = (event: any) => {
@@ -267,18 +255,24 @@ export default function Draw({
   const isLast = (index: number, paths: any) => index === paths.length - 1;
 
   const handleSaveWallSize = (size: any, numberWall: number) => {
-    if (!size) return;
+    if (!size) {
+      console.warn('Нет данных для сохранения размера стены');
+      return;
+    }
 
     setWallsData(prevWalls => {
       const updatedWalls = prevWalls.map(wall =>
         wall.numberWall === numberWall - 1 ? {...wall, size} : wall,
       );
 
-      // Если стена уже есть, обновляем её, иначе добавляем новую
       return prevWalls.some(wall => wall.numberWall === numberWall - 1)
         ? updatedWalls
         : [...prevWalls, {size, numberWall: numberWall - 1}];
     });
+
+    setIsStyleLine(true);
+    if (openFormDataSize) setIsStyleLine(false);
+    updateStrokeDasharray(numberWall - 1);
   };
 
   const onClickLine = (index: number) => {
@@ -338,6 +332,15 @@ export default function Draw({
     }
   };
   //
+  // Функция для обновления состояния strokeDasharray
+  const updateStrokeDasharray = (index: number) => {
+    setStrokeDasharrays(prev => {
+      const newDasharray = prev[index] === '0' ? '10' : '0'; // Пример: переключаем между '10' и '0'
+      console.log(newDasharray, 'newDasharray');
+
+      return {...prev, [index]: newDasharray};
+    });
+  };
 
   useEffect(() => {
     // Обновляем количество линий для последнего рисунка
@@ -348,19 +351,26 @@ export default function Draw({
   }, [sizeWalls]);
 
   useEffect(() => {
+    if (wallsData.length === 0) return;
+
     setSizeWalls((prevSizeWalls: any[]) => {
-      if (wallsData.length === 0) return prevSizeWalls;
-      return prevSizeWalls.map((drawing: {drawingData: any}, index: number) => {
+      const updatedWalls = prevSizeWalls.map((drawing: any, index: number) => {
         if (index === prevSizeWalls.length - 1) {
           return {
             ...drawing,
-            drawingData: {...drawing.drawingData, walls: wallsData},
+            drawingData: {
+              ...drawing.drawingData,
+              walls: [...wallsData], // Синхронизируем wallsData с drawingData
+            },
           };
         }
         return drawing;
       });
+
+      return updatedWalls;
     });
-  }, [wallsData]);
+  }, [wallsData]); // Срабатывает, когда изменяется wallsData
+
   return (
     <View style={styles.container}>
       <Button title="Сохранить рисунок" onPress={saveDrawing} />
@@ -399,6 +409,7 @@ export default function Draw({
                     stroke="black"
                     strokeWidth={4}
                     fill="none"
+                    strokeDasharray="10"
                   />
 
                   {/* Вывод длины линии рядом с ней */}
@@ -424,6 +435,7 @@ export default function Draw({
                 stroke="black"
                 strokeWidth={4}
                 fill="none"
+                strokeDasharray="10"
               />
             ) : null}
 
@@ -463,34 +475,44 @@ export default function Draw({
       <View style={styles.savedDrawingsContainer}>
         <Text>Сохраненные рисунки:</Text>
 
-        {sizeWalls.map((drawing: any, index: number | null) => {
-          return (
-            <DrawElement
-              key={index}
-              id={index}
-              numberWall={index}
-              drawing={drawing?.drawingData}
-              setDrawModalVisible={setDrawModalVisible}
-              drawModalVisible={drawModalVisible && selectedLineIndex === index}
-              setSelectedLineIndex={setSelectedLineIndex}
-              setArrElements={setArrElements}
-              arrElements={arrElements}
-              setSizeWalls={setSizeWalls}
-              selectedLineIndex={selectedLineIndex}
-              setNumberCurrentWall={setNumberCurrentWall}
-              numberCurrentWall={numberCurrentWall}
-              isLast={isLast}
-              setCountWallDraw={() =>
-                setCountWallDraw(drawing?.drawingData?.shapes.length)
-              }
-              modalVisibleBacklight={modalVisibleBacklight}
-              setClickLineDraw={setClickLineDraw}
-              clickLineDraw={clickLineDraw}
-              onClickLine={onClickLine}
-              selectedLine={selectedLine}
-            />
-          );
-        })}
+        {Array.isArray(sizeWalls) && sizeWalls.length > 0 ? (
+          sizeWalls?.map((drawing: any, index: number | null) => {
+            console.log(drawing?.drawingData?.walls, 'drawing?.drawingData');
+
+            return (
+              <DrawElement
+                key={index}
+                id={index}
+                numberWall={index}
+                drawing={drawing?.drawingData}
+                setDrawModalVisible={setDrawModalVisible}
+                drawModalVisible={
+                  drawModalVisible && selectedLineIndex === index
+                }
+                setSelectedLineIndex={setSelectedLineIndex}
+                setSizeWalls={setSizeWalls}
+                selectedLineIndex={selectedLineIndex}
+                setNumberCurrentWall={setNumberCurrentWall}
+                numberCurrentWall={numberCurrentWall}
+                isLast={isLast}
+                setCountWallDraw={() =>
+                  setCountWallDraw(drawing?.drawingData?.shapes.length)
+                }
+                modalVisibleBacklight={modalVisibleBacklight}
+                setClickLineDraw={setClickLineDraw}
+                clickLineDraw={clickLineDraw}
+                onClickLine={onClickLine}
+                selectedLine={selectedLine}
+                isStyleLine={isStyleLine}
+                openFormDataSize={openFormDataSize}
+                setStrokeDasharrays={setStrokeDasharrays}
+                strokeDasharrays={strokeDasharrays}
+              />
+            );
+          })
+        ) : (
+          <Text>No walls to display</Text> // Если массив пуст
+        )}
         <FlatList
           horizontal
           data={Array.from({length: countWallDraw}, (_, index) => index)}
@@ -506,7 +528,6 @@ export default function Draw({
                 <AddBlockDimensions
                   key={index}
                   numberWall={index + 1}
-                  setArrElements={setArrElements}
                   setSizeWalls={setSizeWalls}
                   setNumberCurrentWall={setNumberCurrentWall}
                   numberCurrentWall={numberCurrentWall}
@@ -520,6 +541,9 @@ export default function Draw({
                   onClickLine={onClickLine}
                   onClickEditDataWall={onClickEditDataWall}
                   onClickWallIncrease={onClickWallIncrease}
+                  setEdit={setEdit}
+                  editEl={editEl}
+                  sizeWalls={sizeWalls}
                 />
                 {wallsData[index]?.size && (
                   <ButtonCustom

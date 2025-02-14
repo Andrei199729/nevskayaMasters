@@ -21,8 +21,6 @@ export default function DrawModalWall({
   setDrawModalVisible,
   drawing,
   id,
-  setArrElements,
-  arrElements,
   setSizeWalls,
   selectedLineIndex,
   numberCurrentWall,
@@ -66,12 +64,6 @@ export default function DrawModalWall({
 
   const stateColorLineDraw = (index: number | null) =>
     selectedLine === index ? 'red' : 'black';
-
-  useEffect(() => {
-    if (arrElements) {
-      setElementsData(arrElements);
-    }
-  }, [arrElements]);
 
   const memoizedLines = useMemo(() => {
     return drawing?.shapes?.map((line: any, idx: number) => {

@@ -9,7 +9,7 @@ interface IModalFormElement extends IModalWall {
   nameElementWall: string;
   numberWall: number;
   setModalVisibleWall: (visible: boolean) => void;
-  onSaveElementSize: (element: IElementData, id: number) => void;
+  onSaveElementSize: (element: IElementData) => void;
   dataEditElement?: IElementData;
 }
 
@@ -21,89 +21,66 @@ export default function ModalFormElement({
   setModalVisibleWall,
   onSaveElementSize,
   dataEditElement,
+  position,
   ...props
-}: IModalFormElement) {
-  // const locationElementTop = useInput('');
-  // const locationElementRight = useInput('');
-  // const locationElementLeft = useInput('');
-  // const locationElementBottom = useInput('');
-  // const widthTop = useInput('');
-  // const widthBottom = useInput('');
-  // const heightLeft = useInput('');
-  // const heightRight = useInput('');
-  // const radiusElement = useInput('');
-
-  const [heightRight, setHeightRight] = useState<string>(
-    dataEditElement?.heightRight || '',
-  );
-  const [widthTop, setWidthTop] = useState<string>(
-    dataEditElement?.widthTop || '',
-  );
-  const [heightLeft, setHeightLeft] = useState<string>(
-    dataEditElement?.heightLeft || '',
-  );
-  const [widthBottom, setWidthBottom] = useState<string>(
-    dataEditElement?.widthBottom || '',
-  );
-  const [radiusElement, setRadiusElement] = useState<string>(
-    dataEditElement?.radiusElement || '',
-  );
-
-  const [locationElementTop, setLocationElementTop] = useState<string>(
+}: IModalFormElement | any) {
+  const locationElementTop = useInput(
     dataEditElement?.locationElementTop || '',
   );
-  const [locationElementRight, setLocationElementRight] = useState<string>(
+  const locationElementRight = useInput(
     dataEditElement?.locationElementRight || '',
   );
-  const [locationElementLeft, setLocationElementLeft] = useState<string>(
+  const locationElementLeft = useInput(
     dataEditElement?.locationElementLeft || '',
   );
-  const [locationElementBottom, setLocationElementBottom] = useState<string>(
+  const locationElementBottom = useInput(
     dataEditElement?.locationElementBottom || '',
   );
-
-  useEffect(() => {
-    if (dataEditElement) {
-      setHeightRight(dataEditElement.heightRight || '');
-      setWidthTop(dataEditElement.widthTop || '');
-      setHeightLeft(dataEditElement.heightLeft || '');
-      setWidthBottom(dataEditElement.widthBottom || '');
-      setRadiusElement(dataEditElement.radiusElement || '');
-      setLocationElementTop(dataEditElement.locationElementTop || '');
-      setLocationElementRight(dataEditElement.locationElementRight || '');
-      setLocationElementLeft(dataEditElement.locationElementLeft || '');
-      setLocationElementBottom(dataEditElement.locationElementBottom || '');
-    }
-  }, [dataEditElement]);
+  const widthTop = useInput(dataEditElement?.widthTop || '');
+  const widthBottom = useInput(dataEditElement?.widthBottom || '');
+  const heightLeft = useInput(dataEditElement?.heightLeft || '');
+  const heightRight = useInput(dataEditElement?.heightRight || '');
+  const radiusElement = useInput(dataEditElement?.radiusElement || '');
 
   const onSaveDataElement = () => {
+    const numberElement = numberWall - 1;
     const updatedDataObjectSizeElement = {
       nameElementWall,
-      heightRight,
-      widthTop,
-      widthBottom,
-      heightLeft,
-      radiusElement,
-      locationElementTop,
-      locationElementRight,
-      locationElementLeft,
-      locationElementBottom,
-      // locationElementTop: locationElementTop.value,
-      // locationElementRight: locationElementRight.value,
-      // locationElementLeft: locationElementLeft.value,
-      // locationElementBottom: locationElementBottom.value,
-      // widthTop: widthTop.value,
-      // widthBottom: widthBottom.value,
-      // heightLeft: heightLeft.value,
-      // heightRight: heightRight.value,
-      // radiusElement: radiusElement.value,
+      locationElementTop: locationElementTop.value,
+      locationElementRight: locationElementRight.value,
+      locationElementLeft: locationElementLeft.value,
+      locationElementBottom: locationElementBottom.value,
+      widthTop: widthTop.value,
+      widthBottom: widthBottom.value,
+      heightLeft: heightLeft.value,
+      heightRight: heightRight.value,
+      radiusElement: radiusElement.value,
     };
 
-    onSaveElementSize(updatedDataObjectSizeElement, numberWall - 1);
-
+    onSaveElementSize(updatedDataObjectSizeElement, numberElement);
     setModalVisible(!modalVisible);
     setModalVisibleWall(false);
   };
+
+  useEffect(() => {
+    if (dataEditElement) {
+      locationElementTop.onChangeText(dataEditElement.locationElementTop || '');
+      locationElementBottom.onChangeText(
+        dataEditElement.locationElementBottom || '',
+      );
+      locationElementLeft.onChangeText(
+        dataEditElement.locationElementLeft || '',
+      );
+      locationElementRight.onChangeText(
+        dataEditElement.locationElementRight || '',
+      );
+      widthTop.onChangeText(dataEditElement.widthTop || '');
+      widthBottom.onChangeText(dataEditElement.widthBottom || '');
+      heightLeft.onChangeText(dataEditElement.heightLeft || '');
+      heightRight.onChangeText(dataEditElement.heightRight || '');
+      radiusElement.onChangeText(dataEditElement.radiusElement || '');
+    }
+  }, [dataEditElement]);
 
   return (
     <Modal
@@ -126,72 +103,72 @@ export default function ModalFormElement({
         <View>
           <Text>1 расположение сверху</Text>
           <Input
-            value={locationElementTop}
-            onChangeText={setLocationElementTop}
+            value={locationElementTop.value}
+            onChangeText={locationElementTop.onChangeText}
             inputModeText={'numeric'}
           />
         </View>
         <View>
           <Text>2 расположение справа</Text>
           <Input
-            value={locationElementRight}
-            onChangeText={setLocationElementRight}
+            value={locationElementRight.value}
+            onChangeText={locationElementRight.onChangeText}
             inputModeText={'numeric'}
           />
         </View>
         <View>
           <Text>3 расположение снизу</Text>
           <Input
-            value={locationElementBottom}
-            onChangeText={setLocationElementBottom}
+            value={locationElementBottom.value}
+            onChangeText={locationElementBottom.onChangeText}
             inputModeText={'numeric'}
           />
         </View>
         <View>
           <Text>4 расположение слева</Text>
           <Input
-            value={locationElementLeft}
-            onChangeText={setLocationElementLeft}
+            value={locationElementLeft.value}
+            onChangeText={locationElementLeft.onChangeText}
             inputModeText={'numeric'}
           />
         </View>
         <View>
           <Text>5 размер элемента сверху</Text>
           <Input
-            value={widthTop}
-            onChangeText={setWidthTop}
+            value={widthTop.value}
+            onChangeText={widthTop.onChangeText}
             inputModeText={'numeric'}
           />
         </View>
         <View>
           <Text>6 размер элемента справа</Text>
           <Input
-            value={heightRight}
-            onChangeText={setHeightRight}
+            value={heightRight.value}
+            onChangeText={heightRight.onChangeText}
             inputModeText={'numeric'}
           />
         </View>
         <View>
           <Text>7 размер элемента снизу</Text>
           <Input
-            value={widthBottom}
-            onChangeText={setWidthBottom}
+            value={widthBottom.value}
+            onChangeText={widthBottom.onChangeText}
             inputModeText={'numeric'}
           />
         </View>
         <View>
           <Text>8 размер элемента слева</Text>
           <Input
-            value={heightLeft}
-            onChangeText={setHeightLeft}
+            value={heightLeft.value}
+            onChangeText={heightLeft.onChangeText}
             inputModeText={'numeric'}
           />
         </View>
         <View>
           <Text>9 радиус элемента</Text>
           <Input
-            value={radiusElement}
-            onChangeText={setRadiusElement}
+            value={radiusElement.value}
+            onChangeText={radiusElement.onChangeText}
             inputModeText={'numeric'}
           />
         </View>

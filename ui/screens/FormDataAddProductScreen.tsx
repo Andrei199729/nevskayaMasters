@@ -37,27 +37,36 @@ export default function FormDataAddProductScreen() {
   const [countWall, setCountWall] = useState('');
   const [numberCurrentWall, setNumberCurrentWall] = useState(0);
   const [sizeWalls, setSizeWalls] = useState<any[]>([]);
-  const [arrElements, setArrElements] = useState<IElementWall[]>([]);
   const [modalVisibleBacklight, setModalVisibleBacklight] = useState(false);
   const [openFormDataSizeWall, setOpenFormDataSizeWall] = useState(false);
   const indexWallContext = useContext(IndexWallContext);
-
+  const [editEl, setEdit] = useState([]);
   if (!indexWallContext) {
     return null;
   }
   const {activeWallIndex, setActiveWallIndex} = indexWallContext;
+  const [forceRender, setForceRender] = useState(false);
 
-  const onSaveSizeWall = (currentSizeWall: IWallData) => {
+  const onSaveSizeWall = (newWall: IWallData) => {
     setSizeWalls(prevWalls => {
-      let updatedWalls = [...prevWalls, {currentSizeWall}];
+      const updatedWalls = prevWalls.map(wall =>
+        wall.id === newWall.id ? {...wall, ...newWall} : wall,
+      );
       return updatedWalls;
     });
   };
 
   const onSaveDataWall = () => {
+    if (!sizeWalls.length) {
+      console.warn('⚠️ Нет данных для сохранения!');
+      return;
+    }
+    console.log(JSON.stringify(sizeWalls, null, 2), '✅ saveWall');
+
     navigation.navigate('UnwrappedProduct', {
-      dataProduct: sizeWalls,
+      dataProduct: [...sizeWalls],
       nameRoom: nameRoom.value,
+      editEl: [...editEl],
     });
   };
 
@@ -79,8 +88,6 @@ export default function FormDataAddProductScreen() {
         />
         <View>
           <Draw
-            setArrElements={setArrElements}
-            arrElements={arrElements}
             setSizeWalls={setSizeWalls}
             onSaveSizeWall={onSaveSizeWall}
             sizeWalls={sizeWalls}
@@ -90,6 +97,8 @@ export default function FormDataAddProductScreen() {
             modalVisibleBacklight={modalVisibleBacklight}
             setOpenFormDataSizeWall={setOpenFormDataSizeWall}
             openFormDataSizeWall={openFormDataSizeWall}
+            setEdit={setEdit}
+            editEl={editEl}
           />
         </View>
       </View>
@@ -103,7 +112,6 @@ export default function FormDataAddProductScreen() {
                   numberWall={index + 1}
                   key={index}
                   saveSizeWall={wall.currentSizeWall}
-                  setArrElements={setArrElements}
                   setSizeWalls={setSizeWalls}
                   setNumberCurrentWall={setActiveWallIndex}
                   numberCurrentWall={activeWallIndex}

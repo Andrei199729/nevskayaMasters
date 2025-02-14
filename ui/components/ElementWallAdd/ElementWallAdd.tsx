@@ -2,6 +2,7 @@ import {View, Text, StyleSheet, Pressable} from 'react-native';
 import {Colors} from '../../../shared/tokens';
 import ModalSizesElement from '../ModalSizesElement/ModalSizesElement';
 import {IArrElements, StateElement} from '../../../shared/types';
+import BlockStateElements from '../BlockStateElements/BlockStateElements';
 
 interface IElementWallAdd {
   nameElement: string;
@@ -29,44 +30,20 @@ export default function ElementWallAdd({
   elementsData,
   setElementsData,
   setModalVisibleWall,
+  updateSizeWalls,
+  arrElements,
+  setEdit,
+  setSizeWalls,
   ...props
-}: IElementWallAdd) {
+}: IElementWallAdd | any) {
   return (
     <View style={{position: addedElement ? 'relative' : 'static'}}>
-      <Pressable onPress={onPressVisible}>
-        <View style={{flexDirection: 'row', gap: 10}}>
-          <Text>
-            {position + 1} {nameElement}
-          </Text>
-          {stateElement === StateElement.Ventilation && (
-            <View style={styles.elementVentilation}></View>
-          )}
-          {stateElement === StateElement.Door && (
-            <View style={styles.elementDoor}></View>
-          )}
-          {stateElement === StateElement.Window && (
-            <View
-              style={{
-                ...styles.elementWindow,
-                backgroundColor: Colors.green,
-              }}></View>
-          )}
-          {stateElement === StateElement.Socket && (
-            <View
-              style={{
-                ...styles.elementWindow,
-                backgroundColor: Colors.red,
-              }}></View>
-          )}
-          {stateElement === StateElement.Battery && (
-            <View
-              style={{
-                ...styles.elementWindow,
-                backgroundColor: Colors.lightGray,
-              }}></View>
-          )}
-        </View>
-      </Pressable>
+      <BlockStateElements
+        nameElement={nameElement}
+        stateElement={stateElement}
+        position={position}
+        onPressVisible={onPressVisible}
+      />
       <ModalSizesElement
         position={position}
         nameElement={nameElement}
@@ -76,6 +53,10 @@ export default function ElementWallAdd({
         elementsData={elementsData}
         setElementsData={setElementsData}
         setModalVisibleWall={setModalVisibleWall}
+        updateSizeWalls={updateSizeWalls}
+        setEdit={setEdit}
+        setSizeWalls={setSizeWalls}
+        arrElements={arrElements}
       />
     </View>
   );

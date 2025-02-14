@@ -27,6 +27,8 @@ export default function ProductScreen({navigation, route, ...props}: any) {
     setModalVisible(stateModal);
     setModalVisibleBacklight(stateModal);
   };
+  // console.log(JSON.stringify(productRoom, null, 2), 'productRoom');
+
   return (
     <HeaderScreen>
       <MainScreen mainTitle={`Комната: ${productRoom.nameRoom}`}>
@@ -55,10 +57,11 @@ export default function ProductScreen({navigation, route, ...props}: any) {
           keyExtractor={(_, index) => index.toString()}
           renderItem={({item: wall, index}) => {
             const isActiveWall = wall.wallIndex === index;
+
             return (
               <AddBlockDimensions
                 numberWall={wall.wallIndex + 1}
-                arrElements={wall?.size?.arrElements}
+                arrElements={wall?.size?.arrElements || []}
                 setNumberCurrentWall={setActiveWallIndex}
                 saveSizeWall={wall.size || {}}
                 setModalVisibleBacklight={setModalVisibleBacklight}
