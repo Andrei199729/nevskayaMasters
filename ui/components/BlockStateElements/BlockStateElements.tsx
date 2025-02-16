@@ -1,14 +1,19 @@
 import {Pressable, View, Text, StyleSheet} from 'react-native';
-import {StateElement} from '../../../shared/types';
+import {StateElement, TStateElement} from '../../../shared/types';
 import {Colors} from '../../../shared/tokens';
-
+interface IBlockStateElements {
+  nameElement: string;
+  stateElement: TStateElement | string;
+  position: number;
+  onPressVisible: () => void;
+}
 export default function BlockStateElements({
   nameElement,
   stateElement,
   position,
   onPressVisible,
   ...props
-}: any) {
+}: IBlockStateElements) {
   return (
     <Pressable onPress={onPressVisible}>
       <View style={{flexDirection: 'row', gap: 10}}>

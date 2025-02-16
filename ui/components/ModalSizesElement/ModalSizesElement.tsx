@@ -1,7 +1,7 @@
 import {Modal, View, Text, StyleSheet} from 'react-native';
-import {IArrElements, IElementData} from '../../../shared/types';
+import {IElement, IElementData} from '../../../shared/types';
 import {Colors} from '../../../shared/tokens';
-import {useEffect, useState} from 'react';
+import {Dispatch, SetStateAction, useState} from 'react';
 import ModalFormElement from '../ModalFormElement/ModalFormElement';
 import ButtonCustom from '../../../shared/ButtonCustom/ButtonCustom';
 
@@ -10,10 +10,12 @@ interface IModalSizesElement {
   isVisible: {[key: number]: boolean};
   nameElement: string;
   position: number;
-  element: IArrElements;
-  elementsData: IArrElements[];
-  setElementsData: (elementData: IArrElements[] | any) => void;
-  setModalVisibleWall: (visible: boolean) => void;
+  element: IElement;
+  elementsData: IElement[];
+  setElementsData: Dispatch<SetStateAction<IElement[]>>;
+  setModalVisibleWall: Dispatch<SetStateAction<number | boolean | null>>;
+  deleteElement: (wallId: number | boolean | null, elementId: number) => void;
+  numberCurrentWall: number | boolean | null;
 }
 
 export default function ModalSizesElement({
@@ -25,40 +27,16 @@ export default function ModalSizesElement({
   elementsData,
   setElementsData,
   setModalVisibleWall,
-  setEdit,
-  arrElements,
+  numberCurrentWall,
+  deleteElement,
   ...props
-}: IModalSizesElement & any) {
-  const [isVisibleEditModal, setIsVisibleEditModal] = useState<boolean>(false);
+}: IModalSizesElement) {
+  const [isVisibleEditModal, setIsVisibleEditModal] = useState<
+    number | boolean | null
+  >(false);
   const onClickModalClose = () => {
     setVisible(position, false);
   };
-
-  // const [dataEditElement, setDataEditElement] = useState<IElementData>(
-  //   {} as IElementData,
-  // );
-  const [forceRender, setForceRender] = useState(false);
-  const onDeleteElement = () => {
-    const filteredObject = elementsData.filter(
-      (item: IArrElements, index: number) => index !== position,
-    );
-    setElementsData(filteredObject);
-
-    setVisible(position, false);
-  };
-  // удаление slice!!, splice или reduce
-  // const onSaveEditedElement = (
-  //   updatedData: IElementData,
-  //   positionElement: number,
-  // ) => {
-  //   setElementsData((prevState: any[]) => {
-  //     const updatedElements = prevState.map((item: any, index: any) =>
-  //       index === positionElement ? {...item, data: updatedData} : item,
-  //     );
-  //     return updatedElements;
-  //   });
-  //   setIsVisibleEditModal(false); // Закрываем модальное окно редактирования
-  // };
 
   const onClickEdit = () => {
     if (!element.data) return;
@@ -67,37 +45,15 @@ export default function ModalSizesElement({
     if (elementToEdit) {
       setIsVisibleEditModal(true);
     }
-    // setDataEditElement({
-    //   nameElementWall: nameElement,
-    //   locationElementTop: element.data.locationElementTop || '',
-    //   locationElementRight: element.data.locationElementRight || '',
-    //   locationElementLeft: element.data.locationElementLeft || '',
-    //   locationElementBottom: element.data.locationElementBottom || '',
-    //   widthTop: element.data.widthTop || '',
-    //   widthBottom: element.data.widthBottom || '',
-    //   heightLeft: element.data.heightLeft || '',
-    //   heightRight: element.data.heightRight || '',
-    //   radiusElement: element.data.radiusElement || '',
-    // });
-
-    // setIsVisibleEditModal(true);
   };
 
   const onSaveEditedElement = (updatedData: IElementData) => {
-    const updatedElements = elementsData.map(
-      (item: IArrElements, index: number) =>
-        index === position ? {...item, data: updatedData} : item,
+    const updatedElements = elementsData.map((item: IElement, index: number) =>
+      index === position ? {...item, data: updatedData} : item,
     );
     setElementsData(updatedElements); // Обновляем состояние
-    setEdit(updatedElements);
     setIsVisibleEditModal(false); // Закрываем модальное окно редактирования
   };
-
-  // useEffect(() => {
-  //   if (element) {
-  //     setDataEditElement(element.data || {}); // Берём актуальные данные
-  //   }
-  // }, [element]);
 
   return (
     <Modal
@@ -112,11 +68,10 @@ export default function ModalSizesElement({
         setModalVisible={setIsVisibleEditModal}
         numberWall={position + 1}
         nameElementWall={nameElement}
-        onSaveElementSize={onSaveEditedElement}
         dataEditElement={element.data}
         setModalVisibleWall={setModalVisibleWall}
-        arrElements={arrElements}
-        position={position}
+        numberCurrentWall={numberCurrentWall}
+        onSaveElementSize={onSaveEditedElement}
       />
       <View style={{position: 'absolute', top: -50, left: 100}}>
         <View style={styles.centeredView}>
@@ -180,7 +135,10 @@ export default function ModalSizesElement({
                 </View>
               )}
               <ButtonCustom textBtn="Редактировать" onPress={onClickEdit} />
-              <ButtonCustom textBtn="Удалить" onPress={onDeleteElement} />
+              <ButtonCustom
+                textBtn="Удалить"
+                onPress={() => deleteElement(numberCurrentWall, position)}
+              />
               <ButtonCustom textBtn="Закрыть" onPress={onClickModalClose} />
             </View>
           </View>

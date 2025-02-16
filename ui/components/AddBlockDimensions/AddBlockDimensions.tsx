@@ -1,15 +1,19 @@
 import {Pressable, StyleSheet, Text, View} from 'react-native';
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {Colors, Fonts} from '../../../shared/tokens';
-import {IAddBlockDimensions, IDataContext} from '../../../shared/types';
+import {
+  ClickButtonBlockDimensions,
+  ClickSelection,
+  IAddBlockDimensions,
+  IDataElementsWall,
+  IElement,
+  IElementData,
+  TClickButtonBlockDimensions,
+} from '../../../shared/types';
 import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import ModalWall from '../ModalWall/ModalWall';
-import IndexWallContext from '../../../context/IndexWallContext/IndexWallContext';
-import ModalVisibleContext from '../../../context/ModalVisible/ModalVisibleContext';
-import ButtonCustom from '../../../shared/ButtonCustom/ButtonCustom';
 import BlockStateElements from '../BlockStateElements/BlockStateElements';
-
-type AddBlockDimensionsProps = IAddBlockDimensions & IDataContext;
+import SizeWallText from '../../../shared/SizeWallText/SizeWallText';
 
 export default function AddBlockDimensions({
   numberWall,
@@ -19,33 +23,223 @@ export default function AddBlockDimensions({
   numberCurrentWall,
   setModalVisibleBacklight,
   modalVisibleBacklight,
-  setClickLineDraw,
-  clickLineDraw,
-  onClickLine,
-  onClickEditDataWall,
   onClickWallIncrease,
   setModalVisible,
   modalVisible,
   arrElements,
   setIsVisibleEditModal,
-  setEdit,
-  editEl,
-  sizeWalls,
+  externalData,
   ...props
-}: AddBlockDimensionsProps & any) {
+}: IAddBlockDimensions) {
+  const wallIndex = numberWall - 1;
+
+  let size = saveSizeWall?.[wallIndex]?.size;
+
+  let widthTop = size?.widthTop || externalData?.widthTop;
+  let widthBottom = size?.widthBottom || externalData?.widthBottom;
+  let heightRight = size?.heightRight || externalData?.heightRight;
+  let heightLeft = size?.heightLeft || externalData?.heightLeft;
+  let radiusWall = size?.radiusWall || externalData?.radiusWall;
+  let wallAngleDegree = size?.wallAngleDegree || externalData?.wallAngleDegree;
+
   const [clickDataWall, setClickDataWall] = useState<{
     [key: string]: boolean;
   }>({});
-  console.log(editEl, 'editEl');
+  const [elementsData, setElementsData] = useState<IElement[]>(
+    arrElements || [],
+  );
+  const [dataObj, setDataObj] = useState({
+    nameElement: '',
+    stateElement: '',
+    id: 0,
+  });
+  const [visibleElements, setVisibleElements] = useState<{
+    [key: number]: boolean;
+  }>({});
 
-  const wallIndex = numberWall - 1;
+  const toggleElementVisibility = (index: number, isVisible: boolean) => {
+    setVisibleElements(prev => ({
+      ...prev,
+      [index]: isVisible, // Устанавливаем видимость только для конкретного элемента
+    }));
+  };
 
-  const onClickDataWall = (isVisible: any, nameButton: any) => {
+  const addElementToData = (data: IElementData) => {
+    setElementsData(prev => {
+      const updatedElements = [...prev, {data, dataObj}];
+      return updatedElements;
+    });
+  };
+  const onSaveElement = (dataEl: IDataElementsWall) => {
+    setDataObj(prev => {
+      const update = {...prev, ...dataEl};
+      return update;
+    });
+  };
+  const updateSizeWalls = (data: IElementData, wallId: number) => {
+    setSizeWalls(prevSizeWall => {
+      if (!Array.isArray(prevSizeWall)) {
+        console.error(
+          '❌ Ошибка: prevSizeWall не является массивом!',
+          prevSizeWall,
+        );
+        return [];
+      }
+
+      // Создаем глубокую копию массива стен
+      const newWalls = prevSizeWall.map(wall => {
+        const updatedDrawingData = {...wall.drawingData};
+
+        // Обновляем массив стен внутри drawingData
+        updatedDrawingData.walls = updatedDrawingData.walls.map(wallData => {
+          if (wallData.size.id === numberCurrentWall) {
+            return {
+              ...wallData,
+              size: {
+                ...wallData.size,
+                arrElements: {
+                  // wallId,
+                  elements: [
+                    ...(wallData.size?.arrElements?.elements ?? []),
+                    {data, dataObj},
+                  ], // Добавляем новый элемент
+                },
+              },
+            };
+          }
+          return wallData;
+        });
+
+        return {
+          ...wall,
+          drawingData: updatedDrawingData,
+        };
+      });
+
+      return newWalls;
+    });
+  };
+
+  const editElement = useCallback(
+    (updatedData: any, wallId: number, elementId: number) => {
+      setSizeWalls(prevSizeWall => {
+        if (!Array.isArray(prevSizeWall)) {
+          console.error(
+            '❌ Ошибка: prevSizeWall не является массивом!',
+            prevSizeWall,
+          );
+          return prevSizeWall;
+        }
+
+        // Создаем глубокую копию массива стен
+        const newWalls = prevSizeWall.map(wall => {
+          const updatedDrawingData = {...wall.drawingData};
+
+          // Обновляем массив стен внутри drawingData
+          updatedDrawingData.walls = updatedDrawingData.walls.map(wallData => {
+            // Проверяем, совпадает ли ID стены
+            if (wallData.size.id === wallId) {
+              // Удаляем элемент с определенным индексом
+              const updatedElements = elementsData.map(
+                (item: IElement, index: number) =>
+                  index === elementId ? {...item, data: updatedData} : item,
+              );
+
+              setElementsData(updatedElements);
+              return {
+                ...wallData,
+                size: {
+                  ...wallData.size,
+                  arrElements: {
+                    ...wallData.size.arrElements,
+                    elements: updatedElements, // Обновляем элементы без удаленного
+                  },
+                },
+              };
+            }
+            return wallData;
+          });
+
+          return {
+            ...wall,
+            drawingData: updatedDrawingData,
+          };
+        });
+
+        return newWalls; // Возвращаем обновленный массив
+      });
+      toggleElementVisibility(elementId, false);
+    },
+    [],
+  );
+
+  const deleteElement = useCallback(
+    (wallId: number | boolean | null, elementId: number) => {
+      setSizeWalls(prevSizeWall => {
+        if (!Array.isArray(prevSizeWall)) {
+          console.error(
+            '❌ Ошибка: prevSizeWall не является массивом!',
+            prevSizeWall,
+          );
+          return prevSizeWall;
+        }
+
+        // Создаем глубокую копию массива стен
+        const newWalls = prevSizeWall.map(wall => {
+          const updatedDrawingData = {...wall.drawingData};
+
+          // Обновляем массив стен внутри drawingData
+          updatedDrawingData.walls = updatedDrawingData.walls.map(wallData => {
+            // Проверяем, совпадает ли ID стены
+            if (wallData.size.id === wallId) {
+              // Удаляем элемент с определенным индексом
+              const updatedElements =
+                wallData?.size?.arrElements?.elements?.filter(
+                  (element, index) => index !== elementId,
+                ) || [];
+              setElementsData(updatedElements);
+              return {
+                ...wallData,
+                size: {
+                  ...wallData.size,
+                  arrElements: {
+                    ...wallData.size.arrElements,
+                    elements: updatedElements, // Обновляем элементы без удаленного
+                  },
+                },
+              };
+            }
+            return wallData;
+          });
+
+          return {
+            ...wall,
+            drawingData: updatedDrawingData,
+          };
+        });
+
+        return newWalls; // Возвращаем обновленный массив
+      });
+      toggleElementVisibility(elementId, false);
+    },
+    [],
+  );
+
+  const onClickDataWall = (
+    isVisible: boolean,
+    nameButton: TClickButtonBlockDimensions,
+  ) => {
     setClickDataWall(prev => ({
       ...prev,
       [nameButton]: isVisible, // Устанавливаем видимость только для конкретного элемента
     }));
   };
+
+  // Синхронизируем elementsData с arrElements при изменении пропса
+  useEffect(() => {
+    setElementsData(arrElements || []);
+  }, [arrElements]);
+
   return (
     <SafeAreaProvider>
       <SafeAreaView style={styles.centeredView}>
@@ -54,22 +248,23 @@ export default function AddBlockDimensions({
           setModalVisible={setModalVisible}
           numberWall={numberWall}
           saveSizeWall={saveSizeWall}
-          setSizeWalls={setSizeWalls}
+          externalData={externalData}
           numberCurrentWall={numberCurrentWall}
           wallIndex={wallIndex}
           arrElements={arrElements}
-          setIsVisibleEditModal={setIsVisibleEditModal}
-          setEdit={setEdit}
-          editEl={editEl}
-          sizeWalls={sizeWalls}
+          addElementToData={addElementToData}
+          onSaveElement={onSaveElement}
+          updateSizeWalls={updateSizeWalls}
+          setElementsData={setElementsData}
+          elementsData={elementsData}
+          deleteElement={deleteElement}
+          setVisible={toggleElementVisibility}
+          visibleElements={visibleElements}
+          editElement={editElement}
         />
         <Pressable
           onPress={() =>
-            onClickWallIncrease(
-              saveSizeWall[wallIndex]?.size,
-              wallIndex,
-              'wall',
-            )
+            onClickWallIncrease(size, wallIndex, ClickSelection.Wall)
           }>
           <View>
             <Text style={styles.textDimensions}>Стена №{numberWall}</Text>
@@ -83,7 +278,7 @@ export default function AddBlockDimensions({
                     : Colors.black,
                 },
               ]}>
-              {saveSizeWall[wallIndex]?.size ? (
+              {
                 <View
                   style={{
                     flexDirection: 'row',
@@ -92,7 +287,10 @@ export default function AddBlockDimensions({
                   }}>
                   <Pressable
                     onPress={() =>
-                      onClickDataWall(!clickDataWall.width, 'width')
+                      onClickDataWall(
+                        !clickDataWall.width,
+                        ClickButtonBlockDimensions.Width,
+                      )
                     }>
                     <View
                       style={{
@@ -100,7 +298,7 @@ export default function AddBlockDimensions({
                         borderWidth: 1,
                         borderStyle: 'solid',
                       }}>
-                      <Text>Ширина стены </Text>
+                      <Text>Ширина стены</Text>
                     </View>
                     {clickDataWall.width && (
                       <View
@@ -114,28 +312,15 @@ export default function AddBlockDimensions({
                         }}>
                         <View style={{flexDirection: 'column', gap: 5}}>
                           <Text>Ширина сверху:</Text>
-                          <Text>
-                            {String(
-                              saveSizeWall[wallIndex]?.size?.widthTop ||
-                                saveSizeWall?.widthTop ||
-                                '',
-                            )}
-                          </Text>
+                          <Text>{widthTop}</Text>
                         </View>
                         <View style={{flexDirection: 'column', gap: 5}}>
                           <Text>Ширина снизу:</Text>
-                          <Text>
-                            {String(
-                              saveSizeWall[wallIndex]?.size?.widthBottom ||
-                                saveSizeWall?.widthBottom ||
-                                '',
-                            )}
-                          </Text>
+                          <Text>{widthBottom}</Text>
                         </View>
                         <View style={{flexDirection: 'column', gap: 5}}>
                           <Text>Радиус внутренней стены:</Text>
-                          {saveSizeWall[wallIndex]?.size?.radiusWall ||
-                          saveSizeWall?.radiusWall ? (
+                          {radiusWall ? (
                             <>
                               <View
                                 style={[
@@ -144,10 +329,7 @@ export default function AddBlockDimensions({
                                 ]}></View>
                               <View
                                 style={[styles.sizeWall, styles.radiusWall]}>
-                                <Text>
-                                  {saveSizeWall[wallIndex]?.size?.radiusWall ||
-                                    saveSizeWall?.radiusWall}
-                                </Text>
+                                <Text>{radiusWall}</Text>
                               </View>
                             </>
                           ) : (
@@ -159,7 +341,10 @@ export default function AddBlockDimensions({
                   </Pressable>
                   <Pressable
                     onPress={() =>
-                      onClickDataWall(!clickDataWall.height, 'height')
+                      onClickDataWall(
+                        !clickDataWall.height,
+                        ClickButtonBlockDimensions.Height,
+                      )
                     }>
                     <View
                       style={{
@@ -181,34 +366,17 @@ export default function AddBlockDimensions({
                         }}>
                         <View style={{flexDirection: 'column', gap: 5}}>
                           <Text>Высота справа:</Text>
-                          <Text>
-                            {String(
-                              saveSizeWall[wallIndex]?.size?.heightRight ||
-                                saveSizeWall?.heightRight ||
-                                '',
-                            )}
-                          </Text>
+                          <Text>{heightRight}</Text>
                         </View>
                         <View style={{flexDirection: 'column', gap: 5}}>
                           <Text>Высота слева:</Text>
-                          <Text>
-                            {String(
-                              saveSizeWall[wallIndex]?.size?.heightLeft ||
-                                saveSizeWall?.heightLeft ||
-                                '',
-                            )}
-                          </Text>
+                          <Text>{heightLeft}</Text>
                         </View>
                         <View style={{flexDirection: 'column', gap: 5}}>
                           <Text>Градус угла стены:</Text>
                           <View>
-                            {saveSizeWall[wallIndex]?.size?.wallAngleDegree ||
-                            saveSizeWall?.wallAngleDegree ? (
-                              <Text>
-                                {saveSizeWall[wallIndex]?.size
-                                  ?.wallAngleDegree ||
-                                  saveSizeWall?.wallAngleDegree}
-                              </Text>
+                            {wallAngleDegree ? (
+                              <Text>{wallAngleDegree}</Text>
                             ) : null}
                           </View>
                         </View>
@@ -217,7 +385,10 @@ export default function AddBlockDimensions({
                   </Pressable>
                   <Pressable
                     onPress={() =>
-                      onClickDataWall(!clickDataWall.elements, 'elements')
+                      onClickDataWall(
+                        !clickDataWall.elements,
+                        ClickButtonBlockDimensions.Elements,
+                      )
                     }>
                     <View
                       style={{
@@ -236,22 +407,21 @@ export default function AddBlockDimensions({
                           borderStyle: 'solid',
                           marginTop: 10,
                         }}>
-                        {editEl.length ? (
-                          editEl?.map((element: any, index: any) => {
-                            return (
-                              <BlockStateElements
-                                key={index}
-                                nameElement={
-                                  element?.dataObj?.nameElement || null
-                                }
-                                stateElement={
-                                  element?.dataObj?.stateElement || null
-                                }
-                                position={index}
-                                onPressVisible={() => {}}
-                              />
-                            );
-                          })
+                        {Array.isArray(elementsData) &&
+                        elementsData.length > 0 ? (
+                          elementsData.map((element, index) => (
+                            <BlockStateElements
+                              key={index}
+                              nameElement={
+                                element?.dataObj?.nameElement || 'Без имени'
+                              }
+                              stateElement={
+                                element?.dataObj?.stateElement || 'Не задано'
+                              }
+                              position={index}
+                              onPressVisible={() => {}}
+                            />
+                          ))
                         ) : (
                           <Text>Добавьте элементы</Text>
                         )}
@@ -259,56 +429,33 @@ export default function AddBlockDimensions({
                     )}
                   </Pressable>
                 </View>
-              ) : null}
-              <View style={[styles.sizeWall, styles.wallTop]}>
-                <Text style={styles.textDimensions}>
-                  {String(
-                    saveSizeWall[wallIndex]?.size?.widthTop ||
-                      saveSizeWall?.widthTop ||
-                      '',
-                  )}
-                </Text>
-              </View>
-              <View style={[styles.sizeWall, styles.wallRight]}>
-                <Text style={styles.textDimensions}>
-                  {saveSizeWall[wallIndex]?.size?.heightRight ||
-                    saveSizeWall?.heightRight}
-                </Text>
-              </View>
-              <View style={[styles.sizeWall, styles.wallBottom]}>
-                <Text style={styles.textDimensions}>
-                  {saveSizeWall[wallIndex]?.size?.widthBottom ||
-                    saveSizeWall?.widthBottom}
-                </Text>
-              </View>
-              <View style={[styles.sizeWall, styles.wallLeft]}>
-                <Text style={styles.textDimensions}>
-                  {saveSizeWall[wallIndex]?.size?.heightLeft ||
-                    saveSizeWall?.heightLeft}
-                </Text>
-              </View>
-              {(saveSizeWall[wallIndex]?.size?.radiusWall ||
-                saveSizeWall?.radiusWall) && (
+              }
+              <SizeWallText wallPosition={styles.wallTop} dataText={widthTop} />
+              <SizeWallText
+                wallPosition={styles.wallRight}
+                dataText={heightRight}
+              />
+              <SizeWallText
+                wallPosition={styles.wallBottom}
+                dataText={widthBottom}
+              />
+              <SizeWallText
+                wallPosition={styles.wallLeft}
+                dataText={heightLeft}
+              />
+              {radiusWall && (
                 <>
                   <View
                     style={[styles.sizeWall, styles.borderLineAngle]}></View>
-                  <View style={[styles.sizeWall, styles.radiusWall]}>
-                    <Text>
-                      {saveSizeWall[wallIndex]?.size?.radiusWall ||
-                        saveSizeWall?.radiusWall}
-                    </Text>
-                  </View>
+                  <SizeWallText
+                    wallPosition={styles.radiusWall}
+                    dataText={radiusWall}
+                  />
                 </>
               )}
             </View>
             <View>
-              {saveSizeWall[wallIndex]?.size?.wallAngleDegree ||
-              saveSizeWall?.wallAngleDegree ? (
-                <Text>
-                  {saveSizeWall[wallIndex]?.size?.wallAngleDegree ||
-                    saveSizeWall?.wallAngleDegree}
-                </Text>
-              ) : null}
+              {wallAngleDegree ? <Text>{wallAngleDegree}</Text> : null}
             </View>
           </View>
         </Pressable>

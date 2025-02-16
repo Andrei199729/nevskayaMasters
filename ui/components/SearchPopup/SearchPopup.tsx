@@ -1,11 +1,4 @@
-import {
-  Animated,
-  FlatList,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import {FlatList, Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useState} from 'react';
 import PopupScreen from '../../screens/PopupScreen';
 import {Colors, Fonts, Radius} from '../../../shared/tokens';

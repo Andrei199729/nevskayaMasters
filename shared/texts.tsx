@@ -41,8 +41,11 @@ export const arrWs: ISelectOption[] = [
   {text: 'Санузел', id: 1},
   {text: 'Санузел', id: 2},
 ];
-
-export const arrCountWall: any = [
+interface IWallOption {
+  text: string;
+  id: number;
+}
+export const arrCountWall: IWallOption[] = [
   {text: '2', id: 1},
   {text: '4', id: 2},
   {text: '6', id: 3},

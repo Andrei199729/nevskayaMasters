@@ -3,30 +3,34 @@ import {
   IAddBlockDimensions,
   IDataElementsWall,
   IElementData,
-  IModalWall,
 } from '../../../shared/types';
 import {Colors} from '../../../shared/tokens';
-import {useEffect, useState} from 'react';
+import {Dispatch, SetStateAction, useState} from 'react';
 import ModalFormElement from '../ModalFormElement/ModalFormElement';
 import ElementWall from '../ElementWall/ElementWall';
 import {arrDataElementsWall} from '../../../shared/texts';
-type TModalElementsWall = IModalWall &
-  IAddBlockDimensions & {
-    onSaveElement: (element: IDataElementsWall) => void;
-    onSaveElementSize: (element: IElementData, id: number) => void;
-  };
+
+interface IModalElementsWall {
+  modalVisible: boolean | number | null;
+  numberWall: number;
+  setModalVisible: Dispatch<SetStateAction<boolean | number | null>>;
+  onSaveElement: (element: IDataElementsWall) => void;
+  onSaveElementSize: (
+    element: IElementData,
+    wallId: number,
+    elementId?: number,
+  ) => void;
+}
+
 export default function ModalElementsWall({
   modalVisible,
   setModalVisible,
   numberWall,
-  saveSizeWall,
   onSaveElement,
   onSaveElementSize,
-  updateSizeWalls,
-  position,
   ...props
-}: TModalElementsWall | any) {
-  const [element, setElement] = useState(false);
+}: IModalElementsWall) {
+  const [element, setElement] = useState<number | boolean | null>(false);
   const [nameElementWall, setNameElementWall] = useState<IDataElementsWall>(
     {} as IDataElementsWall,
   );
@@ -41,19 +45,17 @@ export default function ModalElementsWall({
     <Modal
       animationType="slide"
       transparent={true}
-      visible={modalVisible}
+      visible={typeof modalVisible === 'boolean' && modalVisible}
       onRequestClose={() => {
         setElement(false);
       }}>
       <ModalFormElement
         modalVisible={element}
-        setModalVisible={setElement}
-        setModalVisibleWall={setModalVisible}
+        setModalVisible={setModalVisible}
+        setModalVisibleWall={setElement}
         numberWall={numberWall}
         nameElementWall={nameElementWall.nameElement}
         onSaveElementSize={onSaveElementSize}
-        updateSizeWalls={updateSizeWalls}
-        position={position}
       />
       <View>
         <Pressable

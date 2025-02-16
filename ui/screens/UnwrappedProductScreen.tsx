@@ -1,9 +1,10 @@
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import ButtonCustom from '../../shared/ButtonCustom/ButtonCustom';
 import {Colors, Fonts, Gaps} from '../../shared/tokens';
-import {useContext, useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import HeaderScreen from './HeaderScreen';
 import {
+  IDrawing,
   IProductRoom,
   ObjectStatus,
   PathScreen,
@@ -14,12 +15,22 @@ import UnwrappedProductObject from '../../shared/UnwrappedProductObject/Unwrappe
 import Title from '../../shared/Title/Title';
 import ButtonDownload from '../../shared/ButtonDownload/ButtonDownload';
 import ButtonAddProduct from '../../shared/ButtonAddProduct/ButtonAddProduct';
-import {NavigationProp} from '@react-navigation/native';
+import {NavigationProp, RouteProp} from '@react-navigation/native';
+
+type TUnwrappedProductScreenRouteProp = RouteProp<
+  {
+    UnwrappedProduct: {
+      dataProduct: IDrawing[];
+      nameRoom: string;
+    };
+  },
+  'UnwrappedProduct'
+>;
 
 interface IUnwrappedProductScreen {
   applicationNumber?: string;
   navigation: NavigationProp<RootStackParamList, PathScreen.Product>;
-  route: any;
+  route: TUnwrappedProductScreenRouteProp;
 }
 
 function UnwrappedProductScreen({
@@ -27,7 +38,7 @@ function UnwrappedProductScreen({
   route,
   ...props
 }: IUnwrappedProductScreen) {
-  const {dataProduct, nameRoom, editEl} = route.params || {};
+  const {dataProduct, nameRoom} = route.params ?? {};
 
   const [productsRooms, setProductsRooms] = useState<IProductRoom[]>([]);
 
@@ -58,7 +69,6 @@ function UnwrappedProductScreen({
             {
               nameRoom: nameRoom,
               dataProduct: dataProduct,
-              editEl: editEl,
             },
           ];
         }

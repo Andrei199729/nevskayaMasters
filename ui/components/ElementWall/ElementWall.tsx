@@ -1,9 +1,11 @@
-import {View, Text, StyleSheet, Pressable} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {Colors} from '../../../shared/tokens';
+import BlockStateElements from '../BlockStateElements/BlockStateElements';
+import {TStateElement} from '../../../shared/types';
 
 interface IElementWall {
   nameElement: string;
-  stateElement: string;
+  stateElement: TStateElement | string;
   position: number;
   onPress: () => void;
 }
@@ -14,42 +16,14 @@ export default function ElementWall({
   position,
   onPress,
   ...props
-}: any) {
+}: IElementWall) {
   return (
-    <Pressable onPress={onPress}>
-      <View style={{flexDirection: 'row', gap: 10}}>
-        <Text>
-          {position} {nameElement}
-        </Text>
-        {stateElement === 'ventilation' && (
-          <View style={styles.elementVentilation}></View>
-        )}
-        {stateElement === 'elementDoor' && (
-          <View style={styles.elementDoor}></View>
-        )}
-        {stateElement === 'elementWindow' && (
-          <View
-            style={{
-              ...styles.elementWindow,
-              backgroundColor: Colors.green,
-            }}></View>
-        )}
-        {stateElement === 'elementSocket' && (
-          <View
-            style={{
-              ...styles.elementWindow,
-              backgroundColor: Colors.red,
-            }}></View>
-        )}
-        {stateElement === 'elementBattery' && (
-          <View
-            style={{
-              ...styles.elementWindow,
-              backgroundColor: Colors.lightGray,
-            }}></View>
-        )}
-      </View>
-    </Pressable>
+    <BlockStateElements
+      nameElement={nameElement}
+      stateElement={stateElement}
+      position={position - 1}
+      onPressVisible={onPress}
+    />
   );
 }
 

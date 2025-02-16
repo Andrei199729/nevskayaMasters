@@ -1,16 +1,24 @@
 import {Modal, View, Text, StyleSheet} from 'react-native';
-import {useEffect, useState} from 'react';
-import {IElementData, IModalWall} from '../../../shared/types';
+import {Dispatch, SetStateAction, useEffect} from 'react';
+import {IElementData} from '../../../shared/types';
 import {Colors} from '../../../shared/tokens';
 import {Input} from '../../../shared/Input/Input';
 import ButtonCustom from '../../../shared/ButtonCustom/ButtonCustom';
 import useInput from '../../../hooks/useInput';
-interface IModalFormElement extends IModalWall {
+interface IModalFormElement {
   nameElementWall: string;
   numberWall: number;
-  setModalVisibleWall: (visible: boolean) => void;
-  onSaveElementSize: (element: IElementData) => void;
+  modalVisible: number | boolean | null;
+  setModalVisibleWall: Dispatch<SetStateAction<number | boolean | null>>;
+  setModalVisible: Dispatch<SetStateAction<number | boolean | null>>;
+  onSaveElementSize: (
+    element: IElementData,
+    wallId: number,
+    elementId?: number,
+  ) => void;
   dataEditElement?: IElementData;
+  // editElement?: (element: IElement, wallId: number, elementId: number) => void;
+  numberCurrentWall?: number | boolean | null;
 }
 
 export default function ModalFormElement({
@@ -21,9 +29,9 @@ export default function ModalFormElement({
   setModalVisibleWall,
   onSaveElementSize,
   dataEditElement,
-  position,
+  numberCurrentWall,
   ...props
-}: IModalFormElement | any) {
+}: IModalFormElement) {
   const locationElementTop = useInput(
     dataEditElement?.locationElementTop || '',
   );
@@ -41,9 +49,9 @@ export default function ModalFormElement({
   const heightLeft = useInput(dataEditElement?.heightLeft || '');
   const heightRight = useInput(dataEditElement?.heightRight || '');
   const radiusElement = useInput(dataEditElement?.radiusElement || '');
-
   const onSaveDataElement = () => {
-    const numberElement = numberWall - 1;
+    const numericNumberWall = typeof numberWall === 'number' ? numberWall : 0;
+    const numberElement = numericNumberWall - 1;
     const updatedDataObjectSizeElement = {
       nameElementWall,
       locationElementTop: locationElementTop.value,
@@ -58,6 +66,7 @@ export default function ModalFormElement({
     };
 
     onSaveElementSize(updatedDataObjectSizeElement, numberElement);
+    // editElement(updatedDataObjectSizeElement, numberCurrentWall, position);
     setModalVisible(!modalVisible);
     setModalVisibleWall(false);
   };
@@ -86,7 +95,7 @@ export default function ModalFormElement({
     <Modal
       animationType="slide"
       transparent={true}
-      visible={modalVisible}
+      visible={typeof modalVisible === 'boolean' && modalVisible}
       onRequestClose={() => {
         setModalVisible(!modalVisible);
       }}>

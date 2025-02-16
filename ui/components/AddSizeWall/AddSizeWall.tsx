@@ -1,13 +1,16 @@
-import {Pressable, StyleSheet, Text, View} from 'react-native';
-import React, {useContext, useEffect, useState} from 'react';
+import {StyleSheet, Text, View} from 'react-native';
+import React, {Dispatch, SetStateAction, useEffect, useState} from 'react';
 import {Input} from '../../../shared/Input/Input';
 import ButtonCustom from '../../../shared/ButtonCustom/ButtonCustom';
 import {validateNumber} from '../../../customFunc/customFunc';
-import {IWallData} from '../../../shared/types';
-import {Checkbox, RadioButton} from 'react-native-paper';
+import {IExternalSizeWall, IWallSize} from '../../../shared/types';
+import {RadioButton} from 'react-native-paper';
 interface IAddSizeWall {
-  numberWall: number;
-  onSaveSizeWall: (wallData: IWallData, numberWall: number) => void;
+  numberWall: number | boolean | null;
+  onSaveSizeWall: (wallData: IWallSize, numberWall: number) => void;
+  dataEditWall?: IExternalSizeWall;
+  setModalVisibleBacklight?: Dispatch<SetStateAction<number | boolean | null>>;
+  setOpenFormDataSize?: Dispatch<SetStateAction<boolean>>;
 }
 
 export default function AddSizeWall({
@@ -16,7 +19,7 @@ export default function AddSizeWall({
   dataEditWall,
   setModalVisibleBacklight,
   setOpenFormDataSize,
-}: IAddSizeWall & any) {
+}: IAddSizeWall) {
   const [heightRight, setHeightRight] = useState<string>(
     dataEditWall?.heightRight || '',
   );
@@ -55,8 +58,9 @@ export default function AddSizeWall({
       validWidthTop &&
       validWidthBottom
     ) {
+      const numericNumberWall = typeof numberWall === 'number' ? numberWall : 0;
       const wallData = {
-        id: numberWall - 1,
+        id: numericNumberWall,
         heightRight,
         heightLeft,
         widthTop,
@@ -65,11 +69,11 @@ export default function AddSizeWall({
         radiusWall,
         valueDegree,
       };
-      onSaveSizeWall(wallData, numberWall);
+      onSaveSizeWall(wallData, numericNumberWall + 1);
     }
     setViewInput(false);
-    setModalVisibleBacklight(false);
-    setOpenFormDataSize(false);
+    setModalVisibleBacklight?.(false);
+    setOpenFormDataSize?.(false);
   };
 
   useEffect(() => {

@@ -1,14 +1,30 @@
-import React, {useEffect, useState} from 'react';
-import {Pressable, StyleSheet, Text, View} from 'react-native';
-import {TapGestureHandler} from 'react-native-gesture-handler';
-import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
-import Svg, {G, Path, Text as TextSvg} from 'react-native-svg';
-import DrawModalWall from '../DrawModalWall/DrawModalWall';
+import React, {Dispatch, SetStateAction, useEffect, useState} from 'react';
+import {Pressable, StyleSheet} from 'react-native';
+import Svg, {G} from 'react-native-svg';
+import {Colors, Fonts} from '../../../shared/tokens';
+import {
+  DasharrayStrokeValue,
+  IDrawingData,
+  IPaths,
+  IShape,
+} from '../../../shared/types';
+import LineSvg from '../../../shared/LineSvg/LineSvg';
+
+interface IDrawElement {
+  drawing: IDrawingData;
+  onClickLine: (index: number) => void;
+  selectedLine?: number | null;
+  isStyleLine: boolean;
+  openFormDataSize: boolean;
+  setStrokeDasharrays: Dispatch<SetStateAction<{[key: number]: string}>>;
+  strokeDasharrays?: {[key: number]: string};
+  numberWall: number;
+  isLast: (index: number, paths: IPaths[]) => boolean;
+  setCountWallDraw: (length: number) => void;
+}
 
 export default function DrawElement({
-  id,
   drawing,
-  isLast,
   onClickLine,
   selectedLine,
   isStyleLine,
@@ -16,20 +32,24 @@ export default function DrawElement({
   setStrokeDasharrays,
   strokeDasharrays,
   numberWall,
-}: any) {
-  const [lineStrokeDasharrays, setLineStrokeDasharrays] = useState('10');
+  isLast,
+}: IDrawElement) {
+  const [lineStrokeDasharrays, setLineStrokeDasharrays] = useState(
+    DasharrayStrokeValue.Dotted,
+  );
 
-  const stateColorLineDraw = (index: number | null) =>
-    selectedLine === index ? 'black' : 'red';
+  const stateColorLineDraw = (
+    selectedLineIndex: number | null | undefined,
+    index: number | null,
+  ) => (selectedLineIndex === index ? Colors.red : Colors.black);
 
   // При первом рендере все линии будут пунктирными
-
   // Обновляем все линии, если данные заполнены
   useEffect(() => {
     if (openFormDataSize && numberWall !== undefined) {
-      setStrokeDasharrays((prev: any) => ({
+      setStrokeDasharrays(prev => ({
         ...prev,
-        [numberWall - 1]: '0', // Делаем текущую линию пунктирной
+        [numberWall - 1]: DasharrayStrokeValue.Solid, // Делаем текущую линию пунктирной
       }));
     }
   }, [openFormDataSize, numberWall]);
@@ -38,7 +58,7 @@ export default function DrawElement({
     <Pressable style={styles.container}>
       <Svg style={StyleSheet.absoluteFill}>
         {/* Рендер всех линий */}
-        {drawing?.shapes?.map((line: any, idx: number) => {
+        {drawing?.shapes?.map((line: IShape, idx: number) => {
           const pathParts = line.path.split(' ');
           const startCoords = pathParts[0].slice(1).split(',');
           const endCoords = pathParts[pathParts.length - 1].slice(1).split(',');
@@ -55,26 +75,28 @@ export default function DrawElement({
           return (
             <React.Fragment key={idx}>
               <G key={idx} onPressIn={() => onClickLine(idx)}>
-                <Path
+                <LineSvg
                   d={line.path}
-                  stroke={selectedLine === idx ? 'red' : 'black'}
+                  stroke={stateColorLineDraw(selectedLine, idx)}
                   strokeWidth={4}
-                  fill="none"
                   strokeDasharray={
-                    strokeDasharrays[idx] ||
-                    (!isStyleLine && lineStrokeDasharrays)
-                  } // Используем состояние для strokeDasharray
+                    strokeDasharrays &&
+                    typeof strokeDasharrays[idx] === 'string'
+                      ? strokeDasharrays[idx]
+                      : !isStyleLine && typeof lineStrokeDasharrays === 'string'
+                      ? lineStrokeDasharrays
+                      : ''
+                  }
+                  indexLast={idx}
+                  indexPaths={drawing?.shapes}
+                  midX={midX}
+                  midY={midY - 5}
+                  fontSize={Fonts.f14}
+                  fillSvg={'blue'}
+                  fillPath={'none'}
+                  textAnchor={'middle'}
+                  isLast={isLast}
                 />
-                {!isLast(idx, drawing?.shapes) && (
-                  <TextSvg
-                    x={midX}
-                    y={midY - 5}
-                    fontSize="14"
-                    fill="blue"
-                    textAnchor="middle">
-                    {line.id}
-                  </TextSvg>
-                )}
               </G>
             </React.Fragment>
           );
