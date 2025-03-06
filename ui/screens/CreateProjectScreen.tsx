@@ -17,9 +17,7 @@ export default function CreateProjectScreen() {
     <HeaderScreen>
       <MainScreen>
         <ObjectApplication status={ObjectStatus.Created} />
-        <View>
-          <Draw />
-        </View>
+
         <View style={styles.squares}>
           {array.map((square, index) => {
             return <Square key={index} size={squareSize} />;

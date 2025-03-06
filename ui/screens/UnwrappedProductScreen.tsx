@@ -30,7 +30,7 @@ type TUnwrappedProductScreenRouteProp = RouteProp<
 interface IUnwrappedProductScreen {
   applicationNumber?: string;
   navigation: NavigationProp<RootStackParamList, PathScreen.Product>;
-  route: TUnwrappedProductScreenRouteProp;
+  route: any;
 }
 
 function UnwrappedProductScreen({

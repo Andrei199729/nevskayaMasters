@@ -15,7 +15,7 @@ type TProductScreenRouteProp = RouteProp<
 
 interface IProductScreen {
   applicationNumber?: string;
-  route: TProductScreenRouteProp;
+  route: any;
 }
 
 export default function ProductScreen({route, ...props}: IProductScreen) {
